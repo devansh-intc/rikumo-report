@@ -77,13 +77,15 @@
   .tag-warn{background:#FFF3DC;color:#8A5C00}
 
   /* ── Insight boxes ── */
-  .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
-  .insight{border-radius:0;padding:18px 20px;border-left:4px solid var(--gold)}
+  .insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:14px;margin-bottom:20px}
+  .insight{border-radius:0;padding:16px 20px;border-left:5px solid var(--gold);display:flex;gap:14px;align-items:flex-start}
+  .insight-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+  .insight-body{}
   .insight.green{background:var(--green-pale);border-color:var(--green)}
   .insight.red{background:var(--red-light);border-color:var(--red)}
   .insight.amber{background:var(--gold-light);border-color:var(--gold)}
-  .insight h4{font-size:.85rem;font-weight:700;margin-bottom:6px}
-  .insight p{font-size:.82rem;color:var(--text);line-height:1.5}
+  .insight h4{font-size:.87rem;font-weight:700;margin-bottom:5px;color:var(--navy)}
+  .insight p{font-size:.83rem;color:#374151;line-height:1.55}
 
   /* ── Recommendations ── */
   .rec-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
@@ -170,20 +172,20 @@
 
     <div class="insight-grid">
       <div class="insight green">
-        <h4>The MER improvement is real — efficiency is up</h4>
-        <p>Revenue fell 42% but ad spend fell 65%. Every dollar spent on ads now generates $5.35 in Shopify revenue vs $3.23 last year. The business is more efficient, not less. Organic, email, and returning customers are contributing more.</p>
+        <span class="insight-icon">✅</span><div class="insight-body"><h4>The MER improvement is real — efficiency is up</h4>
+        <p>Revenue fell 42% but ad spend fell 65%. Every dollar spent on ads now generates $5.35 in Shopify revenue vs $3.23 last year. The business is more efficient, not less. Organic, email, and returning customers are contributing more.</p></div>
       </div>
       <div class="insight red">
-        <h4>Revenue decline is primarily a spend reduction story</h4>
-        <p>Spend was cut by $18,537 (65%). Had MER stayed at 3.23x with the same reduced spend, revenue would have been only $32,174. Actual revenue of $53,327 at 5.35x MER shows the business is performing better per dollar.</p>
+        <span class="insight-icon">⚠️</span><div class="insight-body"><h4>Revenue decline is primarily a spend reduction story</h4>
+        <p>Spend was cut by $18,537 (65%). Had MER stayed at 3.23x with the same reduced spend, revenue would have been only $32,174. Actual revenue of $53,327 at 5.35x MER shows the business is performing better per dollar.</p></div>
       </div>
       <div class="insight amber">
-        <h4>Subscription model reduced discounts dramatically</h4>
-        <p>Discount spend dropped from $77,038 to $15,326 (-80%). Discount rate: 45.2% → 21.4%. This improves profitability per sale but hurt gross volume by removing the aggressive "buy 3 get 3 free" style offers that drove mass conversion in 2025.</p>
+        <span class="insight-icon">💡</span><div class="insight-body"><h4>Subscription model reduced discounts dramatically</h4>
+        <p>Discount spend dropped from $77,038 to $15,326 (-80%). Discount rate: 45.2% → 21.4%. This improves profitability per sale but hurt gross volume by removing the aggressive "buy 3 get 3 free" style offers that drove mass conversion in 2025.</p></div>
       </div>
       <div class="insight amber">
-        <h4>Returns up 135% — early subscription signal</h4>
-        <p>Returns increased from $1,256 to $2,952. With a subscription model, customers who feel locked in may request more refunds. This needs monitoring. If returns continue to rise as subscription cohorts mature, offer adjustment is needed.</p>
+        <span class="insight-icon">💡</span><div class="insight-body"><h4>Returns up 135% — early subscription signal</h4>
+        <p>Returns increased from $1,256 to $2,952. With a subscription model, customers who feel locked in may request more refunds. This needs monitoring. If returns continue to rise as subscription cohorts mature, offer adjustment is needed.</p></div>
       </div>
     </div>
   </div>
@@ -258,12 +260,12 @@
 
     <div class="insight-grid">
       <div class="insight amber">
-        <h4>Facebook: ROAS declined 11.4% (1.92x → 1.71x)</h4>
-        <p>The subscription-only offer model reduces urgency and perceived value for cold traffic. In 2025, "buy 3 get 3 free" was a standalone offer — easy to say yes to. In 2026, clicking an ad leads to a subscription commitment, which increases friction and reduces impulse conversion. Creative needs to be adapted to sell the subscription value proposition.</p>
+        <span class="insight-icon">💡</span><div class="insight-body"><h4>Facebook: ROAS declined 11.4% (1.92x → 1.71x)</h4>
+        <p>The subscription-only offer model reduces urgency and perceived value for cold traffic. In 2025, "buy 3 get 3 free" was a standalone offer — easy to say yes to. In 2026, clicking an ad leads to a subscription commitment, which increases friction and reduces impulse conversion. Creative needs to be adapted to sell the subscription value proposition.</p></div>
       </div>
       <div class="insight green">
-        <h4>Google: ROAS improved 16.3% (1.30x → 1.52x)</h4>
-        <p>Google is performing better despite 75% less spend. Lower spend means higher-intent keywords are getting priority over broad terms. The improved ROAS suggests Google's audience quality is better than Facebook's for the current offer structure — highly relevant for scaling decisions.</p>
+        <span class="insight-icon">✅</span><div class="insight-body"><h4>Google: ROAS improved 16.3% (1.30x → 1.52x)</h4>
+        <p>Google is performing better despite 75% less spend. Lower spend means higher-intent keywords are getting priority over broad terms. The improved ROAS suggests Google's audience quality is better than Facebook's for the current offer structure — highly relevant for scaling decisions.</p></div>
       </div>
     </div>
 
@@ -287,12 +289,12 @@
 
     <div class="insight-grid">
       <div class="insight green">
-        <h4>Facebook CTR doubled (1.3% → 3.3%)</h4>
-        <p>Despite lower ROAS, click-through rate more than doubled on Facebook. The 2026 creative is more engaging and drives more clicks. The problem isn't attracting clicks — it's converting those clicks to purchases. This points to a landing page / offer mismatch, not creative fatigue.</p>
+        <span class="insight-icon">✅</span><div class="insight-body"><h4>Facebook CTR doubled (1.3% → 3.3%)</h4>
+        <p>Despite lower ROAS, click-through rate more than doubled on Facebook. The 2026 creative is more engaging and drives more clicks. The problem isn't attracting clicks — it's converting those clicks to purchases. This points to a landing page / offer mismatch, not creative fatigue.</p></div>
       </div>
       <div class="insight red">
-        <h4>Google CPC nearly doubled ($2.37 → $4.08)</h4>
-        <p>Google's average cost-per-click rose 72%. This may reflect lower Quality Scores, increased competition, or a shift in keyword mix. Despite this, ROAS improved — meaning conversion rate or order value improved enough to offset the higher CPC. Monitor Quality Scores closely.</p>
+        <span class="insight-icon">⚠️</span><div class="insight-body"><h4>Google CPC nearly doubled ($2.37 → $4.08)</h4>
+        <p>Google's average cost-per-click rose 72%. This may reflect lower Quality Scores, increased competition, or a shift in keyword mix. Despite this, ROAS improved — meaning conversion rate or order value improved enough to offset the higher CPC. Monitor Quality Scores closely.</p></div>
       </div>
     </div>
   </div>
@@ -330,12 +332,12 @@
     </div>
     <div class="insight-grid">
       <div class="insight green">
-        <h4>MER of 5.35x means paid ads are only part of the picture</h4>
-        <p>Blended ROAS is 1.63x but MER is 5.35x. The gap ($53,327 Shopify vs $16,214 ad-attributed conv. value) shows that $37,113 in revenue came from non-attributed sources — organic search, email, direct, returning subscribers. Subscriptions from 2025 are likely generating repeat revenue independent of current ad spend.</p>
+        <span class="insight-icon">✅</span><div class="insight-body"><h4>MER of 5.35x means paid ads are only part of the picture</h4>
+        <p>Blended ROAS is 1.63x but MER is 5.35x. The gap ($53,327 Shopify vs $16,214 ad-attributed conv. value) shows that $37,113 in revenue came from non-attributed sources — organic search, email, direct, returning subscribers. Subscriptions from 2025 are likely generating repeat revenue independent of current ad spend.</p></div>
       </div>
       <div class="insight amber">
-        <h4>Should you scale? The numbers say yes — cautiously</h4>
-        <p>MER of 5.35x provides strong headroom to increase spend. If you doubled spend to ~$20K while maintaining 5x MER, you'd expect ~$100K in Shopify revenue. The key risk: ROAS is currently below 2x on both platforms, meaning each incremental dollar of direct ad-attributed revenue is marginal. Scale into Google first (better ROAS trajectory), then Facebook once creative is optimised for subscription conversion.</p>
+        <span class="insight-icon">💡</span><div class="insight-body"><h4>Should you scale? The numbers say yes — cautiously</h4>
+        <p>MER of 5.35x provides strong headroom to increase spend. If you doubled spend to ~$20K while maintaining 5x MER, you'd expect ~$100K in Shopify revenue. The key risk: ROAS is currently below 2x on both platforms, meaning each incremental dollar of direct ad-attributed revenue is marginal. Scale into Google first (better ROAS trajectory), then Facebook once creative is optimised for subscription conversion.</p></div>
       </div>
     </div>
   </div>
@@ -505,20 +507,20 @@
 
     <div class="insight-grid">
       <div class="insight amber">
-        <h4>The 2025 discount model was unsustainable</h4>
-        <p>Giving 45–73% discounts to convert customers is effectively buying revenue. In 2025, $77K was given away in discounts on $170K of gross sales. The aggressive discounting inflated order counts (especially single-item purchases of Healer, Defend, Reishi) but at razor-thin or negative margins. Moving to subscriptions is strategically correct — the question is execution.</p>
+        <span class="insight-icon">💡</span><div class="insight-body"><h4>The 2025 discount model was unsustainable</h4>
+        <p>Giving 45–73% discounts to convert customers is effectively buying revenue. In 2025, $77K was given away in discounts on $170K of gross sales. The aggressive discounting inflated order counts (especially single-item purchases of Healer, Defend, Reishi) but at razor-thin or negative margins. Moving to subscriptions is strategically correct — the question is execution.</p></div>
       </div>
       <div class="insight red">
-        <h4>Subscription conversion needs a new offer architecture</h4>
-        <p>The "+3 Lion's Mane Special (53% savings)" dropped from 34 orders to 8 — an 77% collapse — because it was the most popular one-time-purchase deal. If this offer now requires subscription, the friction is too high for cold ad traffic. Consider a hybrid: one-time purchase at a moderate discount, with subscription offering even bigger ongoing savings (subscribe &amp; save upsell post-purchase).</p>
+        <span class="insight-icon">⚠️</span><div class="insight-body"><h4>Subscription conversion needs a new offer architecture</h4>
+        <p>The "+3 Lion's Mane Special (53% savings)" dropped from 34 orders to 8 — an 77% collapse — because it was the most popular one-time-purchase deal. If this offer now requires subscription, the friction is too high for cold ad traffic. Consider a hybrid: one-time purchase at a moderate discount, with subscription offering even bigger ongoing savings (subscribe &amp; save upsell post-purchase).</p></div>
       </div>
       <div class="insight green">
-        <h4>"Pulse" Shiitake and "50% Off Bundle" are growing</h4>
-        <p>Shiitake went from 9 to 30 orders (+288%). The "50% Off Most Potent" bundle went from 8 to 15 orders (+56%). These products are resonating under the new model. They likely represent customers who see genuine value without needing the extreme multi-buy discount to commit. Worth increasing ad investment behind these.</p>
+        <span class="insight-icon">✅</span><div class="insight-body"><h4>"Pulse" Shiitake and "50% Off Bundle" are growing</h4>
+        <p>Shiitake went from 9 to 30 orders (+288%). The "50% Off Most Potent" bundle went from 8 to 15 orders (+56%). These products are resonating under the new model. They likely represent customers who see genuine value without needing the extreme multi-buy discount to commit. Worth increasing ad investment behind these.</p></div>
       </div>
       <div class="insight red">
-        <h4>Returns up 135% — needs immediate monitoring</h4>
-        <p>Returns grew from $1,256 to $2,952. Most returns in 2026 are concentrated in Lion's Mane ($1,534) and multiple secondary products ($29.50–$88.50 each). In a subscription model, early returns often signal customers who subscribed for the discount but didn't intend to continue. Track monthly return rate as subscriptions mature.</p>
+        <span class="insight-icon">⚠️</span><div class="insight-body"><h4>Returns up 135% — needs immediate monitoring</h4>
+        <p>Returns grew from $1,256 to $2,952. Most returns in 2026 are concentrated in Lion's Mane ($1,534) and multiple secondary products ($29.50–$88.50 each). In a subscription model, early returns often signal customers who subscribed for the discount but didn't intend to continue. Track monthly return rate as subscriptions mature.</p></div>
       </div>
     </div>
   </div>
@@ -532,27 +534,27 @@
         <h3>Mar 1–15, 2025 — Average Daily Funnel</h3>
         <div class="funnel-step s1"><span>👁 Impressions</span><span>2,349 / day</span></div>
         <div class="funnel-step s2"><span>🖱 Clicks (CTR ~1.3%)</span><span>209 / day &nbsp; 1.30% CTR</span></div>
-        <div class="funnel-step s3"><span>📄 Page Views (62% of clicks)</span><span>130 / day</span></div>
-        <div class="funnel-step s4"><span>🛒 Add to Cart (37% of PVs)</span><span>49 / day</span></div>
+        <div class="funnel-step s3"><span>📄 Page Views (63% of clicks)</span><span>128 / day</span></div>
+        <div class="funnel-step s4"><span>🛒 Add to Cart (40.5% of PVs)</span><span>52 / day</span></div>
         <div class="funnel-step s5"><span>✅ Purchase (23% of ATCs)</span><span>11.5 / day · $767 avg spend</span></div>
       </div>
       <div class="funnel-card">
         <h3>Mar 1–15, 2026 — Average Daily Funnel</h3>
         <div class="funnel-step s1"><span>👁 Impressions</span><span>1,076 / day</span></div>
-        <div class="funnel-step s2"><span>🖱 Clicks (CTR ~3.3%)</span><span>527 / day &nbsp; 3.27% CTR</span></div>
-        <div class="funnel-step s3"><span>📄 Page Views (67% of clicks)</span><span>354 / day</span></div>
-        <div class="funnel-step s4" style="background:#FFE5B4"><span>🛒 Add to Cart (8.6% of PVs ⚠️)</span><span>30 / day &nbsp;<span class="down">▼ collapsed</span></span></div>
-        <div class="funnel-step s5" style="background:#FECBA1"><span>✅ Purchase (18% of ATCs)</span><span>4.9 / day · $390 avg spend</span></div>
+        <div class="funnel-step s2"><span>🖱 Clicks (CTR ~3.2%)</span><span>550 / day &nbsp; 3.17% CTR</span></div>
+        <div class="funnel-step s3"><span>📄 Page Views (67% of clicks)</span><span>368 / day</span></div>
+        <div class="funnel-step s4" style="background:#FFE5B4"><span>🛒 Add to Cart (8.1% of PVs ⚠️)</span><span>30 / day &nbsp;<span class="down">▼ collapsed</span></span></div>
+        <div class="funnel-step s5" style="background:#FECBA1"><span>✅ Purchase (16.6% of ATCs)</span><span>4.9 / day · $390 avg spend</span></div>
       </div>
     </div>
     <div class="insight-grid">
       <div class="insight red">
-        <h4>PV-to-ATC rate collapsed: 37% → 8.6%</h4>
-        <p>In 2025, 37% of page viewers added to cart. In 2026, only 8.6% do. Impressions are down, clicks are up, but cart adds have plummeted. This is the clearest signal that the landing page / offer is not converting. The subscription commitment or price point is creating a major drop-off between viewing the product and adding it to cart.</p>
+        <span class="insight-icon">⚠️</span><div class="insight-body"><h4>PV-to-ATC rate collapsed: 37% → 8.6%</h4>
+        <p>In 2025, 37% of page viewers added to cart. In 2026, only 8.6% do. Impressions are down, clicks are up, but cart adds have plummeted. This is the clearest signal that the landing page / offer is not converting. The subscription commitment or price point is creating a major drop-off between viewing the product and adding it to cart.</p></div>
       </div>
       <div class="insight amber">
-        <h4>ATC-to-Purchase improved: 23% → 18% (similar)</h4>
-        <p>Customers who do add to cart are completing purchase at a similar rate (23% → 18%). The problem is getting people to the cart — not checkout abandonment. This means the fix is at the offer/product page level, not at the checkout or cart level. Test a clearer subscription value prop and consider displaying the long-term savings more prominently.</p>
+        <span class="insight-icon">💡</span><div class="insight-body"><h4>ATC-to-Purchase improved: 23% → 18% (similar)</h4>
+        <p>Customers who do add to cart are completing purchase at a similar rate (23% → 18%). The problem is getting people to the cart — not checkout abandonment. This means the fix is at the offer/product page level, not at the checkout or cart level. Test a clearer subscription value prop and consider displaying the long-term savings more prominently.</p></div>
       </div>
     </div>
   </div>
@@ -588,7 +590,7 @@
             <td class="bold">Facebook Ads</td>
             <td class="num bold">1.705x</td>
             <td><span class="tag tag-warn">⚠ Cautious</span></td>
-            <td>CTR is strong but ATC rate collapsed (8.6%). Adding budget to a broken funnel amplifies waste, not revenue.</td>
+            <td>CTR is strong but ATC rate collapsed (8.1%). Adding budget to a broken funnel amplifies waste, not revenue.</td>
             <td>Do NOT scale Facebook until PV-to-ATC recovers to 20%+. Fix the landing page / offer first, then test small budget increases.</td>
           </tr>
           <tr>
