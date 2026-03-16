@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lion's Mane Extract — Ad Performance & Sales Analysis | Mar 1–15, 2025 vs 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --green-dark:  #1B4332;
+    --green-mid:   #2D6A4F;
+    --green-light: #52B788;
+    --green-pale:  #D8F3DC;
+    --amber:       #D4A017;
+    --amber-light: #FFF3CD;
+    --red:         #C0392B;
+    --red-light:   #FDECEA;
+    --bg:          #F4F7F5;
+    --card:        #FFFFFF;
+    --text:        #1A2E22;
+    --muted:       #6B7C72;
+    --border:      #DDE8E2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  a{color:var(--green-mid)}
+
+  /* ── Header ── */
+  .header{background:linear-gradient(135deg,var(--green-dark) 0%,var(--green-mid) 100%);color:#fff;padding:36px 48px}
+  .header h1{font-size:1.9rem;font-weight:700;margin-bottom:4px}
+  .header .sub{opacity:.8;font-size:.95rem}
+  .header .badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;margin-top:10px}
+
+  /* ── Layout ── */
+  .container{max-width:1280px;margin:0 auto;padding:32px 24px}
+  .section{margin-bottom:40px}
+  .section h2{font-size:1.25rem;font-weight:700;color:var(--green-dark);margin-bottom:4px;padding-bottom:8px;border-bottom:2px solid var(--green-pale)}
+  .section-sub{font-size:.82rem;color:var(--muted);margin-bottom:16px;margin-top:4px}
+
+  /* ── KPI Cards ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px}
+  .kpi{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border);border-top:4px solid var(--green-mid)}
+  .kpi.red{border-top-color:var(--red)}
+  .kpi.amber{border-top-color:var(--amber)}
+  .kpi.positive{border-top-color:var(--green-light)}
+  .kpi-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+  .kpi-val{font-size:1.6rem;font-weight:700;line-height:1.1}
+  .kpi-sub{font-size:.75rem;color:var(--muted);margin-top:4px}
+  .up{color:#2D6A4F}.down{color:var(--red)}
+
+  /* ── Charts ── */
+  .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+  .chart-wrap{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border)}
+  .chart-wrap h3{font-size:.9rem;font-weight:600;color:var(--green-dark);margin-bottom:14px}
+  .chart-wrap canvas{max-height:260px}
+  .chart-full{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:20px}
+  .chart-full h3{font-size:.9rem;font-weight:600;color:var(--green-dark);margin-bottom:14px}
+  .chart-full canvas{max-height:240px}
+
+  /* ── Tables ── */
+  .card{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:20px}
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:.83rem}
+  th{background:var(--green-dark);color:#fff;padding:9px 12px;text-align:left;font-weight:600;white-space:nowrap}
+  td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  tr:hover td{background:#F0F7F3}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .bold{font-weight:600}
+  .tag{display:inline-block;border-radius:4px;padding:2px 8px;font-size:.72rem;font-weight:600}
+  .tag-up{background:#D8F3DC;color:#1B4332}
+  .tag-down{background:#FDECEA;color:#7B1E14}
+  .tag-warn{background:#FFF3CD;color:#856404}
+
+  /* ── Insight boxes ── */
+  .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .insight{border-radius:10px;padding:18px 20px;border-left:4px solid var(--green-mid)}
+  .insight.green{background:var(--green-pale);border-color:var(--green-mid)}
+  .insight.red{background:var(--red-light);border-color:var(--red)}
+  .insight.amber{background:var(--amber-light);border-color:var(--amber)}
+  .insight h4{font-size:.85rem;font-weight:700;margin-bottom:6px}
+  .insight p{font-size:.82rem;color:var(--text);line-height:1.5}
+
+  /* ── Recommendations ── */
+  .rec-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .rec{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border)}
+  .rec-num{width:28px;height:28px;border-radius:50%;background:var(--green-mid);color:#fff;font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+  .rec h4{font-size:.9rem;font-weight:700;margin-bottom:6px;color:var(--green-dark)}
+  .rec p{font-size:.81rem;color:var(--muted);line-height:1.5}
+  .rec ul{font-size:.81rem;color:var(--muted);line-height:1.6;padding-left:16px;margin-top:6px}
+
+  /* ── Funnel ── */
+  .funnel-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+  .funnel-card{background:var(--card);border-radius:10px;padding:20px;border:1px solid var(--border)}
+  .funnel-card h3{font-size:.88rem;font-weight:600;color:var(--green-dark);margin-bottom:14px}
+  .funnel-step{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:6px;border-radius:6px;font-size:.83rem}
+  .funnel-step.s1{background:#D8F3DC}
+  .funnel-step.s2{background:#B7E4C7}
+  .funnel-step.s3{background:#95D5B2}
+  .funnel-step.s4{background:#74C69D}
+  .funnel-step.s5{background:#52B788}
+  .funnel-step span:last-child{font-weight:700}
+
+  .footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border-top:1px solid var(--border);margin-top:20px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Lion's Mane Extract — Ad & Sales Performance Analysis</h1>
+  <div class="sub">Facebook Ads · Google Ads · Shopify Sales — March 1–15, 2025 vs March 1–15, 2026</div>
+  <span class="badge">Generated March 16, 2026 · 15-day period comparison</span>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════════ EXECUTIVE SUMMARY ═══════════════════════ -->
+  <div class="section">
+    <h2>Executive Summary</h2>
+    <p class="section-sub">Key metrics comparing the first 15 days of March 2025 vs 2026 across all paid channels</p>
+    <div class="kpi-grid">
+      <div class="kpi red">
+        <div class="kpi-label">Total Ad Spend</div>
+        <div class="kpi-val">$9,964</div>
+        <div class="kpi-sub">2025: $28,502 &nbsp;<span class="down">▼ 65.0%</span></div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Shopify Net Sales</div>
+        <div class="kpi-val">$53,327</div>
+        <div class="kpi-sub">2025: $92,162 &nbsp;<span class="down">▼ 42.1%</span></div>
+      </div>
+      <div class="kpi positive">
+        <div class="kpi-label">MER (Media Efficiency)</div>
+        <div class="kpi-val">5.35x</div>
+        <div class="kpi-sub">2025: 3.23x &nbsp;<span class="up">▲ +65.6%</span></div>
+      </div>
+      <div class="kpi positive">
+        <div class="kpi-label">Blended ROAS</div>
+        <div class="kpi-val">1.63x</div>
+        <div class="kpi-sub">2025: 1.55x &nbsp;<span class="up">▲ +4.7%</span></div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Gross Sales</div>
+        <div class="kpi-val">$71,604</div>
+        <div class="kpi-sub">2025: $170,456 &nbsp;<span class="down">▼ 58.0%</span></div>
+      </div>
+      <div class="kpi amber">
+        <div class="kpi-label">Discount Rate</div>
+        <div class="kpi-val">21.4%</div>
+        <div class="kpi-sub">2025: 45.2% &nbsp;<span class="up">▼ 23.8pp reduction</span></div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Returns</div>
+        <div class="kpi-val">$2,952</div>
+        <div class="kpi-sub">2025: $1,256 &nbsp;<span class="down">▲ +135%</span></div>
+      </div>
+      <div class="kpi positive">
+        <div class="kpi-label">Net Revenue Quality</div>
+        <div class="kpi-val">$0.745</div>
+        <div class="kpi-sub">Net / Gross ratio. 2025: $0.541 &nbsp;<span class="up">▲ improved</span></div>
+      </div>
+    </div>
+
+    <div class="insight-grid">
+      <div class="insight green">
+        <h4>The MER improvement is real — efficiency is up</h4>
+        <p>Revenue fell 42% but ad spend fell 65%. Every dollar spent on ads now generates $5.35 in Shopify revenue vs $3.23 last year. The business is more efficient, not less. Organic, email, and returning customers are contributing more.</p>
+      </div>
+      <div class="insight red">
+        <h4>Revenue decline is primarily a spend reduction story</h4>
+        <p>Spend was cut by $18,537 (65%). Had MER stayed at 3.23x with the same reduced spend, revenue would have been only $32,174. Actual revenue of $53,327 at 5.35x MER shows the business is performing better per dollar.</p>
+      </div>
+      <div class="insight amber">
+        <h4>Subscription model reduced discounts dramatically</h4>
+        <p>Discount spend dropped from $77,038 to $15,326 (-80%). Discount rate: 45.2% → 21.4%. This improves profitability per sale but hurt gross volume by removing the aggressive "buy 3 get 3 free" style offers that drove mass conversion in 2025.</p>
+      </div>
+      <div class="insight amber">
+        <h4>Returns up 135% — early subscription signal</h4>
+        <p>Returns increased from $1,256 to $2,952. With a subscription model, customers who feel locked in may request more refunds. This needs monitoring. If returns continue to rise as subscription cohorts mature, offer adjustment is needed.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ AD SPEND OVERVIEW ═══════════════════════ -->
+  <div class="section">
+    <h2>Ad Spend Overview — Daily Trend</h2>
+    <p class="section-sub">Daily combined spend (Facebook + Google). 2025 ran ~$1,900–2,400/day. 2026 scaled back to ~$600–850/day.</p>
+    <div class="chart-full">
+      <h3>Daily Total Ad Spend — Mar 1–15 · 2025 vs 2026</h3>
+      <canvas id="dailySpendChart"></canvas>
+    </div>
+    <div class="charts-row">
+      <div class="chart-wrap">
+        <h3>Spend by Platform — 2025 ($28,502 total)</h3>
+        <canvas id="spendPie25"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h3>Spend by Platform — 2026 ($9,964 total)</h3>
+        <canvas id="spendPie26"></canvas>
+      </div>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Platform</th><th class="num">Spend 2025</th><th class="num">Spend 2026</th><th class="num">Change</th><th class="num">Conv. Value 2025</th><th class="num">Conv. Value 2026</th><th class="num">ROAS 2025</th><th class="num">ROAS 2026</th><th class="num">ROAS Δ</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="bold">Facebook Ads</td>
+            <td class="num">$11,482.64</td><td class="num">$5,857.75</td>
+            <td class="num"><span class="tag tag-down">▼ 49.0%</span></td>
+            <td class="num">$22,089.77</td><td class="num">$9,985.78</td>
+            <td class="num bold">1.924x</td><td class="num bold">1.705x</td>
+            <td class="num"><span class="tag tag-down">▼ −0.22x</span></td>
+          </tr>
+          <tr>
+            <td class="bold">Google Ads</td>
+            <td class="num">$17,019.02</td><td class="num">$4,106.36</td>
+            <td class="num"><span class="tag tag-down">▼ 75.9%</span></td>
+            <td class="num">$22,189.96</td><td class="num">$6,228.50</td>
+            <td class="num bold">1.304x</td><td class="num bold">1.517x</td>
+            <td class="num"><span class="tag tag-up">▲ +0.21x</span></td>
+          </tr>
+          <tr style="background:#F0F7F3">
+            <td class="bold">Combined</td>
+            <td class="num bold">$28,501.66</td><td class="num bold">$9,964.11</td>
+            <td class="num"><span class="tag tag-down">▼ 65.0%</span></td>
+            <td class="num bold">$44,279.73</td><td class="num bold">$16,214.28</td>
+            <td class="num bold">1.554x</td><td class="num bold">1.627x</td>
+            <td class="num"><span class="tag tag-up">▲ +0.07x</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ PLATFORM PERFORMANCE ═══════════════════════ -->
+  <div class="section">
+    <h2>Platform Performance — Facebook vs Google</h2>
+    <p class="section-sub">Daily ROAS trends. FB 2025 had stronger ROAS; Google ROAS has improved YoY while FB declined slightly.</p>
+    <div class="charts-row">
+      <div class="chart-wrap">
+        <h3>Daily Facebook ROAS — 2025 vs 2026</h3>
+        <canvas id="fbRoasChart"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h3>Daily Google ROAS — 2025 vs 2026</h3>
+        <canvas id="gRoasChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight-grid">
+      <div class="insight amber">
+        <h4>Facebook: ROAS declined 11.4% (1.92x → 1.71x)</h4>
+        <p>The subscription-only offer model reduces urgency and perceived value for cold traffic. In 2025, "buy 3 get 3 free" was a standalone offer — easy to say yes to. In 2026, clicking an ad leads to a subscription commitment, which increases friction and reduces impulse conversion. Creative needs to be adapted to sell the subscription value proposition.</p>
+      </div>
+      <div class="insight green">
+        <h4>Google: ROAS improved 16.3% (1.30x → 1.52x)</h4>
+        <p>Google is performing better despite 75% less spend. Lower spend means higher-intent keywords are getting priority over broad terms. The improved ROAS suggests Google's audience quality is better than Facebook's for the current offer structure — highly relevant for scaling decisions.</p>
+      </div>
+    </div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Metric</th><th class="num">FB 2025</th><th class="num">FB 2026</th><th class="num">G 2025</th><th class="num">G 2026</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Total Spend</td><td class="num">$11,482.64</td><td class="num">$5,857.75</td><td class="num">$17,019.02</td><td class="num">$4,106.36</td></tr>
+          <tr><td>Conv. Value (tracked)</td><td class="num">$22,089.77</td><td class="num">$9,985.78</td><td class="num">$22,189.96</td><td class="num">$6,228.50</td></tr>
+          <tr><td>Attributed Purchases / Conversions</td><td class="num">173</td><td class="num">74</td><td class="num">174</td><td class="num">54</td></tr>
+          <tr><td>Cost per Purchase</td><td class="num">$66.37</td><td class="num">$79.16</td><td class="num">$97.81</td><td class="num">$76.04</td></tr>
+          <tr><td>Avg. Conv. Value per Purchase</td><td class="num">$127.69</td><td class="num">$134.94</td><td class="num">$127.53</td><td class="num">$115.34</td></tr>
+          <tr><td>ROAS</td><td class="num bold">1.924x</td><td class="num bold">1.705x</td><td class="num bold">1.304x</td><td class="num bold">1.517x</td></tr>
+          <tr><td>Avg. CPC</td><td class="num">—</td><td class="num">—</td><td class="num">$2.37</td><td class="num">$4.08</td></tr>
+          <tr><td>Avg. CTR</td><td class="num">~1.3%</td><td class="num">~3.3%</td><td class="num">~1.6%</td><td class="num">~1.5%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="insight-grid">
+      <div class="insight green">
+        <h4>Facebook CTR doubled (1.3% → 3.3%)</h4>
+        <p>Despite lower ROAS, click-through rate more than doubled on Facebook. The 2026 creative is more engaging and drives more clicks. The problem isn't attracting clicks — it's converting those clicks to purchases. This points to a landing page / offer mismatch, not creative fatigue.</p>
+      </div>
+      <div class="insight red">
+        <h4>Google CPC nearly doubled ($2.37 → $4.08)</h4>
+        <p>Google's average cost-per-click rose 72%. This may reflect lower Quality Scores, increased competition, or a shift in keyword mix. Despite this, ROAS improved — meaning conversion rate or order value improved enough to offset the higher CPC. Monitor Quality Scores closely.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ ROAS DAILY COMBINED ═══════════════════════ -->
+  <div class="section">
+    <h2>Daily Blended ROAS — Combined (FB + Google)</h2>
+    <p class="section-sub">Attributed conversion value ÷ total spend per day. The 3x target line represents a healthy scaling threshold.</p>
+    <div class="chart-full">
+      <h3>Daily Blended ROAS · 2025 vs 2026 (3x target line)</h3>
+      <canvas id="blendedRoasChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ MER ANALYSIS ═══════════════════════ -->
+  <div class="section">
+    <h2>MER Analysis — Media Efficiency Ratio</h2>
+    <p class="section-sub">MER = Total Shopify Net Sales ÷ Total Ad Spend. Unlike ROAS, MER captures all revenue including organic, email, and direct — giving a true picture of business efficiency.</p>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="kpi positive">
+        <div class="kpi-label">MER 2026</div>
+        <div class="kpi-val">5.35x</div>
+        <div class="kpi-sub">$53,327 revenue / $9,964 spend</div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">MER 2025</div>
+        <div class="kpi-val">3.23x</div>
+        <div class="kpi-sub">$92,162 revenue / $28,502 spend</div>
+      </div>
+      <div class="kpi positive">
+        <div class="kpi-label">MER Improvement</div>
+        <div class="kpi-val">+65.6%</div>
+        <div class="kpi-sub">Every ad dollar drives $2.12 more revenue</div>
+      </div>
+    </div>
+    <div class="insight-grid">
+      <div class="insight green">
+        <h4>MER of 5.35x means paid ads are only part of the picture</h4>
+        <p>Blended ROAS is 1.63x but MER is 5.35x. The gap ($53,327 Shopify vs $16,214 ad-attributed conv. value) shows that $37,113 in revenue came from non-attributed sources — organic search, email, direct, returning subscribers. Subscriptions from 2025 are likely generating repeat revenue independent of current ad spend.</p>
+      </div>
+      <div class="insight amber">
+        <h4>Should you scale? The numbers say yes — cautiously</h4>
+        <p>MER of 5.35x provides strong headroom to increase spend. If you doubled spend to ~$20K while maintaining 5x MER, you'd expect ~$100K in Shopify revenue. The key risk: ROAS is currently below 2x on both platforms, meaning each incremental dollar of direct ad-attributed revenue is marginal. Scale into Google first (better ROAS trajectory), then Facebook once creative is optimised for subscription conversion.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SHOPIFY SALES ═══════════════════════ -->
+  <div class="section">
+    <h2>Shopify Sales — Top-Line & Product-Level</h2>
+    <p class="section-sub">Mar 1–15. Net Sales = Gross Sales − Discounts − Returns.</p>
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi red">
+        <div class="kpi-label">Gross Sales</div>
+        <div class="kpi-val">$71,604</div>
+        <div class="kpi-sub">2025: $170,456 &nbsp;<span class="down">▼ 58%</span></div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Discounts Given</div>
+        <div class="kpi-val">$15,326</div>
+        <div class="kpi-sub">2025: $77,038 &nbsp;<span class="up">▼ 80% lower</span></div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Returns</div>
+        <div class="kpi-val">$2,952</div>
+        <div class="kpi-sub">2025: $1,256 &nbsp;<span class="down">▲ +135%</span></div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Net Sales</div>
+        <div class="kpi-val">$53,327</div>
+        <div class="kpi-sub">2025: $92,162 &nbsp;<span class="down">▼ 42%</span></div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-wrap">
+        <h3>Top 8 Products by Net Sales — 2025 vs 2026</h3>
+        <canvas id="productChart"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h3>Gross → Net Revenue Waterfall</h3>
+        <canvas id="waterfallChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Product</th>
+            <th class="num">Orders 2025</th><th class="num">Net Sales 2025</th>
+            <th class="num">Orders 2026</th><th class="num">Net Sales 2026</th>
+            <th class="num">Net Sales Δ</th>
+            <th class="num">Disc Rate 2025</th><th class="num">Disc Rate 2026</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="bold">Lion's Mane Liquid Extract</td>
+            <td class="num">615</td><td class="num">$63,628</td>
+            <td class="num">396</td><td class="num">$33,402</td>
+            <td class="num"><span class="tag tag-down">▼ 47.5%</span></td>
+            <td class="num">36.3%</td><td class="num">22.3%</td>
+          </tr>
+          <tr>
+            <td class="bold">Premium Cordyceps Extract</td>
+            <td class="num">213</td><td class="num">$6,195</td>
+            <td class="num">107</td><td class="num">$4,755</td>
+            <td class="num"><span class="tag tag-down">▼ 23.2%</span></td>
+            <td class="num">66.3%</td><td class="num">28.0%</td>
+          </tr>
+          <tr>
+            <td class="bold">"Immortal" Reishi Extract</td>
+            <td class="num">179</td><td class="num">$6,454</td>
+            <td class="num">82</td><td class="num">$3,317</td>
+            <td class="num"><span class="tag tag-down">▼ 48.6%</span></td>
+            <td class="num">61.2%</td><td class="num">17.1%</td>
+          </tr>
+          <tr>
+            <td class="bold">4 Lion's Mane (50% off)</td>
+            <td class="num">22</td><td class="num">$2,848</td>
+            <td class="num">23</td><td class="num">$2,917</td>
+            <td class="num"><span class="tag tag-up">▲ +2.4%</span></td>
+            <td class="num">10.6%</td><td class="num">8.4%</td>
+          </tr>
+          <tr>
+            <td class="bold">"Healer" Mushroom Extract</td>
+            <td class="num">110</td><td class="num">$2,342</td>
+            <td class="num">43</td><td class="num">$1,986</td>
+            <td class="num"><span class="tag tag-down">▼ 15.2%</span></td>
+            <td class="num">73.4%</td><td class="num">9.6%</td>
+          </tr>
+          <tr>
+            <td class="bold">"Defend" Chaga Extract</td>
+            <td class="num">79</td><td class="num">$2,100</td>
+            <td class="num">41</td><td class="num">$1,734</td>
+            <td class="num"><span class="tag tag-down">▼ 17.4%</span></td>
+            <td class="num">67.4%</td><td class="num">16.5%</td>
+          </tr>
+          <tr>
+            <td class="bold">50% Off Lion's Mane (Bundle)</td>
+            <td class="num">8</td><td class="num">$944</td>
+            <td class="num">15</td><td class="num">$1,476</td>
+            <td class="num"><span class="tag tag-up">▲ +56.4%</span></td>
+            <td class="num">0%</td><td class="num">9.3%</td>
+          </tr>
+          <tr>
+            <td class="bold">"Pulse" Shiitake Extract</td>
+            <td class="num">9</td><td class="num">$266</td>
+            <td class="num">30</td><td class="num">$1,033</td>
+            <td class="num"><span class="tag tag-up">▲ +288%</span></td>
+            <td class="num">69.6%</td><td class="num">15.1%</td>
+          </tr>
+          <tr>
+            <td class="bold">Top Sellers Bundle</td>
+            <td class="num">19</td><td class="num">$2,406</td>
+            <td class="num">9</td><td class="num">$891</td>
+            <td class="num"><span class="tag tag-down">▼ 62.9%</span></td>
+            <td class="num">26.4%</td><td class="num">0%</td>
+          </tr>
+          <tr>
+            <td class="bold">+3 Lion's Mane Special (53%)</td>
+            <td class="num">34</td><td class="num">$3,161</td>
+            <td class="num">8</td><td class="num">$735</td>
+            <td class="num"><span class="tag tag-down">▼ 76.7%</span></td>
+            <td class="num">53.0%</td><td class="num">53.0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SUBSCRIPTION MODEL ═══════════════════════ -->
+  <div class="section">
+    <h2>Subscription Model Impact Analysis</h2>
+    <p class="section-sub">In 2025, customers could access deep discounts (50–73%) on one-time purchases. In 2026, the business moved to a subscription-first model with lower discount rates. Here's what changed.</p>
+
+    <div class="charts-row">
+      <div class="chart-wrap">
+        <h3>Discount Rate by Product — 2025 vs 2026</h3>
+        <canvas id="discountChart"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h3>Orders vs Net Revenue per Order — Top Products</h3>
+        <canvas id="aovChart"></canvas>
+      </div>
+    </div>
+
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi positive">
+        <div class="kpi-label">Net / Gross Ratio 2026</div>
+        <div class="kpi-val">74.5%</div>
+        <div class="kpi-sub">2025: 54.1% — keeping more of each sale</div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Discount $ Saved 2026</div>
+        <div class="kpi-val">$61,712</div>
+        <div class="kpi-sub">Less discounts given vs 2025</div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Gross Revenue Lost</div>
+        <div class="kpi-val">$98,852</div>
+        <div class="kpi-sub">Gross sales decline 2025→2026</div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Net Revenue Lost</td>
+        <div class="kpi-val">$38,835</div>
+        <div class="kpi-sub">After accounting for discount savings</div>
+      </div>
+    </div>
+
+    <div class="insight-grid">
+      <div class="insight amber">
+        <h4>The 2025 discount model was unsustainable</h4>
+        <p>Giving 45–73% discounts to convert customers is effectively buying revenue. In 2025, $77K was given away in discounts on $170K of gross sales. The aggressive discounting inflated order counts (especially single-item purchases of Healer, Defend, Reishi) but at razor-thin or negative margins. Moving to subscriptions is strategically correct — the question is execution.</p>
+      </div>
+      <div class="insight red">
+        <h4>Subscription conversion needs a new offer architecture</h4>
+        <p>The "+3 Lion's Mane Special (53% savings)" dropped from 34 orders to 8 — an 77% collapse — because it was the most popular one-time-purchase deal. If this offer now requires subscription, the friction is too high for cold ad traffic. Consider a hybrid: one-time purchase at a moderate discount, with subscription offering even bigger ongoing savings (subscribe &amp; save upsell post-purchase).</p>
+      </div>
+      <div class="insight green">
+        <h4>"Pulse" Shiitake and "50% Off Bundle" are growing</h4>
+        <p>Shiitake went from 9 to 30 orders (+288%). The "50% Off Most Potent" bundle went from 8 to 15 orders (+56%). These products are resonating under the new model. They likely represent customers who see genuine value without needing the extreme multi-buy discount to commit. Worth increasing ad investment behind these.</p>
+      </div>
+      <div class="insight red">
+        <h4>Returns up 135% — needs immediate monitoring</h4>
+        <p>Returns grew from $1,256 to $2,952. Most returns in 2026 are concentrated in Lion's Mane ($1,534) and multiple secondary products ($29.50–$88.50 each). In a subscription model, early returns often signal customers who subscribed for the discount but didn't intend to continue. Track monthly return rate as subscriptions mature.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ CONVERSION FUNNEL ═══════════════════════ -->
+  <div class="section">
+    <h2>Facebook Conversion Funnel — 2025 vs 2026</h2>
+    <p class="section-sub">Funnel metrics averaged across the 15-day period. Note: 2026 CTR is 2.5x higher but ATC rate collapsed — classic subscription friction pattern.</p>
+    <div class="funnel-row">
+      <div class="funnel-card">
+        <h3>Mar 1–15, 2025 — Average Daily Funnel</h3>
+        <div class="funnel-step s1"><span>👁 Impressions</span><span>2,349 / day</span></div>
+        <div class="funnel-step s2"><span>🖱 Clicks (CTR ~1.3%)</span><span>209 / day &nbsp; 1.30% CTR</span></div>
+        <div class="funnel-step s3"><span>📄 Page Views (62% of clicks)</span><span>130 / day</span></div>
+        <div class="funnel-step s4"><span>🛒 Add to Cart (37% of PVs)</span><span>49 / day</span></div>
+        <div class="funnel-step s5"><span>✅ Purchase (23% of ATCs)</span><span>11.5 / day · $767 avg spend</span></div>
+      </div>
+      <div class="funnel-card">
+        <h3>Mar 1–15, 2026 — Average Daily Funnel</h3>
+        <div class="funnel-step s1"><span>👁 Impressions</span><span>1,076 / day</span></div>
+        <div class="funnel-step s2"><span>🖱 Clicks (CTR ~3.3%)</span><span>527 / day &nbsp; 3.27% CTR</span></div>
+        <div class="funnel-step s3"><span>📄 Page Views (67% of clicks)</span><span>354 / day</span></div>
+        <div class="funnel-step s4" style="background:#FFE5B4"><span>🛒 Add to Cart (8.6% of PVs ⚠️)</span><span>30 / day &nbsp;<span class="down">▼ collapsed</span></span></div>
+        <div class="funnel-step s5" style="background:#FECBA1"><span>✅ Purchase (18% of ATCs)</span><span>4.9 / day · $390 avg spend</span></div>
+      </div>
+    </div>
+    <div class="insight-grid">
+      <div class="insight red">
+        <h4>PV-to-ATC rate collapsed: 37% → 8.6%</h4>
+        <p>In 2025, 37% of page viewers added to cart. In 2026, only 8.6% do. Impressions are down, clicks are up, but cart adds have plummeted. This is the clearest signal that the landing page / offer is not converting. The subscription commitment or price point is creating a major drop-off between viewing the product and adding it to cart.</p>
+      </div>
+      <div class="insight amber">
+        <h4>ATC-to-Purchase improved: 23% → 18% (similar)</h4>
+        <p>Customers who do add to cart are completing purchase at a similar rate (23% → 18%). The problem is getting people to the cart — not checkout abandonment. This means the fix is at the offer/product page level, not at the checkout or cart level. Test a clearer subscription value prop and consider displaying the long-term savings more prominently.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SCALE ANALYSIS ═══════════════════════ -->
+  <div class="section">
+    <h2>Should You Scale? — Data-Driven Assessment</h2>
+    <p class="section-sub">Analysis of scaling readiness across both platforms and key risks.</p>
+    <div class="charts-row">
+      <div class="chart-wrap">
+        <h3>ROAS vs Scaling Thresholds</h3>
+        <canvas id="scalingChart"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h3>Revenue Projection at Different Spend Levels</h3>
+        <canvas id="projectionChart"></canvas>
+      </div>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr><th>Platform</th><th>Current ROAS</th><th>Scale Readiness</th><th>Risk if Scaled</th><th>Recommendation</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="bold">Google Ads</td>
+            <td class="num bold">1.517x</td>
+            <td><span class="tag tag-warn">⚠ Cautious</span></td>
+            <td>CPC rose 72% with lower spend — scaling may further compress margins. Check keyword mix and Quality Scores first.</td>
+            <td>Test +$1,000–2,000/day incrementally. Monitor ROAS daily. Strong trajectory suggests more headroom than Facebook.</td>
+          </tr>
+          <tr>
+            <td class="bold">Facebook Ads</td>
+            <td class="num bold">1.705x</td>
+            <td><span class="tag tag-warn">⚠ Cautious</span></td>
+            <td>CTR is strong but ATC rate collapsed (8.6%). Adding budget to a broken funnel amplifies waste, not revenue.</td>
+            <td>Do NOT scale Facebook until PV-to-ATC recovers to 20%+. Fix the landing page / offer first, then test small budget increases.</td>
+          </tr>
+          <tr>
+            <td class="bold">Combined MER</td>
+            <td class="num bold">5.35x</td>
+            <td><span class="tag tag-up">✓ Healthy</span></td>
+            <td>MER hides organic revenue — if organic base declines as subscriptions churn, MER will fall even at same spend.</td>
+            <td>Use MER as the primary guardrail. Target 4x+ MER minimum while scaling. If MER drops below 4x, pause and reassess.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ RECOMMENDATIONS ═══════════════════════ -->
+  <div class="section">
+    <h2>Strategic Recommendations</h2>
+    <p class="section-sub">Prioritized action plan based on the data analysis above</p>
+    <div class="rec-grid">
+      <div class="rec">
+        <div class="rec-num">1</div>
+        <h4>Fix the Facebook Funnel Before Scaling</h4>
+        <p>The PV-to-ATC rate (8.6%) is the critical bottleneck. Until this recovers to 20%+, more Facebook spend will just amplify waste.</p>
+        <ul>
+          <li>A/B test a hybrid offer: one-time purchase at 25–30% off vs subscribe &amp; save 45%</li>
+          <li>Make subscription value prop (total savings, flexibility, cancel anytime) front-and-center on the product page</li>
+          <li>Test a trial/starter pack at a lower price point to reduce first-purchase friction</li>
+        </ul>
+      </div>
+      <div class="rec">
+        <div class="rec-num">2</div>
+        <h4>Scale Google Ads First</h4>
+        <p>Google ROAS improved YoY (1.30x → 1.52x) despite 75% spend reduction. It's performing better per dollar and has room to grow.</p>
+        <ul>
+          <li>Increase Google budget by $500–1,000/day incrementally over 2 weeks</li>
+          <li>Audit keyword Quality Scores — CPC nearly doubled, suggesting score degradation</li>
+          <li>Add branded search campaigns to capture subscription-intent searches</li>
+          <li>Target ROAS: 2.0x before adding further budget</li>
+        </ul>
+      </div>
+      <div class="rec">
+        <div class="rec-num">3</div>
+        <h4>Defend Lion's Mane Revenue</h4>
+        <p>The flagship product lost 47.5% in net sales (615 → 396 orders). It's still 63% of total revenue but the decline is steep.</p>
+        <ul>
+          <li>Test a "starter subscription" at $49–59 for one bottle (lower commitment)</li>
+          <li>Launch a dedicated retargeting campaign for page visitors who didn't add to cart</li>
+          <li>Create a comparison creative: cost per day with subscription vs one-time</li>
+        </ul>
+      </div>
+      <div class="rec">
+        <div class="rec-num">4</div>
+        <h4>Invest Behind "Pulse" Shiitake &amp; 50% Bundle</h4>
+        <p>These two products grew strongly under the new model (+288% and +56%). They're proof the subscription offer can work for the right products.</p>
+        <ul>
+          <li>Allocate 10–15% of Facebook budget to Pulse Shiitake creative</li>
+          <li>Create bundle-specific ads for the 50% Off Most Potent bundle</li>
+          <li>Test upselling Pulse to existing Lion's Mane subscribers via email</li>
+        </ul>
+      </div>
+      <div class="rec">
+        <div class="rec-num">5</div>
+        <h4>Monitor &amp; Address Rising Returns</h4>
+        <p>Returns up 135% ($1,256 → $2,952) is an early warning sign. In subscription models, unresolved returns become churn and negative reviews.</p>
+        <ul>
+          <li>Track monthly return rate as Q1 subscription cohort matures</li>
+          <li>Add a post-purchase email sequence (Days 7, 14, 21) to educate on product benefits and prevent buyer's remorse</li>
+          <li>Survey returners: understand if it's quality, price, or subscription friction</li>
+        </ul>
+      </div>
+      <div class="rec">
+        <div class="rec-num">6</div>
+        <h4>Leverage the High MER to Fund Growth</h4>
+        <p>MER of 5.35x means the business is generating $5.35 for every $1 of ad spend — mostly from organic + subscribers. This is a strong foundation.</p>
+        <ul>
+          <li>Use the healthy MER as justification to re-invest in paid: target $15–20K/month total spend</li>
+          <li>Set a hard floor: if MER drops below 4x, reduce spend immediately</li>
+          <li>Consider email/SMS campaigns to existing subscribers to increase LTV and reduce dependence on paid acquisition</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Lion's Mane Extract · Ad &amp; Sales Analysis · Mar 1–15, 2025 vs 2026 · Generated March 16, 2026
+  </div>
+</div>
+
+<script>
+const days = ['Mar 1','Mar 2','Mar 3','Mar 4','Mar 5','Mar 6','Mar 7','Mar 8','Mar 9','Mar 10','Mar 11','Mar 12','Mar 13','Mar 14','Mar 15'];
+const GREEN = '#2D6A4F', GREEN_L = '#52B788', AMBER = '#D4A017', RED = '#C0392B';
+const GREEN_A = 'rgba(45,106,79,0.15)', AMBER_A = 'rgba(212,160,23,0.15)';
+
+const defaultOpts = (title) => ({
+  responsive:true, maintainAspectRatio:true,
+  plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}},
+    title:{display:!!title,text:title,font:{size:11},color:'#6B7C72'}},
+  scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}}
+});
+
+// ── Daily Spend Chart ──────────────────────────────────────────────────────
+new Chart(document.getElementById('dailySpendChart'),{
+  type:'line',
+  data:{
+    labels:days,
+    datasets:[
+      {label:'Total Spend 2025',data:[2239.72,2405.60,2400.87,2070.65,2038.71,1746.97,2013.23,1823.92,1944.01,1858.26,1667.72,1760.12,1581.83,1395.99,1554.06],
+        borderColor:GREEN,backgroundColor:GREEN_A,fill:true,tension:.3,pointRadius:3},
+      {label:'Total Spend 2026',data:[605.96,630.09,636.66,853.05,755.93,760.26,590.76,616.11,682.86,693.92,621.93,596.55,611.70,687.35,620.98],
+        borderColor:AMBER,backgroundColor:AMBER_A,fill:true,tension:.3,pointRadius:3}
+    ]
+  },
+  options:{...defaultOpts(),scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}
+});
+
+// ── Spend Pie 2025 ─────────────────────────────────────────────────────────
+new Chart(document.getElementById('spendPie25'),{
+  type:'doughnut',
+  data:{labels:['Facebook $11,483 (40.3%)','Google $17,019 (59.7%)'],
+    datasets:[{data:[11482.64,17019.02],backgroundColor:[GREEN,AMBER],borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}
+});
+
+// ── Spend Pie 2026 ─────────────────────────────────────────────────────────
+new Chart(document.getElementById('spendPie26'),{
+  type:'doughnut',
+  data:{labels:['Facebook $5,858 (58.8%)','Google $4,106 (41.2%)'],
+    datasets:[{data:[5857.75,4106.36],backgroundColor:[GREEN,AMBER],borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}
+});
+
+// ── FB ROAS Chart ──────────────────────────────────────────────────────────
+new Chart(document.getElementById('fbRoasChart'),{
+  type:'line',
+  data:{
+    labels:days,
+    datasets:[
+      {label:'FB ROAS 2025',data:[1.010,1.617,1.411,1.833,2.792,2.818,2.819,1.189,1.429,1.832,1.597,2.830,2.078,1.555,2.876],
+        borderColor:GREEN,tension:.3,pointRadius:3,fill:false},
+      {label:'FB ROAS 2026',data:[0.795,2.287,1.519,1.597,0.889,0.843,1.262,1.492,2.284,3.233,1.586,3.199,2.197,1.116,0.999],
+        borderColor:AMBER,tension:.3,pointRadius:3,fill:false},
+      {label:'2x Target',data:Array(15).fill(2),borderColor:RED,borderDash:[4,4],pointRadius:0,fill:false}
+    ]
+  },
+  options:{...defaultOpts(),scales:{x:{ticks:{font:{size:9}}},y:{min:0,max:4,ticks:{font:{size:10},callback:v=>v+'x'}}}}
+});
+
+// ── Google ROAS Chart ──────────────────────────────────────────────────────
+new Chart(document.getElementById('gRoasChart'),{
+  type:'line',
+  data:{
+    labels:days,
+    datasets:[
+      {label:'Google ROAS 2025',data:[0.846,1.227,1.288,1.421,1.185,1.048,1.247,1.293,1.961,0.859,1.791,0.752,0.978,2.218,1.986],
+        borderColor:GREEN,tension:.3,pointRadius:3,fill:false},
+      {label:'Google ROAS 2026',data:[2.344,1.057,0.251,0.348,0.082,1.139,2.335,1.233,0.856,2.525,2.146,2.839,3.876,2.650,4.545],
+        borderColor:AMBER,tension:.3,pointRadius:3,fill:false},
+      {label:'2x Target',data:Array(15).fill(2),borderColor:RED,borderDash:[4,4],pointRadius:0,fill:false}
+    ]
+  },
+  options:{...defaultOpts(),scales:{x:{ticks:{font:{size:9}}},y:{min:0,ticks:{font:{size:10},callback:v=>v+'x'}}}}
+});
+
+// ── Blended ROAS Chart ─────────────────────────────────────────────────────
+const fb25s=[886.43,959.94,941.18,792.72,719.06,672.14,609.94,756.98,785.05,825.32,783.90,721.79,679.99,665.27,682.93];
+const fb25c=[895.62,1552.41,1327.76,1453.29,2007.28,1894.01,1719.60,899.97,1121.74,1511.86,1252.10,2042.66,1412.86,1034.70,1963.91];
+const g25s=[1353.29,1445.66,1459.69,1277.93,1319.65,1074.83,1403.29,1066.94,1158.96,1032.94,883.82,1038.33,901.84,730.72,871.13];
+const g25c=[1145.26,1773.12,1880.28,1815.91,1563.38,1126.68,1749.94,1379.51,2272.55,887.02,1582.80,780.58,882.41,1620.70,1729.82];
+const fb26s=[303.88,285.21,324.17,343.78,398.35,391.38,354.33,376.79,372.80,466.58,402.02,430.31,433.95,483.03,491.17];
+const fb26c=[241.56,652.27,492.52,549.00,354.00,330.09,447.12,562.22,851.51,1508.37,637.74,1376.74,953.18,538.93,490.53];
+const g26s=[302.08,344.88,312.49,509.27,357.58,368.88,236.43,239.32,310.06,227.34,219.91,166.24,177.75,204.32,129.81];
+const g26c=[708.00,364.50,78.50,177.00,29.50,420.00,552.00,295.00,265.50,574.00,472.00,472.00,689.00,541.50,590.00];
+const blended25=days.map((_,i)=>+((fb25c[i]+g25c[i])/(fb25s[i]+g25s[i])).toFixed(3));
+const blended26=days.map((_,i)=>+((fb26c[i]+g26c[i])/(fb26s[i]+g26s[i])).toFixed(3));
+
+new Chart(document.getElementById('blendedRoasChart'),{
+  type:'line',
+  data:{
+    labels:days,
+    datasets:[
+      {label:'Blended ROAS 2025',data:blended25,borderColor:GREEN,backgroundColor:GREEN_A,fill:true,tension:.3,pointRadius:3},
+      {label:'Blended ROAS 2026',data:blended26,borderColor:AMBER,backgroundColor:AMBER_A,fill:true,tension:.3,pointRadius:3},
+      {label:'3x Target',data:Array(15).fill(3),borderColor:RED,borderDash:[5,5],pointRadius:0,fill:false}
+    ]
+  },
+  options:{...defaultOpts(),scales:{x:{ticks:{font:{size:9}}},y:{min:0,ticks:{font:{size:10},callback:v=>v+'x'}}}}
+});
+
+// ── Product Chart ──────────────────────────────────────────────────────────
+new Chart(document.getElementById('productChart'),{
+  type:'bar',
+  data:{
+    labels:[
+      'Lion\'s Mane\nLiquid Extract','Cordyceps','Immortal\nReishi','4 LM 50% Off',
+      'Healer','Defend\nChaga','50% Off\nBundle','Pulse\nShiitake'
+    ],
+    datasets:[
+      {label:'Net Sales 2025',data:[63628,6195,6454,2848,2342,2100,944,266],backgroundColor:GREEN},
+      {label:'Net Sales 2026',data:[33402,4755,3317,2917,1986,1734,1476,1033],backgroundColor:AMBER}
+    ]
+  },
+  options:{...defaultOpts(),scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}
+});
+
+// ── Waterfall Chart ────────────────────────────────────────────────────────
+new Chart(document.getElementById('waterfallChart'),{
+  type:'bar',
+  data:{
+    labels:['Gross Sales\n2025','Gross Sales\n2026','Net Sales\n2025','Net Sales\n2026'],
+    datasets:[
+      {label:'Revenue',data:[170456,71604,92162,53327],
+        backgroundColor:[GREEN,AMBER,GREEN,AMBER]}
+    ]
+  },
+  options:{...defaultOpts(),plugins:{legend:{display:false}},
+    scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}
+});
+
+// ── Discount Chart ─────────────────────────────────────────────────────────
+new Chart(document.getElementById('discountChart'),{
+  type:'bar',
+  data:{
+    labels:['Lion\'s\nMane','Cordyceps','Reishi','Healer','Defend','Pulse\nShiitake'],
+    datasets:[
+      {label:'Discount Rate 2025',data:[36.3,66.3,61.2,73.4,67.4,69.6],backgroundColor:GREEN},
+      {label:'Discount Rate 2026',data:[22.3,28.0,17.1,9.6,16.5,15.1],backgroundColor:AMBER}
+    ]
+  },
+  options:{...defaultOpts(),scales:{
+    x:{ticks:{font:{size:9}}},
+    y:{max:80,ticks:{font:{size:10},callback:v=>v+'%'}}
+  }}
+});
+
+// ── AOV Chart ──────────────────────────────────────────────────────────────
+new Chart(document.getElementById('aovChart'),{
+  type:'bar',
+  data:{
+    labels:['Lion\'s Mane','Cordyceps','Reishi','Healer','Defend'],
+    datasets:[
+      {label:'Avg Net Revenue/Order 2025',data:[103.46,29.08,36.06,21.29,26.59],backgroundColor:GREEN},
+      {label:'Avg Net Revenue/Order 2026',data:[84.35,44.44,40.45,46.19,42.30],backgroundColor:AMBER}
+    ]
+  },
+  options:{...defaultOpts(),scales:{
+    x:{ticks:{font:{size:9}}},
+    y:{ticks:{font:{size:10},callback:v=>'$'+v}}
+  }}
+});
+
+// ── Scaling ROAS Chart ─────────────────────────────────────────────────────
+new Chart(document.getElementById('scalingChart'),{
+  type:'bar',
+  data:{
+    labels:['FB 2025','FB 2026','Google 2025','Google 2026','Blended 2025','Blended 2026'],
+    datasets:[
+      {label:'ROAS',data:[1.924,1.705,1.304,1.517,1.554,1.627],
+        backgroundColor:[GREEN,AMBER,GREEN,AMBER,GREEN,AMBER]},
+      {label:'2x Threshold',data:[2,2,2,2,2,2],type:'line',borderColor:RED,borderDash:[4,4],pointRadius:0,fill:false}
+    ]
+  },
+  options:{...defaultOpts(),scales:{
+    x:{ticks:{font:{size:10}}},
+    y:{min:0,max:3,ticks:{font:{size:10},callback:v=>v+'x'}}
+  }}
+});
+
+// ── Projection Chart ───────────────────────────────────────────────────────
+new Chart(document.getElementById('projectionChart'),{
+  type:'bar',
+  data:{
+    labels:['$5K/mo','$10K/mo\n(current)','$15K/mo','$20K/mo','$25K/mo'],
+    datasets:[
+      {label:'Projected Revenue @ 5x MER',data:[25000,50000,75000,100000,125000],backgroundColor:GREEN_L},
+      {label:'Projected Revenue @ 4x MER',data:[20000,40000,60000,80000,100000],backgroundColor:AMBER},
+      {label:'Projected Revenue @ 3x MER',data:[15000,30000,45000,60000,75000],backgroundColor:'#C0392B'}
+    ]
+  },
+  options:{...defaultOpts(),scales:{
+    x:{ticks:{font:{size:10}}},
+    y:{ticks:{font:{size:10},callback:v=>'$'+v.toLocaleString()}}
+  }}
+});
+</script>
+</body>
+</html>
