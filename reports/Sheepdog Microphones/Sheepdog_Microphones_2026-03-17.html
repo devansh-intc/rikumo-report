@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sheepdog Microphones — Amazon Performance Dashboard — March 17, 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-primary:#1B3A5C;--brand-accent:#C4A35A;--brand-dark:#0F2233;
+  --bg:#F5F6F8;--surface:#FFF;--surface-2:#EEF0F3;--border:#D8DCE3;--border-light:#E8ECF0;
+  --green:#2A7A3B;--red:#C0392B;--amber:#C87A28;--blue:#1A5FA8;
+  --text:#1C1C1C;--muted:#6B6B78;--subtle:#9E9EB0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;padding:32px;max-width:1500px;margin:0 auto}
+.report-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;margin-bottom:36px;border-bottom:3px solid var(--brand-primary)}
+.header-left{display:flex;align-items:center;gap:24px}
+.header-text h1{font-size:1.5rem;font-weight:800;color:var(--brand-dark);letter-spacing:-.02em}
+.header-text .subtitle{font-size:.85rem;color:var(--muted);margin-top:4px}
+.header-right{text-align:right}
+.header-date{font-size:.8rem;color:var(--muted)}
+.header-badge{display:inline-block;margin-top:6px;padding:4px 12px;background:var(--brand-accent);color:#fff;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;border-radius:4px}
+.header-icon{font-size:2.5rem}
+h2{font-size:1.1rem;font-weight:700;color:var(--brand-dark);margin-bottom:4px;letter-spacing:-.01em}
+.section{margin-bottom:48px}
+.section-header{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.section-sub{font-size:.82rem;color:var(--muted)}
+.cards-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--brand-primary);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--brand-primary)}
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.metric{display:flex;flex-direction:column;gap:3px}
+.metric-label{font-size:.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:500}
+.metric-value{font-size:1.15rem;font-weight:700;color:var(--brand-dark)}
+.metric-value.green{color:var(--green)}.metric-value.amber{color:var(--amber)}.metric-value.red{color:var(--red)}.metric-value.blue{color:var(--blue)}
+.insights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.insight-col-header{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:7px 12px;border-radius:6px;margin-bottom:12px}
+.insight-col-header.scale{background:#E8F5EA;color:var(--green);border:1px solid #C8E6CA}
+.insight-col-header.watch{background:#FDF3E7;color:#A0522D;border:1px solid #F5CBA7}
+.insight-col-header.act{background:#FDEDEC;color:var(--red);border:1px solid #F1948A}
+.insight-card{border-radius:8px;padding:14px 16px;margin-bottom:10px}
+.insight-card.scale{background:#F0FAF1;border:1px solid #C3E6C7}
+.insight-card.watch{background:#FEF9F0;border:1px solid #F5D5A3}
+.insight-card.act{background:#FEF1EF;border:1px solid #F4A99E}
+.insight-title{font-size:.85rem;font-weight:700;margin-bottom:7px}
+.insight-card.scale .insight-title{color:#1B6B2A}
+.insight-card.watch .insight-title{color:#8B4513}
+.insight-card.act .insight-title{color:#922B21}
+.insight-body{font-size:.8rem;line-height:1.65;color:#444}
+.insight-body strong{color:var(--brand-dark)}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.chart-card.full{grid-column:1/-1}
+canvas{max-height:320px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{background:var(--surface-2);color:var(--muted);font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:10px 12px;text-align:right;border-bottom:2px solid var(--border);white-space:nowrap}
+thead th:first-child{text-align:left}
+tbody tr{border-bottom:1px solid var(--border-light)}
+tbody tr:hover{background:#F5F7FA}
+tbody td{padding:9px 12px;text-align:right;color:var(--text)}
+tbody td:first-child{text-align:left}
+.product-name{font-weight:600;color:var(--brand-dark);max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.7rem;font-weight:700}
+.badge.green{background:#E8F5EA;color:var(--green);border:1px solid #C3E6C7}
+.badge.amber{background:#FDF3E7;color:#A0522D;border:1px solid #F5CBA7}
+.badge.red{background:#FDEDEC;color:var(--red);border:1px solid #F4A99E}
+.badge.gray{background:#F0EDE8;color:var(--muted);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+.footer{margin-top:48px;border-top:2px solid var(--border);padding-top:20px;font-size:.77rem;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="header-left">
+    <div class="header-icon">🎙️</div>
+    <div class="header-text">
+      <h1>Sheepdog Microphones</h1>
+      <div class="subtitle">Amazon Performance Dashboard &bull; Jan 1 – Mar 16, 2026</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-date">Generated March 17, 2026</div>
+    <div class="header-badge">Amazon SP + Business Report</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><h2>Performance Overview</h2><span class="section-sub">Jan 1 – Mar 16, 2026 &bull; 91 active ASINs</span></div>
+  <div class="cards-row">
+    <div class="card">
+      <div class="card-label">Total Sales</div>
+      <div class="metrics-grid">
+        <div class="metric"><div class="metric-label">Revenue</div><div class="metric-value">$317,778</div></div>
+        <div class="metric"><div class="metric-label">Units Sold</div><div class="metric-value">4,078</div></div>
+        <div class="metric"><div class="metric-label">Avg Price</div><div class="metric-value">$77.92</div></div>
+        <div class="metric"><div class="metric-label">Conversion</div><div class="metric-value">8.7%</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Advertising</div>
+      <div class="metrics-grid">
+        <div class="metric"><div class="metric-label">Ad Spend</div><div class="metric-value">$32,373</div></div>
+        <div class="metric"><div class="metric-label">Ad Sales</div><div class="metric-value">$146,548</div></div>
+        <div class="metric"><div class="metric-label">ROAS</div><div class="metric-value green">4.53x</div></div>
+        <div class="metric"><div class="metric-label">ACOS</div><div class="metric-value">22.1%</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Sales Mix</div>
+      <div class="metrics-grid">
+        <div class="metric"><div class="metric-label">Organic Sales</div><div class="metric-value green">$171,230</div></div>
+        <div class="metric"><div class="metric-label">Organic %</div><div class="metric-value green">53.9%</div></div>
+        <div class="metric"><div class="metric-label">B2B Sales</div><div class="metric-value blue">$73,321</div></div>
+        <div class="metric"><div class="metric-label">B2B %</div><div class="metric-value blue">23.1%</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">ROAS Categories</div>
+      <div class="metrics-grid">
+        <div class="metric"><div class="metric-label">Scale (≥4x)</div><div class="metric-value green">14 products</div></div>
+        <div class="metric"><div class="metric-label">Maintain (2.5-4x)</div><div class="metric-value amber">10 products</div></div>
+        <div class="metric"><div class="metric-label">Reduce (1.5-2.5x)</div><div class="metric-value red">5 products</div></div>
+        <div class="metric"><div class="metric-label">Cut (<1.5x)</div><div class="metric-value red">1 products</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><h2>Key Insights & Recommendations</h2></div>
+  <div class="insights-grid">
+    <div>
+      <div class="insight-col-header scale">Scale — Strong Performers</div>
+      <div class="insight-card scale">
+        <div class="insight-title">HDLO Dominates the Portfolio</div>
+        <div class="insight-body">The two HDLO 3.5mm earpiece variants generate <strong>$119,762</strong> combined — <strong>38%</strong> of all Sheepdog revenue at <strong>7.0x and 4.8x ROAS</strong>. These are hero products — increase ad spend aggressively.</div>
+      </div>
+      <div class="insight-card scale">
+        <div class="insight-title">QD Lapel Mic is a Powerhouse</div>
+        <div class="insight-body">The Quick Disconnect Police Lapel Mic (Motorola APX) drives <strong>$31,262</strong> at <strong>5.2x ROAS</strong> with strong organic demand (57% organic). A reliable scale candidate.</div>
+      </div>
+      <div class="insight-card scale">
+        <div class="insight-title">B2B Channel is Significant</div>
+        <div class="insight-body">B2B sales account for <strong>23.1%</strong> of total revenue (<strong>$73,321</strong>). HDLO products see <strong>48% B2B conversion rates</strong> — law enforcement/military procurement. Consider Amazon Business-targeted campaigns.</div>
+      </div>
+    </div>
+    <div>
+      <div class="insight-col-header watch">Monitor — Optimize</div>
+      <div class="insight-card watch">
+        <div class="insight-title">Alpha Series Needs Consolidation</div>
+        <div class="insight-body">The Alpha QD line has <strong>3 variants</strong> across different radio platforms (APX, Harris XL, Harris Unity). The APX variant performs well at <strong>5.2x ROAS</strong>, but Harris variants at <strong>3.2x</strong> should be optimized before scaling.</div>
+      </div>
+      <div class="insight-card watch">
+        <div class="insight-title">Listen Only Acoustic Tube at 3.1x</div>
+        <div class="insight-body">The 3.5mm Listen Only Earpiece with Acoustic Tube has <strong>$10,374</strong> in sales with <strong>3.1x ROAS</strong>. Close to the 4x target — keyword refinement and bid optimization could push this into Scale territory.</div>
+      </div>
+      <div class="insight-card watch">
+        <div class="insight-title">Profile Earpiece Near Breakpoint</div>
+        <div class="insight-body">Profile Tubeless Listen Only at <strong>3.7x ROAS</strong> — just below the 4.0x target. With <strong>$8,260</strong> in sales, small improvements in ad efficiency could unlock scaling.</div>
+      </div>
+    </div>
+    <div>
+      <div class="insight-col-header act">Action Required</div>
+      <div class="insight-card act">
+        <div class="insight-title">R7/ION Acoustic Tube Underperforming</div>
+        <div class="insight-body">The Acoustic Tube Earpiece (R7/ION compatible) has <strong>$14,520</strong> in sales but only <strong>1.8x ROAS</strong>. The product sells well organically — consider reducing ad spend and relying on organic momentum.</div>
+      </div>
+      <div class="insight-card act">
+        <div class="insight-title">Earhook Earpiece Needs Review</div>
+        <div class="insight-body">At <strong>1.7x ROAS</strong> on the R7/ION-compatible Earhook, ad dollars are inefficient. With $5,220 in sales, evaluate if organic demand can sustain this product without heavy ad support.</div>
+      </div>
+      <div class="insight-card act">
+        <div class="insight-title">61 Low-Spend ASINs = Catalog Bloat</div>
+        <div class="insight-body"><strong>61 products</strong> have under $100 in ad spend but generate <strong>$46,278</strong> combined. Consider sunsetting zero-sale ASINs and consolidating ad spend on proven winners.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><h2>Visual Analysis</h2></div>
+  <div class="charts-row">
+    <div class="chart-card"><h2>Top 12 Products — Ad vs Organic Sales</h2><canvas id="salesBreakdown"></canvas></div>
+    <div class="chart-card"><h2>Revenue by ROAS Category</h2><canvas id="categoryPie"></canvas></div>
+  </div>
+  <div class="charts-row" style="margin-top:16px;">
+    <div class="chart-card full">
+      <h2>ROAS vs Ad Spend (Products with ≥$100 Spend)</h2>
+      <canvas id="roasScatter"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div>Scale (≥4.0x)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber);"></div>Maintain (2.5–4.0x)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red);"></div>Reduce/Cut (<2.5x)</div>
+        <div style="margin-left:auto;font-size:.72rem;color:var(--subtle);">Target ROAS: 4.0x (dashed line)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><h2>Product Performance — Top 25 by Revenue</h2><span class="section-sub">All Sheepdog ASINs &bull; Sorted by total sales</span></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Product</th><th>ASIN</th><th>Total Sales</th><th>Units</th><th>Avg Price</th><th>Conv %</th><th>Ad Spend</th><th>Ad Sales</th><th>ROAS</th><th>Organic %</th><th>B2B %</th><th>Action</th></tr></thead>
+    <tbody><tr><td class="product-name">HDLO - Tubeless, Covert High Definition 3.5mm Police Li</td><td>B0D5KVH3PT</td><td>$67,706</td><td>629</td><td>$107.64</td><td>9.6%</td><td>$3,745</td><td>$26,215</td><td>7.0x</td><td>61%</td><td>11%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">HDLO - Tubeless, Covert High Definition 3.5mm Police Li</td><td>B09YSYGL89</td><td>$52,056</td><td>483</td><td>$107.78</td><td>7.0%</td><td>$8,086</td><td>$38,752</td><td>4.8x</td><td>26%</td><td>14%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Police Lapel Mic, Compatible with Moto</td><td>B08HFK6SNP</td><td>$31,262</td><td>320</td><td>$97.69</td><td>8.3%</td><td>$2,583</td><td>$13,475</td><td>5.2x</td><td>57%</td><td>16%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Alpha SDA1-APX-QD Quick Disconnect (QD) Police Lapel Mi</td><td>B0B9QF4ZM9</td><td>$15,640</td><td>185</td><td>$84.54</td><td>6.7%</td><td>$1,666</td><td>$8,698</td><td>5.2x</td><td>44%</td><td>12%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Acoustic Tube Earpiece with Microphone, Compatible with</td><td>B0CV6426NM</td><td>$14,520</td><td>243</td><td>$59.75</td><td>22.1%</td><td>$297.00</td><td>$523.00</td><td>1.8x</td><td>96%</td><td>72%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">3.5mm Listen Only Earpiece with Acoustic Tube for Shoul</td><td>B08JTDHVC9</td><td>$10,374</td><td>273</td><td>$38.00</td><td>11.9%</td><td>$2,408</td><td>$7,481</td><td>3.1x</td><td>28%</td><td>23%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Covert Surveillance Listen Only Earpiece, 22 Inch Black</td><td>B096YDX51Q</td><td>$10,350</td><td>115</td><td>$90.00</td><td>6.2%</td><td>$1,933</td><td>$8,785</td><td>4.5x</td><td>15%</td><td>11%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Swivel Earpiece with Microphone, Compatible with Motoro</td><td>B0CV63L618</td><td>$9,185</td><td>167</td><td>$55.00</td><td>46.6%</td><td>$168.00</td><td>$869.00</td><td>5.2x</td><td>91%</td><td>81%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Profile Tubeless Listen Only Earpiece, Black, 3.5mm Con</td><td>B0C47CZY6S</td><td>$8,260</td><td>141</td><td>$58.58</td><td>6.8%</td><td>$1,274</td><td>$4,682</td><td>3.7x</td><td>43%</td><td>9%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">HDLO Earpiece, Tactical/Braided, 3.5mm Connector, 22 In</td><td>B0DHWDDQTS</td><td>$8,142</td><td>69</td><td>$118.00</td><td>9.1%</td><td>$0.00</td><td>$0.00</td><td>—</td><td>100%</td><td>32%</td><td><span class="badge gray">Low Spend</span></td></tr>
+<tr><td class="product-name">Acoustic Tube Earpiece with Microphone, Compatible with</td><td>B0CV6544Y6</td><td>$7,915</td><td>118</td><td>$67.08</td><td>16.1%</td><td>$440.00</td><td>$3,597</td><td>8.2x</td><td>55%</td><td>62%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Heavy Duty Speaker Microphone, Compatible with Motorola</td><td>B0CV6SYM9R</td><td>$7,031</td><td>79</td><td>$89.00</td><td>24.0%</td><td>$0.00</td><td>$0.00</td><td>—</td><td>100%</td><td>68%</td><td><span class="badge gray">Low Spend</span></td></tr>
+<tr><td class="product-name">Alpha Quick Disconnect Police Mic, Compatible with Harr</td><td>B0BTRPQNRZ</td><td>$6,885</td><td>81</td><td>$85.00</td><td>5.9%</td><td>$1,720</td><td>$5,445</td><td>3.2x</td><td>21%</td><td>7%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Cyclone Push-to-Talk (PTT) Microphone, Compatible with </td><td>B0D5P2F2WC</td><td>$5,460</td><td>84</td><td>$65.00</td><td>5.5%</td><td>$827.00</td><td>$4,507</td><td>5.4x</td><td>17%</td><td>5%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Earhook Earpiece with Microphone, Compatible with Motor</td><td>B0CV64Y2ZC</td><td>$5,220</td><td>87</td><td>$60.00</td><td>21.4%</td><td>$408.00</td><td>$677.00</td><td>1.7x</td><td>87%</td><td>77%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">HDLO Earpiece, Tactical/Braided, 3.5mm Connector, 22-In</td><td>B0DHWDL4TV</td><td>$4,366</td><td>38</td><td>$114.89</td><td>10.5%</td><td>$0.00</td><td>$0.00</td><td>—</td><td>100%</td><td>8%</td><td><span class="badge gray">Low Spend</span></td></tr>
+<tr><td class="product-name">3.5mm Threaded Listen Only Earpiece, Compatible with Mo</td><td>B08JX71XLV</td><td>$4,030</td><td>102</td><td>$39.51</td><td>13.0%</td><td>$490.00</td><td>$2,111</td><td>4.3x</td><td>48%</td><td>1%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Cyclone Push-to-Talk (PTT) Microphone, Quick Disconnect</td><td>B0D5P6YF7Q</td><td>$3,510</td><td>40</td><td>$87.75</td><td>7.0%</td><td>$0.00</td><td>$0.00</td><td>—</td><td>100%</td><td>10%</td><td><span class="badge gray">Low Spend</span></td></tr>
+<tr><td class="product-name">Alpha Quick Disconnect Police Microphone Earpiece, Comp</td><td>B0BTRRNR7C</td><td>$3,060</td><td>36</td><td>$85.00</td><td>17.4%</td><td>$15.00</td><td>$85.00</td><td>5.7x</td><td>97%</td><td>47%</td><td><span class="badge gray">Low Spend</span></td></tr>
+<tr><td class="product-name">Surveillance PTT Microphone with 3.5mm Port, Compatible</td><td>B0BVCR5TJY</td><td>$2,928</td><td>61</td><td>$48.00</td><td>3.5%</td><td>$551.00</td><td>$2,138</td><td>3.9x</td><td>27%</td><td>5%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">HDLO, 2.5mm Covert High Definition Police Listen Only E</td><td>B0BVD3VWYN</td><td>$2,808</td><td>26</td><td>$108.00</td><td>5.8%</td><td>$464.00</td><td>$1,558</td><td>3.4x</td><td>45%</td><td>23%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">3.5mm Earhook Listen Only Earpiece for Shoulder Speaker</td><td>B08JWMFH7X</td><td>$2,772</td><td>99</td><td>$28.00</td><td>8.0%</td><td>$1,467</td><td>$3,042</td><td>2.1x</td><td>0%</td><td>5%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">Pro 2-Wire Surveillance Earpiece with Microphone, Compa</td><td>B0CV65HPQZ</td><td>$2,430</td><td>30</td><td>$81.00</td><td>10.8%</td><td>$328.00</td><td>$894.00</td><td>2.7x</td><td>63%</td><td>63%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Tactical 1-Wire Lapel Microphone Surve</td><td>B0C1HJWK41</td><td>$1,725</td><td>24</td><td>$71.88</td><td>5.0%</td><td>$292.00</td><td>$738.00</td><td>2.5x</td><td>57%</td><td>9%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Choice PTT Microphone, Compatible with Motorola APX6000</td><td>B0BVD7RSS3</td><td>$1,500</td><td>20</td><td>$74.99</td><td>1.8%</td><td>$571.00</td><td>$2,406</td><td>4.2x</td><td>0%</td><td>0%</td><td><span class="badge green">Scale</span></td></tr>
+</tbody>
+  </table></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><h2>Advertising Performance — ASINs with ≥$100 Spend</h2><span class="section-sub">30 products &bull; Target ROAS: 4.0x</span></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Product</th><th>Spend</th><th>Ad Sales</th><th>ROAS</th><th>ACOS</th><th>CPC</th><th>CTR</th><th>Clicks</th><th>Impressions</th><th>Conv %</th><th>Action</th></tr></thead>
+    <tbody><tr><td class="product-name">HDLO - Tubeless, Covert High Definition 3.5mm Police Li</td><td>$8,086</td><td>$38,752</td><td>4.8x</td><td>21%</td><td>$1.77</td><td>1.63%</td><td>4,569</td><td>280,203</td><td>8.0%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">HDLO - Tubeless, Covert High Definition 3.5mm Police Li</td><td>$3,745</td><td>$26,215</td><td>7.0x</td><td>14%</td><td>$1.55</td><td>1.00%</td><td>2,419</td><td>242,909</td><td>10.0%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Police Lapel Mic, Compatible with Moto</td><td>$2,583</td><td>$13,475</td><td>5.2x</td><td>19%</td><td>$1.17</td><td>0.89%</td><td>2,204</td><td>247,894</td><td>6.3%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">3.5mm Listen Only Earpiece with Acoustic Tube for Shoul</td><td>$2,408</td><td>$7,481</td><td>3.1x</td><td>32%</td><td>$1.61</td><td>0.62%</td><td>1,493</td><td>242,681</td><td>9.9%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Covert Surveillance Listen Only Earpiece, 22 Inch Black</td><td>$1,933</td><td>$8,785</td><td>4.5x</td><td>22%</td><td>$1.45</td><td>0.80%</td><td>1,333</td><td>167,439</td><td>7.1%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Alpha Quick Disconnect Police Mic, Compatible with Harr</td><td>$1,720</td><td>$5,445</td><td>3.2x</td><td>32%</td><td>$1.91</td><td>1.60%</td><td>900</td><td>56,085</td><td>6.4%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Alpha SDA1-APX-QD Quick Disconnect (QD) Police Lapel Mi</td><td>$1,666</td><td>$8,698</td><td>5.2x</td><td>19%</td><td>$0.97</td><td>1.65%</td><td>1,717</td><td>103,925</td><td>6.2%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">3.5mm Earhook Listen Only Earpiece for Shoulder Speaker</td><td>$1,467</td><td>$3,042</td><td>2.1x</td><td>48%</td><td>$1.55</td><td>0.83%</td><td>945</td><td>113,204</td><td>8.6%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">Profile Tubeless Listen Only Earpiece, Black, 3.5mm Con</td><td>$1,274</td><td>$4,682</td><td>3.7x</td><td>27%</td><td>$1.15</td><td>0.95%</td><td>1,107</td><td>116,176</td><td>6.3%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Cyclone Push-to-Talk (PTT) Microphone, Compatible with </td><td>$827.00</td><td>$4,507</td><td>5.4x</td><td>18%</td><td>$1.34</td><td>1.83%</td><td>619</td><td>33,770</td><td>8.9%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Choice PTT Microphone, Compatible with Motorola APX6000</td><td>$571.00</td><td>$2,406</td><td>4.2x</td><td>24%</td><td>$0.69</td><td>1.97%</td><td>826</td><td>41,898</td><td>3.6%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Surveillance PTT Microphone with 3.5mm Port, Compatible</td><td>$551.00</td><td>$2,138</td><td>3.9x</td><td>26%</td><td>$0.64</td><td>1.97%</td><td>862</td><td>43,760</td><td>3.8%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">3.5mm Threaded Listen Only Earpiece, Compatible with Mo</td><td>$490.00</td><td>$2,111</td><td>4.3x</td><td>23%</td><td>$1.26</td><td>1.59%</td><td>390</td><td>24,523</td><td>11.3%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">HDLO, 2.5mm Covert High Definition Police Listen Only E</td><td>$464.00</td><td>$1,558</td><td>3.4x</td><td>30%</td><td>$1.92</td><td>1.28%</td><td>242</td><td>18,925</td><td>6.2%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Acoustic Tube Earpiece with Microphone, Compatible with</td><td>$440.00</td><td>$3,597</td><td>8.2x</td><td>12%</td><td>$1.31</td><td>1.20%</td><td>337</td><td>28,198</td><td>6.8%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Earhook Earpiece with Microphone, Compatible with Motor</td><td>$408.00</td><td>$677.00</td><td>1.7x</td><td>60%</td><td>$2.14</td><td>0.96%</td><td>191</td><td>19,934</td><td>4.7%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">Covert Police Listen Only Earpiece, 22 Inch Black Cable</td><td>$386.00</td><td>$938.00</td><td>2.4x</td><td>41%</td><td>$1.54</td><td>0.92%</td><td>251</td><td>27,194</td><td>4.0%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">Pro 2-Wire Surveillance Earpiece with Microphone, Compa</td><td>$328.00</td><td>$894.00</td><td>2.7x</td><td>37%</td><td>$2.28</td><td>1.27%</td><td>144</td><td>11,299</td><td>6.9%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Acoustic Tube Earpiece with Microphone, Compatible with</td><td>$297.00</td><td>$523.00</td><td>1.8x</td><td>57%</td><td>$1.77</td><td>1.19%</td><td>168</td><td>14,149</td><td>4.8%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Tactical 1-Wire Lapel Microphone Surve</td><td>$292.00</td><td>$738.00</td><td>2.5x</td><td>40%</td><td>$1.36</td><td>2.79%</td><td>215</td><td>7,702</td><td>4.2%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Police Lapel Mic, Compatible with Harr</td><td>$251.00</td><td>$876.00</td><td>3.5x</td><td>29%</td><td>$1.54</td><td>2.11%</td><td>163</td><td>7,726</td><td>6.1%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Police Lapel Mic, Compatible with Kenw</td><td>$231.00</td><td>$459.00</td><td>2.0x</td><td>50%</td><td>$1.31</td><td>1.46%</td><td>176</td><td>12,067</td><td>2.8%</td><td><span class="badge red">Reduce</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Police Lapel Mic, Compatible with Harr</td><td>$198.00</td><td>$728.00</td><td>3.7x</td><td>27%</td><td>$1.28</td><td>1.03%</td><td>155</td><td>14,988</td><td>5.2%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Swivel Earpiece with Microphone, Compatible with Motoro</td><td>$168.00</td><td>$869.00</td><td>5.2x</td><td>19%</td><td>$2.62</td><td>0.92%</td><td>64</td><td>6,979</td><td>9.4%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">1-Wire Police Surveillance PTT Microphone, Compatible w</td><td>$143.00</td><td>$573.00</td><td>4.0x</td><td>25%</td><td>$0.99</td><td>1.57%</td><td>144</td><td>9,146</td><td>5.6%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Police Lapel Mic, Compatible with Motorola APX 6000/700</td><td>$138.00</td><td>$891.00</td><td>6.5x</td><td>15%</td><td>$1.20</td><td>0.63%</td><td>115</td><td>18,328</td><td>7.0%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Heavy Duty Speaker Mic for Harris MACOM Jaguar 700P P51</td><td>$126.00</td><td>$108.00</td><td>0.9x</td><td>117%</td><td>$1.08</td><td>1.13%</td><td>117</td><td>10,314</td><td>0.9%</td><td><span class="badge red">Cut</span></td></tr>
+<tr><td class="product-name">Noise-Cancelling Quick Disconnect Speaker Microphone fo</td><td>$125.00</td><td>$474.00</td><td>3.8x</td><td>26%</td><td>$0.47</td><td>3.44%</td><td>266</td><td>7,734</td><td>1.9%</td><td><span class="badge amber">Maintain</span></td></tr>
+<tr><td class="product-name">Heavy Duty Speaker Mic for Harris XG100P XL150P XL185 X</td><td>$119.00</td><td>$531.00</td><td>4.5x</td><td>22%</td><td>$1.29</td><td>2.15%</td><td>92</td><td>4,286</td><td>4.3%</td><td><span class="badge green">Scale</span></td></tr>
+<tr><td class="product-name">Quick Disconnect Police Lapel Mic, Compatible with Moto</td><td>$113.00</td><td>$488.00</td><td>4.3x</td><td>23%</td><td>$1.64</td><td>0.77%</td><td>69</td><td>8,953</td><td>8.7%</td><td><span class="badge green">Scale</span></td></tr>
+</tbody>
+  </table></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><h2>Category Action Plan</h2></div>
+  <div class="cards-row" style="grid-template-columns:repeat(4,1fr);">
+    <div class="card" style="border-top:3px solid var(--green);">
+      <div class="card-label" style="color:var(--green);border-color:var(--green);">Scale — Increase Budget</div>
+      <div style="font-size:.82rem;line-height:1.7;">
+        <strong>14 products</strong> generating <strong>$208,908</strong><br>
+        Combined ROAS: <strong>5.3x</strong><br><br>
+        <em style="color:var(--muted);">Action:</em> Increase daily budgets by 25-50%. Add exact match campaigns for high-converting search terms. Test Sponsored Brands for top 3 hero products.
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid var(--amber);">
+      <div class="card-label" style="color:var(--amber);border-color:var(--amber);">Maintain — Optimize</div>
+      <div style="font-size:.82rem;line-height:1.7;">
+        <strong>10 products</strong> generating <strong>$38,298</strong><br>
+        Combined ROAS: <strong>3.3x</strong><br><br>
+        <em style="color:var(--muted);">Action:</em> Refine keywords, add negative matches. Lower bids on broad match. Focus on exact + phrase match.
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid var(--red);">
+      <div class="card-label" style="color:var(--red);border-color:var(--red);">Reduce — Cut Waste</div>
+      <div style="font-size:.82rem;line-height:1.7;">
+        <strong>5 products</strong> generating <strong>$24,138</strong><br>
+        Combined ROAS: <strong>2.0x</strong><br><br>
+        <em style="color:var(--muted);">Action:</em> Reduce bids by 30-40%. Pause broad match keywords. If ROAS doesn't improve within 2 weeks, move to Cut.
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid #888;">
+      <div class="card-label" style="color:#888;border-color:#888;">Cut — Pause Ads</div>
+      <div style="font-size:.82rem;line-height:1.7;">
+        <strong>1 product(s)</strong><br>
+        ROAS below 1.5x — unprofitable ad spend.<br><br>
+        <em style="color:var(--muted);">Action:</em> Pause all SP campaigns. Let organic sales carry these ASINs. Reallocate budget to Scale products.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div>Sheepdog Microphones &bull; Amazon Performance Report &bull; Jan 1 – Mar 16, 2026</div>
+  <div>Generated by Product Data Analysis Agent &bull; March 17, 2026</div>
+</div>
+
+<script>
+const C={green:'#2A7A3B',amber:'#C87A28',red:'#C0392B',blue:'#1A5FA8',primary:'#1B3A5C',accent:'#C4A35A'};
+
+new Chart(document.getElementById('salesBreakdown'),{
+  type:'bar',
+  data:{labels:["HDLO - Tubeless, Covert High", "HDLO - Tubeless, Covert High", "Quick Disconnect Police Lape", "Alpha SDA1-APX-QD Quick Disc", "Acoustic Tube Earpiece with ", "3.5mm Listen Only Earpiece w", "Covert Surveillance Listen O", "Swivel Earpiece with Microph", "Profile Tubeless Listen Only", "HDLO Earpiece, Tactical/Brai", "Acoustic Tube Earpiece with ", "Heavy Duty Speaker Microphon"],datasets:[
+    {label:'Ad Sales',data:[26215.0, 38752.0, 13475.0, 8698.0, 523.0, 7481.0, 8785.0, 869.0, 4682.0, 0, 3597.0, 0],backgroundColor:C.primary,borderRadius:4},
+    {label:'Organic Sales',data:[41491.0, 13304.0, 17787.0, 6942.0, 13997.0, 2893.0, 1565.0, 8316.0, 3578.0, 8142.0, 4318.0, 7031.0],backgroundColor:C.accent,borderRadius:4}
+  ]},
+  options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true,ticks:{maxRotation:45,font:{size:10}}},y:{stacked:true,ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+});
+
+new Chart(document.getElementById('categoryPie'),{
+  type:'doughnut',
+  data:{labels:["Scale", "Maintain", "Reduce", "Cut", "Low Spend"],datasets:[{data:[208907.59999999998, 38298.0, 24138.0, 156.0, 46278.460000000014],backgroundColor:[C.green,C.amber,C.red,'#888','#D0D0D0'],borderWidth:2,borderColor:'#fff'}]},
+  options:{responsive:true,plugins:{legend:{position:'right'},tooltip:{callbacks:{label:ctx=>ctx.label+': $'+ctx.parsed.toLocaleString()}}}}
+});
+
+const sd=[{"x": 8086.0, "y": 4.79, "l": "HDLO - Tubeless, Covert H"}, {"x": 3745.0, "y": 7.0, "l": "HDLO - Tubeless, Covert H"}, {"x": 2583.0, "y": 5.22, "l": "Quick Disconnect Police L"}, {"x": 2408.0, "y": 3.11, "l": "3.5mm Listen Only Earpiec"}, {"x": 1933.0, "y": 4.54, "l": "Covert Surveillance Liste"}, {"x": 1720.0, "y": 3.17, "l": "Alpha Quick Disconnect Po"}, {"x": 1666.0, "y": 5.22, "l": "Alpha SDA1-APX-QD Quick D"}, {"x": 1467.0, "y": 2.07, "l": "3.5mm Earhook Listen Only"}, {"x": 1274.0, "y": 3.68, "l": "Profile Tubeless Listen O"}, {"x": 827.0, "y": 5.45, "l": "Cyclone Push-to-Talk (PTT"}, {"x": 571.0, "y": 4.21, "l": "Choice PTT Microphone, Co"}, {"x": 551.0, "y": 3.88, "l": "Surveillance PTT Micropho"}, {"x": 490.0, "y": 4.31, "l": "3.5mm Threaded Listen Onl"}, {"x": 464.0, "y": 3.36, "l": "HDLO, 2.5mm Covert High D"}, {"x": 440.0, "y": 8.18, "l": "Acoustic Tube Earpiece wi"}, {"x": 408.0, "y": 1.66, "l": "Earhook Earpiece with Mic"}, {"x": 386.0, "y": 2.43, "l": "Covert Police Listen Only"}, {"x": 328.0, "y": 2.73, "l": "Pro 2-Wire Surveillance E"}, {"x": 297.0, "y": 1.76, "l": "Acoustic Tube Earpiece wi"}, {"x": 292.0, "y": 2.53, "l": "Quick Disconnect Tactical"}, {"x": 251.0, "y": 3.49, "l": "Quick Disconnect Police L"}, {"x": 231.0, "y": 1.99, "l": "Quick Disconnect Police L"}, {"x": 198.0, "y": 3.68, "l": "Quick Disconnect Police L"}, {"x": 168.0, "y": 5.17, "l": "Swivel Earpiece with Micr"}, {"x": 143.0, "y": 4.01, "l": "1-Wire Police Surveillanc"}, {"x": 138.0, "y": 6.46, "l": "Police Lapel Mic, Compati"}, {"x": 126.0, "y": 0.86, "l": "Heavy Duty Speaker Mic fo"}, {"x": 125.0, "y": 3.79, "l": "Noise-Cancelling Quick Di"}, {"x": 119.0, "y": 4.46, "l": "Heavy Duty Speaker Mic fo"}, {"x": 113.0, "y": 4.32, "l": "Quick Disconnect Police L"}];
+new Chart(document.getElementById('roasScatter'),{
+  type:'scatter',
+  data:{datasets:[{
+    label:'Products',
+    data:sd.map(d=>({x:d.x,y:d.y})),
+    backgroundColor:sd.map(d=>d.y>=4?C.green:d.y>=2.5?C.amber:C.red),
+    pointRadius:sd.map(d=>Math.max(5,Math.min(15,d.x/500))),
+    pointHoverRadius:10
+  }]},
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>sd[ctx.dataIndex].l+' | $'+ctx.parsed.x.toLocaleString()+' | '+ctx.parsed.y.toFixed(1)+'x'}}},
+    scales:{x:{title:{display:true,text:'Ad Spend ($)'},ticks:{callback:v=>'$'+(v/1000).toFixed(1)+'k'}},y:{title:{display:true,text:'ROAS'},ticks:{callback:v=>v.toFixed(1)+'x'}}}
+  },
+  plugins:[{
+    afterDraw(chart){
+      const y=chart.scales.y.getPixelForValue(4),ctx=chart.ctx;
+      ctx.save();ctx.beginPath();ctx.setLineDash([6,4]);ctx.strokeStyle=C.red;ctx.lineWidth=1.5;
+      ctx.moveTo(chart.chartArea.left,y);ctx.lineTo(chart.chartArea.right,y);ctx.stroke();
+      ctx.fillStyle=C.red;ctx.font='11px Inter';ctx.fillText('Target: 4.0x',chart.chartArea.right-70,y-6);ctx.restore();
+    }
+  }]
+});
+</script>
+</body></html>

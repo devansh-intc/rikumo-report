@@ -81,15 +81,16 @@ async def main():
                 subprocess.run(["git", "push", "full-project", "main"], cwd=repo_dir, check=True)
                 print("Full project repo updated.")
 
-                # Deploy to public GitHub Pages as {client-slug}/index.html
+                # Deploy to public GitHub Pages preserving the filename
                 client_slug = config.CLIENT_NAME.lower().replace(" ", "-").replace("'", "")
                 pages_client_dir = os.path.join(PAGES_DIR, client_slug)
                 os.makedirs(pages_client_dir, exist_ok=True)
-                shutil.copy(output_file, os.path.join(pages_client_dir, "index.html"))
+                report_filename = os.path.basename(output_file)
+                shutil.copy(output_file, os.path.join(pages_client_dir, report_filename))
                 subprocess.run(["git", "add", "-A"], cwd=PAGES_DIR, check=True)
                 subprocess.run(["git", "commit", "-m", f"Deploy {config.CLIENT_NAME} report"], cwd=PAGES_DIR, check=True)
                 subprocess.run(["git", "push", "origin", "main"], cwd=PAGES_DIR, check=True)
-                print(f"Live URL: https://devansh-intc.github.io/reports/{client_slug}/")
+                print(f"Live URL: https://devansh-intc.github.io/reports/{client_slug}/{report_filename}")
             except subprocess.CalledProcessError as e:
                 print(f"GitHub push failed: {e}")
 
