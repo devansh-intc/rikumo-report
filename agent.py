@@ -9,18 +9,16 @@ Usage:
 
 import anyio
 import subprocess
-import shutil
 import os
 from datetime import datetime
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 import config
 
-PAGES_DIR = "/Users/devan/Desktop/Claude Code Agents/pages"
-
 # Build output filename from client name + today's date
-# e.g. reports/Shopify_2026-03-13.html
+# e.g. reports/LogOX/LogOX_2026-03-14.html
 date_str = datetime.today().strftime("%Y-%m-%d")
-output_file = f"reports/{config.CLIENT_NAME}_{date_str}.html"
+client_folder = f"reports/{config.CLIENT_NAME}"
+output_file = f"{client_folder}/{config.CLIENT_NAME.replace(' ', '_')}_{date_str}.html"
 
 PROMPT = f"""
 You are a data analyst. Your job is to read the Shopify sales CSV files
@@ -56,6 +54,7 @@ Important rules:
 
 
 async def main():
+    os.makedirs(client_folder, exist_ok=True)
     print(f"Client:  {config.CLIENT_NAME}")
     print(f"Data:    {config.DATA_FOLDER}/")
     print(f"Output:  {output_file}")
@@ -81,16 +80,12 @@ async def main():
                 subprocess.run(["git", "push", "full-project", "main"], cwd=repo_dir, check=True)
                 print("Full project repo updated.")
 
-                # Deploy to public GitHub Pages preserving the filename
-                client_slug = config.CLIENT_NAME.lower().replace(" ", "-").replace("'", "")
-                pages_client_dir = os.path.join(PAGES_DIR, client_slug)
-                os.makedirs(pages_client_dir, exist_ok=True)
+                # Deploy to public GitHub Pages repo (origin remote)
+                subprocess.run(["git", "push", "origin", "main"], cwd=repo_dir, check=True)
                 report_filename = os.path.basename(output_file)
-                shutil.copy(output_file, os.path.join(pages_client_dir, report_filename))
-                subprocess.run(["git", "add", "-A"], cwd=PAGES_DIR, check=True)
-                subprocess.run(["git", "commit", "-m", f"Deploy {config.CLIENT_NAME} report"], cwd=PAGES_DIR, check=True)
-                subprocess.run(["git", "push", "origin", "main"], cwd=PAGES_DIR, check=True)
-                print(f"Live URL: https://devansh-intc.github.io/reports/{client_slug}/{report_filename}")
+                client_url = config.CLIENT_NAME.replace(" ", "%20")
+                print(f"Public repo updated.")
+                print(f"Live URL: https://devansh-intc.github.io/logox-report/reports/{client_url}/{report_filename}")
             except subprocess.CalledProcessError as e:
                 print(f"GitHub push failed: {e}")
 
