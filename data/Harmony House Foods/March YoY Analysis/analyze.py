@@ -105,10 +105,9 @@ s25_17["discounts"] = agg_discounts(s25_17_rows)
 s25_17["discount_rate"] = s25_17["discounts"] / s25_17["gross_sales"] * 100
 s25_17["aov"] = s25_17["total_sales"] / s25_17["orders"]
 
-# ── Aggregate: March 2026 (from ad spend sheet = official Shopify daily) ────
+# ── Aggregate: March 2026 (from ad spend sheet — for ad spend & platform ROAS) ──
 ad_march = [r for r in ad_spend_2026 if r["day"].startswith("2026-03")]
 
-s26_total_sales = sum(r["daily_shopify_sales"] for r in ad_march)
 s26_fb_spent = sum(r["fb_spent"] for r in ad_march)
 s26_google_spent = sum(r["google_spent"] for r in ad_march)
 s26_total_spent = sum(r["total_spent"] for r in ad_march)
@@ -116,7 +115,7 @@ s26_fb_conv = sum(r["fb_conv_value"] for r in ad_march)
 s26_google_conv = sum(r["google_conv_value"] for r in ad_march)
 s26_total_conv = sum(r["total_conv_value"] for r in ad_march)
 
-# ── Aggregate: March 2026 (from UTM data — for channel breakdown) ───────────
+# ── Aggregate: March 2026 (from UTM all-channels data — PRIMARY sales source) ─
 days_2026 = {}
 for r in utm_2026:
     d = r["day"]
@@ -129,6 +128,9 @@ for r in utm_2026:
     days_2026[d]["net_sales"] += r["net_sales"]
     days_2026[d]["total_sales"] += r["total_sales"]
 
+# Sorted daily list for day-by-day table
+days_2026_sorted = sorted(days_2026.items())
+
 s26_utm = {
     "orders": sum(v["orders"] for v in days_2026.values()),
     "gross_sales": sum(v["gross_sales"] for v in days_2026.values()),
@@ -138,6 +140,9 @@ s26_utm = {
 }
 s26_utm["discount_rate"] = s26_utm["discounts"] / s26_utm["gross_sales"] * 100 if s26_utm["gross_sales"] else 0
 s26_utm["aov"] = s26_utm["total_sales"] / s26_utm["orders"] if s26_utm["orders"] else 0
+
+# Use UTM all-channels total as the primary 2026 sales figure
+s26_total_sales = s26_utm["total_sales"]
 
 # ── UTM Channel Breakdown with Spend ────────────────────────────────────────
 channels = {}
@@ -257,15 +262,16 @@ avg_daily_2025 = s25_full["total_sales"] / days_in_march
 mar12_2025 = shopify_2025[11]
 s25_17_ex12 = s25_17["total_sales"] - mar12_2025["total_sales"]
 s25_17_orders_ex12 = s25_17["orders"] - mar12_2025["orders"]
-s26_17_ex12 = s26_total_sales - ad_march[11]["daily_shopify_sales"]
+mar12_2026_sales = days_2026_sorted[11][1]["total_sales"] if len(days_2026_sorted) > 11 else 0
+s26_17_ex12 = s26_total_sales - mar12_2026_sales
 
 # ── Weekly breakdown ────────────────────────────────────────────────────────
 week1_25 = sum(shopify_2025[i]["total_sales"] for i in range(7))
 week2_25 = sum(shopify_2025[i]["total_sales"] for i in range(7, 14))
 week3p_25 = sum(shopify_2025[i]["total_sales"] for i in range(14, 17))
-week1_26 = sum(ad_march[i]["daily_shopify_sales"] for i in range(7))
-week2_26 = sum(ad_march[i]["daily_shopify_sales"] for i in range(7, 14))
-week3p_26 = sum(ad_march[i]["daily_shopify_sales"] for i in range(14, 17))
+week1_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(7))
+week2_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(7, 14))
+week3p_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(14, 17))
 
 # ── AOV Analysis (THE core finding) ─────────────────────────────────────────
 aov_25 = s25_17["aov"]
@@ -589,16 +595,20 @@ h('<tr><th>Day</th><th class="r">2025 Total Sales</th><th class="r">2025 Orders<
 for i in range(17):
     d25 = shopify_2025[i]
     a26 = ad_march[i]
+    utm_day = days_2026_sorted[i][1] if i < len(days_2026_sorted) else {"total_sales": 0}
+    day_sales = utm_day["total_sales"]
+    day_spend = a26["total_spent"]
+    day_mer = day_sales / day_spend if day_spend > 0 else 0
     cls = ' class="hl"' if i == 11 else ""
     h(f'''<tr{cls}>
     <td>Mar {i+1}</td>
     <td class="r">{fmt(d25["total_sales"])}</td>
     <td class="r">{d25["orders"]}</td>
     <td class="r">{fmt(abs(d25["discounts"]))}</td>
-    <td class="r">{fmt(a26["daily_shopify_sales"])}</td>
-    <td class="r">{fmt(a26["total_spent"])}</td>
-    <td class="r">{a26["mer"]:.1f}x</td>
-    <td class="r">{chg(a26["daily_shopify_sales"], d25["total_sales"])}</td>
+    <td class="r">{fmt(day_sales)}</td>
+    <td class="r">{fmt(day_spend)}</td>
+    <td class="r">{day_mer:.1f}x</td>
+    <td class="r">{chg(day_sales, d25["total_sales"])}</td>
     </tr>''')
 
 h(f'''<tr class="tot">
