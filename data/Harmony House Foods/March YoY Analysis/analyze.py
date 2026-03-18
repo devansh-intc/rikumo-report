@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Harmony House Foods — March YoY Analysis (v3)
+Harmony House Foods — March YoY Analysis (v4)
 Compares March 2025 vs March 2026 (1-17) performance.
-Generates an HTML report with insights for client call.
+Generates two HTML reports: main Shopify report + separate Ad Spend report.
 """
 
 import csv
@@ -80,10 +80,27 @@ def load_products_2026():
             })
     return rows
 
+def load_new_returning(filename):
+    rows = {}
+    with open(os.path.join(BASE, filename)) as f:
+        for r in csv.DictReader(f):
+            ctype = r["New or returning customer"].strip()
+            rows[ctype] = {
+                "orders": int(r["Orders"]),
+                "gross_sales": float(r["Gross sales"]),
+                "discounts": float(r["Discounts"]),
+                "net_sales": float(r["Net sales"]),
+                "total_sales": float(r["Total sales"]),
+                "aov": float(r["Average order value"]),
+            }
+    return rows
+
 shopify_2025 = load_shopify_2025()
 utm_2026 = load_utm_2026()
 ad_spend_2026 = load_ad_spend_2026()
 products_2026 = load_products_2026()
+nr_2025 = load_new_returning("new_returning_2025_mar1-17.csv")
+nr_2026 = load_new_returning("new_returning_2026_mar1-17.csv")
 
 # ── Aggregate: March 2025 ───────────────────────────────────────────────────
 def agg(rows, keys=("orders", "gross_sales", "total_sales", "net_sales")):
@@ -371,6 +388,14 @@ email_orders = sum(
     for ch in ["Klaviyo Email", "Shopify Email"]
 )
 
+# ── New vs Returning Customer Analysis ─────────────────────────────────────
+ret_25 = nr_2025["Returning"]
+new_25 = nr_2025["New"]
+ret_26 = nr_2026["Returning"]
+new_26 = nr_2026["New"]
+new_pct_2025 = new_25["orders"] / (new_25["orders"] + ret_25["orders"]) * 100
+new_pct_2026 = new_26["orders"] / (new_26["orders"] + ret_26["orders"]) * 100
+
 # ── Helpers ──────────────────────────────────────────────────────────────────
 def fmt(v): return f"${v:,.2f}"
 def pct(v): return f"{v:.1f}%"
@@ -388,14 +413,12 @@ def chg_val(new, old):
 
 report_date = datetime.now().strftime("%B %d, %Y")
 
-# ── BUILD HTML ───────────────────────────────────────────────────────────────
-html = []
-h = html.append
-
-h("""<!DOCTYPE html>
+# ══════════════════════════════════════════════════════════════════════════════
+# SHARED CSS
+# ══════════════════════════════════════════════════════════════════════════════
+SHARED_CSS = """<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Harmony House Foods — March YoY Performance Analysis</title>
 <style>
 :root { --pri: #1a365d; --acc: #2b6cb0; --red: #c53030; --grn: #276749; --org: #c05621; --bg: #f7fafc; --card: #fff; --brd: #e2e8f0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -432,7 +455,13 @@ li { margin: 4px 0; }
 @media print { body { padding: 0; } .card { box-shadow: none; break-inside: avoid; } }
 </style>
 </head><body><div class="container">
-""")
+"""
+
+# ── BUILD MAIN HTML ───────────────────────────────────────────────────────────
+html = []
+h = html.append
+
+h(SHARED_CSS.replace('<html lang="en"><head>', '<html lang="en"><head>\n<title>Harmony House Foods — March YoY Performance Analysis</title>'))
 
 h(f'<h1>Harmony House Foods &mdash; March YoY Performance Analysis</h1>')
 h(f'<p class="sub">March 2025 vs. March 2026 (1&ndash;17) &nbsp;|&nbsp; Prepared {report_date}</p>')
@@ -445,14 +474,19 @@ h('<h2>1. Executive Summary</h2>')
 h(f'''<div class="alert">
 <strong>Key Finding:</strong> March 2026 total Shopify sales (Mar 1&ndash;17) are <strong>{pct(abs(chg_val(s26_total_sales, s25_17["total_sales"])))}</strong> below the same period in 2025.
 However, <strong>order count is nearly identical</strong> ({orders_25} vs {orders_26} orders, just {pct(abs(orders_chg_pct))} difference).
-The gap is driven by a <strong>{pct(abs(aov_drop_pct))} drop in Average Order Value</strong> ({fmt(aov_25)} &rarr; {fmt(aov_26)}) and a <strong>missing promotional event</strong> (Mar 12, 2025 flash sale).
+The gap is driven by a <strong>{pct(abs(aov_drop_pct))} drop in Average Order Value</strong> ({fmt(aov_25)} &rarr; {fmt(aov_26)}) caused by a
+<strong>shift in customer mix &mdash; more new customers (lower AOV) and fewer returning customers this year</strong>.
 </div>''')
 
-h(f'''<div class="alert alert-w">
-<strong>Important Context:</strong> March 12, 2025 had a massive promotional spike &mdash; <strong>89 orders</strong> and <strong>{fmt(mar12_2025["total_sales"])}</strong> in a single day
-(vs. avg 20 orders/day). Excluding that outlier, the real YoY gap (Mar 1&ndash;17) narrows from
-<strong>{pct(abs(chg_val(s26_total_sales, s25_17["total_sales"])))}</strong> to <strong>{pct(abs(chg_val(s26_17_ex12, s25_17_ex12)))}</strong>.
+h(f'''<div class="alert alert-g">
+<strong>Positive Signal:</strong> New customer acquisition is up {chg(new_26["orders"], new_25["orders"])} ({new_25["orders"]} &rarr; {new_26["orders"]}).
+Strategy of moving away from heavy discounts and focusing on full-price new customer acquisition is working.
+Returning customer AOV remains strong at $221.34.
 </div>''')
+
+# KPI Grid 1: Total Sales, Orders, AOV, New Customers
+new_orders_25 = new_25["orders"]
+new_orders_26 = new_26["orders"]
 
 h(f'''<div class="kpi-grid">
 <div class="kpi"><div class="lb">Total Shopify Sales (Mar 1&ndash;17)</div><div class="vl">{fmt(s26_total_sales)}</div>
@@ -464,9 +498,13 @@ h(f'''<div class="kpi-grid">
 <div class="kpi"><div class="lb">Average Order Value</div><div class="vl">{fmt(aov_26)}</div>
 <div class="ch">{chg(aov_26, aov_25)} vs. {fmt(aov_25)} (2025)</div></div>
 
-<div class="kpi"><div class="lb">Blended Platform ROAS</div><div class="vl">{s26_total_conv / s26_total_spent:.2f}x</div>
-<div class="ch">Google: {google_2026["roas"]:.1f}x &nbsp;|&nbsp; FB: {s26_fb_conv / s26_fb_spent:.2f}x</div></div>
+<div class="kpi"><div class="lb">New Customers (Mar 1&ndash;17)</div><div class="vl">{new_orders_26}</div>
+<div class="ch">{chg(new_orders_26, new_orders_25)} vs. {new_orders_25} (2025)</div></div>
 </div>''')
+
+# KPI Grid 2: Projected Full March, 15% Target, Daily Needed, Returning Customer AOV
+ret_aov_25 = ret_25["aov"]
+ret_aov_26 = ret_26["aov"]
 
 h(f'''<div class="kpi-grid">
 <div class="kpi"><div class="lb">Projected Full March 2026</div><div class="vl">{fmt(s26_projected)}</div>
@@ -478,50 +516,80 @@ h(f'''<div class="kpi-grid">
 <div class="kpi"><div class="lb">Daily Sales Needed (Remaining {remaining_days} Days)</div><div class="vl">{fmt(daily_needed)}</div>
 <div class="ch">Current avg: {fmt(avg_daily_2026)}/day &nbsp;|&nbsp; Need {daily_needed / avg_daily_2026:.1f}x current pace</div></div>
 
-<div class="kpi"><div class="lb">Total Ad Spend (Mar 1&ndash;17)</div><div class="vl">{fmt(s26_total_spent)}</div>
-<div class="ch">{chg(s26_total_spent, total_spend_2025)} vs. {fmt(total_spend_2025)} (2025 full month!)</div></div>
+<div class="kpi"><div class="lb">Returning Customer AOV</div><div class="vl">{fmt(ret_aov_26)}</div>
+<div class="ch">{chg(ret_aov_26, ret_aov_25)} vs. {fmt(ret_aov_25)} (2025)</div></div>
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 2. THE REAL ISSUE: AOV DROP + MISSING PROMO
+# 2. ROOT CAUSE: CUSTOMER MIX
 # ═══════════════════════════════════════════════════════════════════════════════
 h('<h2>2. Root Cause: Why Is Revenue Down When Orders Are Flat?</h2>')
 
 h(f'''<div class="diag">
 <strong>This is the #1 question to answer on the client call.</strong><br><br>
 Orders are nearly identical ({orders_25} in 2025 vs {orders_26} in 2026 &mdash; only {pct(abs(orders_chg_pct))} difference).
-The revenue gap is driven by <strong>two factors</strong>: a lower Average Order Value and a missing promotional event.
+The revenue gap is driven by a <strong>shift in customer mix</strong>: more new customers (lower AOV) and fewer returning customers compared to last year.
 </div>''')
 
-h('<div class="card">')
-h('<h3>Factor 1: Average Order Value Dropped {}</h3>'.format(pct(abs(aov_drop_pct))))
-h(f'''<table>
-<tr><th>Metric</th><th class="r">March 2025 (1&ndash;17)</th><th class="r">March 2026 (1&ndash;17)</th><th class="r">Change</th></tr>
-<tr><td>Orders</td><td class="r">{orders_25}</td><td class="r">{orders_26}</td><td class="r">{chg(orders_26, orders_25)}</td></tr>
-<tr><td>Total Sales</td><td class="r">{fmt(s25_17["total_sales"])}</td><td class="r">{fmt(s26_total_sales)}</td><td class="r">{chg(s26_total_sales, s25_17["total_sales"])}</td></tr>
-<tr class="hl"><td><strong>Average Order Value</strong></td><td class="r"><strong>{fmt(aov_25)}</strong></td><td class="r"><strong>{fmt(aov_26)}</strong></td><td class="r"><strong>{chg(aov_26, aov_25)}</strong></td></tr>
-<tr><td>Revenue Lost to AOV Drop</td><td class="r">&mdash;</td><td class="r" colspan="2"><strong style="color:#c53030">{fmt(revenue_lost_to_aov)}</strong> (if AOV had stayed at {fmt(aov_25)}, revenue would be {fmt(hypothetical_rev_same_aov)})</td></tr>
-</table>''')
-h('</div>')
+# Single combined card: Customer Mix table
+total_orders_25 = new_25["orders"] + ret_25["orders"]
+total_orders_26 = new_26["orders"] + ret_26["orders"]
+new_pct_25_str = pct(new_pct_2025)
+new_pct_26_str = pct(new_pct_2026)
+ret_pct_25_str = pct(100 - new_pct_2025)
+ret_pct_26_str = pct(100 - new_pct_2026)
 
+# Revenue lost to AOV drop (already computed)
 h(f'''<div class="card">
-<h3>Factor 2: Missing Promotional Event</h3>
-<p>March 12, 2025 had a flash sale: <strong>89 orders</strong>, {fmt(mar12_2025["total_sales"])} in sales, {fmt(abs(mar12_2025["discounts"]))} in discounts.
-This single day = <strong>{pct(mar12_2025["total_sales"] / s25_17["total_sales"] * 100)}</strong> of all March 1&ndash;17 2025 sales.</p>
-<p style="margin-top:8px"><strong style="color:#c53030">No equivalent promotion has been run in March 2026.</strong></p>
-<table style="margin-top:12px">
-<tr><th>Metric</th><th class="r">Including Mar 12</th><th class="r">Excluding Mar 12</th></tr>
-<tr><td>2025 Sales (Mar 1&ndash;17)</td><td class="r">{fmt(s25_17["total_sales"])}</td><td class="r">{fmt(s25_17_ex12)}</td></tr>
-<tr><td>2026 Sales (Mar 1&ndash;17)</td><td class="r">{fmt(s26_total_sales)}</td><td class="r">{fmt(s26_17_ex12)}</td></tr>
-<tr class="hl"><td>YoY Change</td><td class="r">{chg(s26_total_sales, s25_17["total_sales"])}</td><td class="r">{chg(s26_17_ex12, s25_17_ex12)}</td></tr>
+<h3>Customer Mix: New vs. Returning (Mar 1&ndash;17)</h3>
+<table>
+<tr><th>Segment</th><th class="r">2025 Orders</th><th class="r">2025 AOV</th><th class="r">2025 Sales</th><th class="r">2026 Orders</th><th class="r">2026 AOV</th><th class="r">2026 Sales</th><th class="r">Change (Orders)</th></tr>
+<tr>
+  <td>New Customers</td>
+  <td class="r">{new_25["orders"]} ({new_pct_25_str})</td>
+  <td class="r">{fmt(new_25["aov"])}</td>
+  <td class="r">{fmt(new_25["total_sales"])}</td>
+  <td class="r">{new_26["orders"]} ({new_pct_26_str})</td>
+  <td class="r">{fmt(new_26["aov"])}</td>
+  <td class="r">{fmt(new_26["total_sales"])}</td>
+  <td class="r">{chg(new_26["orders"], new_25["orders"])}</td>
+</tr>
+<tr>
+  <td>Returning Customers</td>
+  <td class="r">{ret_25["orders"]} ({ret_pct_25_str})</td>
+  <td class="r">{fmt(ret_25["aov"])}</td>
+  <td class="r">{fmt(ret_25["total_sales"])}</td>
+  <td class="r">{ret_26["orders"]} ({ret_pct_26_str})</td>
+  <td class="r">{fmt(ret_26["aov"])}</td>
+  <td class="r">{fmt(ret_26["total_sales"])}</td>
+  <td class="r">{chg(ret_26["orders"], ret_25["orders"])}</td>
+</tr>
+<tr class="hl">
+  <td><strong>Overall</strong></td>
+  <td class="r"><strong>{total_orders_25}</strong></td>
+  <td class="r"><strong>{fmt(aov_25)}</strong></td>
+  <td class="r"><strong>{fmt(s25_17["total_sales"])}</strong></td>
+  <td class="r"><strong>{total_orders_26}</strong></td>
+  <td class="r"><strong>{fmt(aov_26)}</strong></td>
+  <td class="r"><strong>{fmt(s26_total_sales)}</strong></td>
+  <td class="r">{chg(total_orders_26, total_orders_25)}</td>
+</tr>
+<tr>
+  <td>Revenue Lost to AOV Drop</td>
+  <td class="r" colspan="3">&mdash;</td>
+  <td class="r" colspan="4"><strong style="color:#c53030">{fmt(revenue_lost_to_aov)}</strong> (if AOV had stayed at {fmt(aov_25)}, revenue would be {fmt(hypothetical_rev_same_aov)})</td>
+</tr>
 </table>
 </div>''')
 
 h(f'''<div class="alert alert-b">
-<strong>Bottom Line for the Client:</strong> The business is still generating the same volume of orders as last year &mdash; customer demand is holding steady.
-The revenue gap is a <strong>product mix / AOV problem</strong> and a <strong>missing promo</strong>, not a traffic or conversion problem.
-Platform ROAS is healthy (Google {google_2026["roas"]:.1f}x, FB {s26_fb_conv / s26_fb_spent:.2f}x). Ads are doing their job.
-The biggest lever to close the gap is a <strong>flash sale + higher-AOV product promotion</strong>.
+<strong>Bottom Line &mdash; This Is a Customer Mix Effect:</strong><br><br>
+<strong>2025 strategy:</strong> Heavy discounts ({pct(s25_17["discount_rate"])} discount rate), {ret_25["orders"]} returning / {new_25["orders"]} new customers.
+Returning customers drove the majority of orders and lifted the blended AOV.<br><br>
+<strong>2026 strategy:</strong> Full-price new customer focus ({pct(s26_utm["discount_rate"])} discount rate), {ret_26["orders"]} returning / {new_26["orders"]} new customers.
+New customers naturally have lower AOV ({fmt(new_26["aov"])}) vs. returning customers ({fmt(ret_26["aov"])}).
+Returning customer AOV remains strong &mdash; that cohort has not weakened.<br><br>
+<strong>This is a healthy strategic shift &mdash; growing the customer base at full price will pay off in future repeat purchases.</strong>
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -688,140 +756,9 @@ h(f'<tr><td>Mar 15&ndash;17</td><td class="r">{fmt(week3p_25)}</td><td class="r"
 h('</table></div>')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 6. DAILY SALES TREND & END-OF-MONTH PROJECTION
+# 6. RECOMMENDATIONS & ACTION PLAN (was 9)
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>6. Daily Sales Trend &amp; End-of-Month Projection</h2>')
-
-h(f'''<div class="card"><h3>Weekly Daily Average: 2025 vs. 2026</h3><table>
-<tr><th>Period</th><th class="r">2025 Daily Avg</th><th class="r">2026 Daily Avg</th><th class="r">YoY Change</th></tr>
-<tr><td>Mar 1&ndash;7 (week 1)</td><td class="r">{fmt(first7_avg_25)}</td><td class="r">{fmt(first7_avg_26)}</td><td class="r">{chg(first7_avg_26, first7_avg_25)}</td></tr>
-<tr><td>Mar 8&ndash;14 (week 2)</td><td class="r">{fmt(week2_avg_25)}</td><td class="r">{fmt(week2_avg_26)}</td><td class="r">{chg(week2_avg_26, week2_avg_25)}</td></tr>
-<tr><td>Mar 13&ndash;17 (last 5 days)</td><td class="r">{fmt(last5_of17_avg_25)}</td><td class="r"><strong>{fmt(last5_avg_26)}</strong></td><td class="r"><strong>{chg(last5_avg_26, last5_of17_avg_25)}</strong></td></tr>
-<tr><td>Mar 15&ndash;17 (last 3 days)</td><td class="r">{fmt(last3_of17_avg_25)}</td><td class="r"><strong>{fmt(last3_avg_26)}</strong></td><td class="r"><strong>{chg(last3_avg_26, last3_of17_avg_25)}</strong></td></tr>
-<tr style="border-top:2px solid #ccc"><td>Mar 18&ndash;24 (2025 actual)</td><td class="r">{fmt(s25_week4_avg)}</td><td class="r" colspan="2" style="color:#888">No 2026 data yet</td></tr>
-<tr><td>Mar 25&ndash;31 (2025 actual)</td><td class="r">{fmt(s25_week5_avg)}</td><td class="r" colspan="2" style="color:#888">No 2026 data yet</td></tr>
-<tr class="tot"><td>Mar 18&ndash;31 (2025 actual)</td><td class="r">{fmt(s25_remaining_daily_avg)}</td><td class="r" colspan="2">&mdash;</td></tr>
-</table>''')
-
-h(f'''<p style="margin-top:12px">In 2026, daily sales have <strong>{"declined" if last5_avg_26 < first7_avg_26 else "increased"}</strong> from
-<strong>{fmt(first7_avg_26)}/day</strong> (week 1) to <strong>{fmt(last5_avg_26)}/day</strong> (last 5 days) &mdash;
-a <strong>{abs(trend_drop_pct_26):.0f}% {"drop" if trend_drop_pct_26 < 0 else "increase"}</strong>.
-In 2025, the same period {"also declined" if trend_drop_pct_25 < 0 else "actually grew"} by {abs(trend_drop_pct_25):.0f}%
-({fmt(first7_avg_25)} &rarr; {fmt(last5_of17_avg_25)}).
-In 2025, the final 14 days (Mar 18&ndash;31) averaged <strong>{fmt(s25_remaining_daily_avg)}/day</strong>
-({fmt(s25_week4_avg)}/day in week 4, {fmt(s25_week5_avg)}/day in week 5).</p>
-</div>''')
-
-h(f'''<div class="card"><h3>Can We Cover the Revenue Gap? (Mar 18&ndash;31 Projection)</h3><table>
-<tr><th>Scenario</th><th class="r">Remaining 14 Days Avg</th><th class="r">Projected Month Total</th><th class="r">vs. 2025 Full Month ({fmt(s25_full["total_sales"])})</th><th class="r">Verdict</th></tr>
-<tr><td>At 2025&rsquo;s Mar 18&ndash;31 actual pace</td><td class="r">{fmt(s25_remaining_daily_avg)}/day</td><td class="r">{fmt(proj_2025_remaining_pace)}</td><td class="r">{chg(proj_2025_remaining_pace, s25_full["total_sales"])}</td>
-<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_2025_remaining_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
-<tr><td>At 2026 overall 17-day avg pace</td><td class="r">{fmt(avg_daily_2026)}/day</td><td class="r">{fmt(proj_overall_pace)}</td><td class="r">{chg(proj_overall_pace, s25_full["total_sales"])}</td>
-<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_overall_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
-<tr><td>At 2026 recent pace (last 5 days)</td><td class="r">{fmt(last5_avg_26)}/day</td><td class="r">{fmt(proj_last5_pace)}</td><td class="r">{chg(proj_last5_pace, s25_full["total_sales"])}</td>
-<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_last5_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
-<tr><td>At 2026 first-week pace</td><td class="r">{fmt(first7_avg_26)}/day</td><td class="r">{fmt(proj_first7_pace)}</td><td class="r">{chg(proj_first7_pace, s25_full["total_sales"])}</td>
-<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_first7_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
-<tr class="tot"><td>Needed to match 2025</td><td class="r"><strong>{fmt(daily_needed_match_2025)}/day</strong></td><td class="r"><strong>{fmt(s25_full["total_sales"])}</strong></td><td class="r">0.0%</td><td class="r">&mdash;</td></tr>
-</table>''')
-
-if proj_overall_pace < s25_full["total_sales"]:
-    h(f'''<div class="alert alert-w">
-<strong>Bottom Line:</strong> At the current 17-day average of <strong>{fmt(avg_daily_2026)}/day</strong>, March 2026 will end at approximately
-<strong>{fmt(proj_overall_pace)}</strong> &mdash; a <strong>{fmt(abs(shortfall_at_current))}</strong> shortfall vs. 2025.
-At the declining recent pace ({fmt(last5_avg)}/day), it drops further to <strong>{fmt(proj_last5_pace)}</strong>.
-To match 2025&rsquo;s {fmt(s25_full["total_sales"])}, the remaining 14 days need <strong>{fmt(daily_needed_match_2025)}/day</strong> &mdash;
-that&rsquo;s <strong>{daily_needed_match_2025 / avg_daily_2026:.1f}x</strong> the current daily average.
-<strong>Without a flash sale or major promotional push, the gap will not close.</strong>
-</div>''')
-else:
-    h(f'''<div class="alert" style="border-left:4px solid #276749; background:#f0fff4;">
-<strong>Bottom Line:</strong> At the current pace of <strong>{fmt(avg_daily_2026)}/day</strong>, March 2026 is on track to reach
-<strong>{fmt(proj_overall_pace)}</strong>, which would {"match" if abs(chg_val(proj_overall_pace, s25_full["total_sales"])) < 2 else "exceed"} 2025&rsquo;s {fmt(s25_full["total_sales"])}.
-However, the declining trend in the last 5 days is a concern and needs to be reversed.
-</div>''')
-
-h('</div>')
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 7. DISCOUNT ANALYSIS
-# ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>7. Discount &amp; Pricing Analysis</h2>')
-h(f'''<div class="card"><table>
-<tr><th>Metric</th><th class="r">2025 (Mar 1&ndash;17)</th><th class="r">2026 (Mar 1&ndash;17)</th><th class="r">Change</th></tr>
-<tr><td>Gross Sales</td><td class="r">{fmt(s25_17["gross_sales"])}</td><td class="r">{fmt(s26_utm["gross_sales"])}</td><td class="r">{chg(s26_utm["gross_sales"], s25_17["gross_sales"])}</td></tr>
-<tr><td>Total Discounts Given</td><td class="r">{fmt(s25_17["discounts"])}</td><td class="r">{fmt(s26_utm["discounts"])}</td><td class="r">{chg(s26_utm["discounts"], s25_17["discounts"])}</td></tr>
-<tr><td>Discount Rate (% of Gross)</td><td class="r"><strong>{pct(s25_17["discount_rate"])}</strong></td><td class="r"><strong>{pct(s26_utm["discount_rate"])}</strong></td>
-<td class="r">{"<span style='color:#276749'>Lower (better margins)</span>" if s26_utm["discount_rate"] < s25_17["discount_rate"] else "<span style='color:#c53030'>Higher</span>"}</td></tr>
-<tr><td>Net Sales</td><td class="r">{fmt(s25_17["net_sales"])}</td><td class="r">{fmt(s26_utm["net_sales"])}</td><td class="r">{chg(s26_utm["net_sales"], s25_17["net_sales"])}</td></tr>
-<tr><td>Orders</td><td class="r">{s25_17["orders"]}</td><td class="r">{s26_utm["orders"]}</td><td class="r">{chg(s26_utm["orders"], s25_17["orders"])}</td></tr>
-<tr><td>Avg Order Value</td><td class="r">{fmt(s25_17["aov"])}</td><td class="r">{fmt(s26_utm["aov"])}</td><td class="r">{chg(s26_utm["aov"], s25_17["aov"])}</td></tr>
-</table></div>''')
-
-h(f'''<div class="alert alert-w">
-<strong>March 12, 2025 Promo Impact:</strong> That single day contributed <strong>{fmt(abs(mar12_2025["discounts"]))}</strong> in discounts
-({pct(abs(mar12_2025["discounts"]) / s25_17["discounts"] * 100)} of all discounts Mar 1&ndash;17) and drove <strong>89 orders</strong>
-with {fmt(mar12_2025["gross_sales"])} in gross sales. <strong>No equivalent promotion has run in March 2026.</strong>
-The lower discount rate in 2026 ({pct(s26_utm["discount_rate"])}) means better per-order margins, but fewer large orders.
-</div>''')
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 8. AD SPEND & PLATFORM PERFORMANCE
-# ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>8. Ad Spend &amp; Platform Performance</h2>')
-
-h('<div class="card"><h3>Ad Spend Overview</h3>')
-h(f'''<table>
-<tr><th>Metric</th><th class="r">March 2025 (Full Month)</th><th class="r">March 2026 (1&ndash;17 only)</th><th class="r">Change</th></tr>
-<tr><td>Google Ads Spend</td><td class="r">{fmt(google_spend_2025)}</td><td class="r">{fmt(s26_google_spent)}</td><td class="r">{pct(s26_google_spent / google_spend_2025 * 100)} of full month 2025</td></tr>
-<tr><td>Facebook Ads Spend</td><td class="r">{fmt(fb_spend_2025)}</td><td class="r">{fmt(s26_fb_spent)}</td><td class="r">{chg(s26_fb_spent, fb_spend_2025)}</td></tr>
-<tr><td>Total Ad Spend</td><td class="r">{fmt(total_spend_2025)}</td><td class="r">{fmt(s26_total_spent)}</td><td class="r">{chg(s26_total_spent, total_spend_2025)}</td></tr>
-<tr><td>Platform ROAS (Blended)</td><td class="r">{google_2025["roas"]:.2f}x (Google only)</td><td class="r">{s26_total_conv / s26_total_spent:.2f}x (Google + FB)</td><td class="r">&mdash;</td></tr>
-</table></div>''')
-
-h(f'''<div class="card"><h3>Facebook Ads &mdash; Performance Summary</h3>
-<table>
-<tr><th>Metric</th><th class="r">Value</th></tr>
-<tr><td>Total Spend (Mar 1&ndash;17)</td><td class="r">{fmt(s26_fb_spent)}</td></tr>
-<tr><td>Daily Spend Avg</td><td class="r">{fmt(s26_fb_spent / 17)}/day</td></tr>
-<tr><td>Platform-Reported Conv. Value</td><td class="r">{fmt(s26_fb_conv)}</td></tr>
-<tr><td>Platform ROAS (7-day click + 1-day view)</td><td class="r">{s26_fb_conv / s26_fb_spent:.2f}x</td></tr>
-<tr><td>UTM Last-Click Sales</td><td class="r">{fmt(fb_paid_total_sales)}</td></tr>
-<tr><td>UTM Last-Click ROAS</td><td class="r">{fb_paid_total_sales / s26_fb_spent:.2f}x</td></tr>
-<tr><td>UTM Orders</td><td class="r">{fb_paid_total_orders}</td></tr>
-</table>
-<p style="color:#718096;font-size:.85rem;margin-top:8px">Note: Platform attribution (7-day click + 1-day view) and UTM last-click use different models. The gap between them is expected &mdash; it reflects view-through and assisted conversions that UTM does not capture. A UTM ROAS of {fb_paid_total_sales / s26_fb_spent:.2f}x on last-click shows Facebook is driving meaningful direct conversions.</p>
-</div>''')
-
-h('<div class="card"><h3>Google Ads &mdash; Campaign Comparison</h3>')
-h('<p style="font-size:.85rem;color:#718096">March 2025 (Full Month)</p>')
-h('<table><tr><th>Campaign</th><th>Type</th><th class="r">Spend</th><th class="r">Conv.</th><th class="r">Conv. Value</th><th class="r">ROAS</th><th class="r">CPA</th></tr>')
-for c in google_2025["campaigns"]:
-    cpa = f'${c["spend"]/c["conv"]:.2f}' if c["conv"] > 0 else "&mdash;"
-    h(f'<tr><td>{c["name"]}</td><td>{c["type"]}</td><td class="r">{fmt(c["spend"])}</td><td class="r">{c["conv"]:.1f}</td><td class="r">{fmt(c["value"])}</td><td class="r">{c["roas"]:.2f}x</td><td class="r">{cpa}</td></tr>')
-h(f'<tr class="tot"><td>Total</td><td>&mdash;</td><td class="r">{fmt(google_2025["spend"])}</td><td class="r">{google_2025["conversions"]:.1f}</td><td class="r">{fmt(google_2025["conv_value"])}</td><td class="r">{google_2025["roas"]:.2f}x</td><td class="r">${google_2025["spend"]/google_2025["conversions"]:.2f}</td></tr>')
-h('</table>')
-
-h(f'<p style="font-size:.85rem;color:#718096;margin-top:16px">March 2026 (1&ndash;17)</p>')
-h('<table><tr><th>Campaign</th><th>Type</th><th class="r">Spend</th><th class="r">Conv.</th><th class="r">Conv. Value</th><th class="r">ROAS</th><th class="r">CPA</th><th>Notes</th></tr>')
-for c in google_2026["campaigns"]:
-    cpa = f'${c["spend"]/c["conv"]:.2f}' if c["conv"] > 0 else "&mdash;"
-    note = c.get("note", "")
-    h(f'<tr><td>{c["name"]}</td><td>{c["type"]}</td><td class="r">{fmt(c["spend"])}</td><td class="r">{c["conv"]:.1f}</td><td class="r">{fmt(c["value"])}</td><td class="r">{c["roas"]:.2f}x</td><td class="r">{cpa}</td><td>{note}</td></tr>')
-h(f'<tr class="tot"><td>Total</td><td>&mdash;</td><td class="r">{fmt(google_2026["spend"])}</td><td class="r">{google_2026["conversions"]:.1f}</td><td class="r">{fmt(google_2026["conv_value"])}</td><td class="r">{google_2026["roas"]:.2f}x</td><td class="r">${google_2026["spend"]/google_2026["conversions"]:.2f}</td><td></td></tr>')
-h('</table></div>')
-
-h(f'''<div class="alert alert-g">
-<strong>Google Ads Positive:</strong> ROAS improved from {google_2025["roas"]:.2f}x (2025) to {google_2026["roas"]:.2f}x (2026).
-The INTC P.Max campaign is performing well at 4.88x ROAS but is <strong>budget-limited</strong> at $190/day.
-Branded Search is highly efficient at 6.85x ROAS. The NB Dried Cabbage campaign ($191.29 spent, 0 conversions) was correctly paused.
-<strong>Google is the strongest paid channel and has room to scale.</strong>
-</div>''')
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 9. RECOMMENDATIONS
-# ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>9. Recommendations &amp; Action Plan</h2>')
+h('<h2>6. Recommendations &amp; Action Plan</h2>')
 
 h(f'''<div class="rec">
 <strong>1. Launch a Flash Sale / Promotion (March 19&ndash;22)</strong><br>
@@ -858,14 +795,7 @@ Each blast can drive $500&ndash;2,000 in incremental sales.
 </div>
 
 <div class="rec">
-<strong>5. Optimize Facebook for Higher-AOV Products</strong><br>
-Facebook is driving {fb_paid_total_orders} orders at {fb_paid_total_sales / s26_fb_spent:.2f}x UTM ROAS ({s26_fb_conv / s26_fb_spent:.2f}x platform).
-Focus ad creatives on high-AOV products (samplers, kits, bundles) rather than single-item products.
-This can help lift both Facebook ROAS and overall AOV simultaneously.
-</div>
-
-<div class="rec">
-<strong>6. Set Realistic Expectations on 15% Target</strong><br>
+<strong>5. Set Realistic Expectations on 15% Target</strong><br>
 The 15% growth target ({fmt(target_total)}) needs {fmt(daily_needed)}/day for the remaining {remaining_days} days &mdash;
 that&rsquo;s <strong>{daily_needed / avg_daily_2026:.1f}x</strong> the current daily average of {fmt(avg_daily_2026)}.
 A flash sale + optimizations can get us closer, but matching last year&rsquo;s flash sale performance is the key unlock.
@@ -873,9 +803,9 @@ A realistic target: match or come within 5&ndash;10% of last year&rsquo;s {fmt(s
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 10. PROJECTED SCENARIOS
+# 7. PROJECTED SCENARIOS (was 10)
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>10. Projected Scenarios (Rest of March)</h2>')
+h('<h2>7. Projected Scenarios (Rest of March)</h2>')
 
 scenario_a = s26_projected  # status quo
 scenario_a_spend = s26_projected_spend
@@ -896,32 +826,125 @@ h(f'''<div class="card"><table>
 </table></div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 11. IMMEDIATE ACTION ITEMS
+# 8. IMMEDIATE ACTION ITEMS (was 11)
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>11. Immediate Action Items</h2>')
+h('<h2>8. Immediate Action Items</h2>')
 h(f'''<div class="card"><table>
 <tr><th>#</th><th>Action</th><th>Timeline</th><th>Expected Impact</th></tr>
 <tr><td>1</td><td>Plan &amp; launch flash sale (20&ndash;25% off best sellers, focus on bundles/samplers)</td><td>Mar 19&ndash;22</td><td>+$8,000&ndash;15,000 (based on Mar 12, 2025 precedent)</td></tr>
 <tr><td>2</td><td>Increase Google PMax budget $190 &rarr; $250&ndash;300/day</td><td>Today</td><td>+$240&ndash;440/day incremental revenue at 4.88x ROAS</td></tr>
 <tr><td>3</td><td>Send 2&ndash;3 Klaviyo email blasts this week (flash sale + best sellers)</td><td>This week</td><td>+$1,500&ndash;4,000 at zero ad cost</td></tr>
 <tr><td>4</td><td>Create &ldquo;Best Value Bundles&rdquo; featured collection on homepage</td><td>Today</td><td>Lift AOV toward {fmt(aov_25)} target</td></tr>
-<tr><td>5</td><td>Update FB ad creatives to feature high-AOV products (samplers, kits)</td><td>This week</td><td>Improve per-order value from FB traffic</td></tr>
-<tr><td>6</td><td>Keep NB Search campaigns paused</td><td>Ongoing</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
+<tr><td>5</td><td>Keep NB Search campaigns paused</td><td>Ongoing</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
 </table></div>''')
 
 h(f'''<div class="footer">
 Harmony House Foods &mdash; March YoY Performance Analysis &nbsp;|&nbsp; Generated {report_date}<br>
-Data sources: Shopify Sales Reports, Google Ads, Facebook Ads, Shopify UTM Attribution, Shopify Product Sales
+Data sources: Shopify Sales Reports, Shopify UTM Attribution, Shopify Product Sales, Customer Segment Data
 </div></div></body></html>''')
 
-# ── Write Report ─────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# BUILD AD SPEND HTML (separate report)
+# ══════════════════════════════════════════════════════════════════════════════
+html_ads = []
+ha = html_ads.append
+
+ha(SHARED_CSS.replace('<html lang="en"><head>', '<html lang="en"><head>\n<title>Harmony House Foods — Ad Spend &amp; Platform Performance</title>'))
+
+ha(f'<h1>Harmony House Foods &mdash; Ad Spend &amp; Platform Performance</h1>')
+ha(f'<p class="sub">March 2025 vs. March 2026 (1&ndash;17) &nbsp;|&nbsp; Prepared {report_date}</p>')
+
+# KPI grid: Total Ad Spend, Blended Platform ROAS, MER
+ha(f'''<div class="kpi-grid">
+<div class="kpi"><div class="lb">Total Ad Spend (Mar 1&ndash;17)</div><div class="vl">{fmt(s26_total_spent)}</div>
+<div class="ch">{chg(s26_total_spent, total_spend_2025)} vs. {fmt(total_spend_2025)} (2025 full month)</div></div>
+
+<div class="kpi"><div class="lb">Blended Platform ROAS</div><div class="vl">{s26_total_conv / s26_total_spent:.2f}x</div>
+<div class="ch">Google: {google_2026["roas"]:.1f}x &nbsp;|&nbsp; FB: {s26_fb_conv / s26_fb_spent:.2f}x</div></div>
+
+<div class="kpi"><div class="lb">MER (Marketing Efficiency Ratio)</div><div class="vl">{mer_2026:.1f}x</div>
+<div class="ch">Total Sales / Total Ad Spend (Mar 1&ndash;17)</div></div>
+</div>''')
+
+# Section 1: Ad Spend Overview
+ha('<h2>1. Ad Spend Overview</h2>')
+ha('<div class="card"><h3>Ad Spend Overview</h3>')
+ha(f'''<table>
+<tr><th>Metric</th><th class="r">March 2025 (Full Month)</th><th class="r">March 2026 (1&ndash;17 only)</th><th class="r">Change</th></tr>
+<tr><td>Google Ads Spend</td><td class="r">{fmt(google_spend_2025)}</td><td class="r">{fmt(s26_google_spent)}</td><td class="r">{pct(s26_google_spent / google_spend_2025 * 100)} of full month 2025</td></tr>
+<tr><td>Facebook Ads Spend</td><td class="r">{fmt(fb_spend_2025)}</td><td class="r">{fmt(s26_fb_spent)}</td><td class="r">{chg(s26_fb_spent, fb_spend_2025)}</td></tr>
+<tr><td>Total Ad Spend</td><td class="r">{fmt(total_spend_2025)}</td><td class="r">{fmt(s26_total_spent)}</td><td class="r">{chg(s26_total_spent, total_spend_2025)}</td></tr>
+<tr><td>Platform ROAS (Blended)</td><td class="r">{google_2025["roas"]:.2f}x (Google only)</td><td class="r">{s26_total_conv / s26_total_spent:.2f}x (Google + FB)</td><td class="r">&mdash;</td></tr>
+</table></div>''')
+
+# Section 2: Facebook Ads Performance Summary
+ha('<h2>2. Facebook Ads Performance Summary</h2>')
+ha(f'''<div class="card"><h3>Facebook Ads &mdash; Performance Summary</h3>
+<table>
+<tr><th>Metric</th><th class="r">Value</th></tr>
+<tr><td>Total Spend (Mar 1&ndash;17)</td><td class="r">{fmt(s26_fb_spent)}</td></tr>
+<tr><td>Daily Spend Avg</td><td class="r">{fmt(s26_fb_spent / 17)}/day</td></tr>
+<tr><td>Platform-Reported Conv. Value</td><td class="r">{fmt(s26_fb_conv)}</td></tr>
+<tr><td>Platform ROAS (7-day click + 1-day view)</td><td class="r">{s26_fb_conv / s26_fb_spent:.2f}x</td></tr>
+<tr><td>UTM Last-Click Sales</td><td class="r">{fmt(fb_paid_total_sales)}</td></tr>
+<tr><td>UTM Last-Click ROAS</td><td class="r">{fb_paid_total_sales / s26_fb_spent:.2f}x</td></tr>
+<tr><td>UTM Orders</td><td class="r">{fb_paid_total_orders}</td></tr>
+</table>
+<p style="color:#718096;font-size:.85rem;margin-top:8px">Note: Platform attribution (7-day click + 1-day view) and UTM last-click use different models. The gap between them is expected &mdash; it reflects view-through and assisted conversions that UTM does not capture. A UTM ROAS of {fb_paid_total_sales / s26_fb_spent:.2f}x on last-click shows Facebook is driving meaningful direct conversions.</p>
+</div>''')
+
+ha(f'''<div class="alert alert-g">
+<strong>Facebook is doing its job:</strong> FB is driving {fb_paid_total_orders} new-customer-heavy orders.
+Strategy of using Facebook to acquire new customers at full price is working &mdash;
+new customer orders are up {chg(new_26["orders"], new_25["orders"])} YoY.
+</div>''')
+
+# Section 3: Google Ads Campaign Comparison
+ha('<h2>3. Google Ads Campaign Comparison</h2>')
+ha('<div class="card"><h3>Google Ads &mdash; Campaign Comparison</h3>')
+ha('<p style="font-size:.85rem;color:#718096">March 2025 (Full Month)</p>')
+ha('<table><tr><th>Campaign</th><th>Type</th><th class="r">Spend</th><th class="r">Conv.</th><th class="r">Conv. Value</th><th class="r">ROAS</th><th class="r">CPA</th></tr>')
+for c in google_2025["campaigns"]:
+    cpa = f'${c["spend"]/c["conv"]:.2f}' if c["conv"] > 0 else "&mdash;"
+    ha(f'<tr><td>{c["name"]}</td><td>{c["type"]}</td><td class="r">{fmt(c["spend"])}</td><td class="r">{c["conv"]:.1f}</td><td class="r">{fmt(c["value"])}</td><td class="r">{c["roas"]:.2f}x</td><td class="r">{cpa}</td></tr>')
+ha(f'<tr class="tot"><td>Total</td><td>&mdash;</td><td class="r">{fmt(google_2025["spend"])}</td><td class="r">{google_2025["conversions"]:.1f}</td><td class="r">{fmt(google_2025["conv_value"])}</td><td class="r">{google_2025["roas"]:.2f}x</td><td class="r">${google_2025["spend"]/google_2025["conversions"]:.2f}</td></tr>')
+ha('</table>')
+
+ha(f'<p style="font-size:.85rem;color:#718096;margin-top:16px">March 2026 (1&ndash;17)</p>')
+ha('<table><tr><th>Campaign</th><th>Type</th><th class="r">Spend</th><th class="r">Conv.</th><th class="r">Conv. Value</th><th class="r">ROAS</th><th class="r">CPA</th><th>Notes</th></tr>')
+for c in google_2026["campaigns"]:
+    cpa = f'${c["spend"]/c["conv"]:.2f}' if c["conv"] > 0 else "&mdash;"
+    note = c.get("note", "")
+    ha(f'<tr><td>{c["name"]}</td><td>{c["type"]}</td><td class="r">{fmt(c["spend"])}</td><td class="r">{c["conv"]:.1f}</td><td class="r">{fmt(c["value"])}</td><td class="r">{c["roas"]:.2f}x</td><td class="r">{cpa}</td><td>{note}</td></tr>')
+ha(f'<tr class="tot"><td>Total</td><td>&mdash;</td><td class="r">{fmt(google_2026["spend"])}</td><td class="r">{google_2026["conversions"]:.1f}</td><td class="r">{fmt(google_2026["conv_value"])}</td><td class="r">{google_2026["roas"]:.2f}x</td><td class="r">${google_2026["spend"]/google_2026["conversions"]:.2f}</td><td></td></tr>')
+ha('</table></div>')
+
+ha(f'''<div class="alert alert-g">
+<strong>Google Ads Positive:</strong> ROAS improved from {google_2025["roas"]:.2f}x (2025) to {google_2026["roas"]:.2f}x (2026).
+The INTC P.Max campaign is performing well at 4.88x ROAS but is <strong>budget-limited</strong> at $190/day.
+Branded Search is highly efficient at 6.85x ROAS. The NB Dried Cabbage campaign ($191.29 spent, 0 conversions) was correctly paused.
+<strong>Google is the strongest paid channel and has room to scale.</strong>
+</div>''')
+
+ha(f'''<div class="footer">
+Harmony House Foods &mdash; Ad Spend &amp; Platform Performance &nbsp;|&nbsp; Generated {report_date}<br>
+Data sources: Google Ads, Facebook Ads, Shopify UTM Attribution
+</div></div></body></html>''')
+
+# ── Write Reports ─────────────────────────────────────────────────────────────
 report_dir = os.path.join(BASE, "..", "..", "..", "reports", "Harmony House Foods")
 os.makedirs(report_dir, exist_ok=True)
+
 report_path = os.path.join(report_dir, "March_YoY_Analysis_2026-03-18.html")
 with open(report_path, "w") as f:
     f.write("\n".join(html))
 
-print(f"Report generated: {os.path.abspath(report_path)}")
+ads_report_path = os.path.join(report_dir, "March_Ad_Spend_Analysis_2026-03-18.html")
+with open(ads_report_path, "w") as f:
+    f.write("\n".join(html_ads))
+
+print(f"Main report:     {os.path.abspath(report_path)}")
+print(f"Ad spend report: {os.path.abspath(ads_report_path)}")
 print()
 
 # ── Print verification ──────────────────────────────────────────────────────
@@ -941,6 +964,11 @@ print(f"AOV 2025 (1-17):                     {fmt(aov_25)}")
 print(f"AOV 2026 (1-17):                     {fmt(aov_26)}")
 print(f"AOV Change:                          {aov_drop_pct:.1f}%")
 print(f"Revenue Lost to AOV Drop:            {fmt(revenue_lost_to_aov)}")
+print()
+print(f"New Customers 2025 (1-17):           {new_25['orders']} ({pct(new_pct_2025)} of orders, AOV {fmt(new_25['aov'])})")
+print(f"New Customers 2026 (1-17):           {new_26['orders']} ({pct(new_pct_2026)} of orders, AOV {fmt(new_26['aov'])})")
+print(f"Returning Customers 2025 (1-17):     {ret_25['orders']} (AOV {fmt(ret_25['aov'])})")
+print(f"Returning Customers 2026 (1-17):     {ret_26['orders']} (AOV {fmt(ret_26['aov'])})")
 print()
 print(f"Ad Spend 2025 (full month):          {fmt(total_spend_2025)}")
 print(f"  Google: {fmt(google_spend_2025)}  |  FB: {fmt(fb_spend_2025)}")

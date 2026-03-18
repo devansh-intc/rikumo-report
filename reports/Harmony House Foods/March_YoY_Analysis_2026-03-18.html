@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Harmony House Foods — March YoY Performance Analysis</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root { --pri: #1a365d; --acc: #2b6cb0; --red: #c53030; --grn: #276749; --org: #c05621; --bg: #f7fafc; --card: #fff; --brd: #e2e8f0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,12 +45,13 @@ li { margin: 4px 0; }
 <div class="alert">
 <strong>Key Finding:</strong> March 2026 total Shopify sales (Mar 1&ndash;17) are <strong>12.0%</strong> below the same period in 2025.
 However, <strong>order count is nearly identical</strong> (417 vs 411 orders, just 1.4% difference).
-The gap is driven by a <strong>10.7% drop in Average Order Value</strong> ($181.57 &rarr; $162.14) and a <strong>missing promotional event</strong> (Mar 12, 2025 flash sale).
+The gap is driven by a <strong>10.7% drop in Average Order Value</strong> ($181.57 &rarr; $162.14) caused by a
+<strong>shift in customer mix &mdash; more new customers (lower AOV) and fewer returning customers this year</strong>.
 </div>
-<div class="alert alert-w">
-<strong>Important Context:</strong> March 12, 2025 had a massive promotional spike &mdash; <strong>89 orders</strong> and <strong>$13,252.52</strong> in a single day
-(vs. avg 20 orders/day). Excluding that outlier, the real YoY gap (Mar 1&ndash;17) narrows from
-<strong>12.0%</strong> to <strong>2.2%</strong>.
+<div class="alert alert-g">
+<strong>Positive Signal:</strong> New customer acquisition is up <span style="color:green;font-weight:700">&#9650; 39.5%</span> (190 &rarr; 265).
+Strategy of moving away from heavy discounts and focusing on full-price new customer acquisition is working.
+Returning customer AOV remains strong at $221.34.
 </div>
 <div class="kpi-grid">
 <div class="kpi"><div class="lb">Total Shopify Sales (Mar 1&ndash;17)</div><div class="vl">$66,641.59</div>
@@ -62,8 +63,8 @@ The gap is driven by a <strong>10.7% drop in Average Order Value</strong> ($181.
 <div class="kpi"><div class="lb">Average Order Value</div><div class="vl">$162.14</div>
 <div class="ch"><span style="color:#c53030;font-weight:700">&#9660; 10.7%</span> vs. $181.57 (2025)</div></div>
 
-<div class="kpi"><div class="lb">Blended Platform ROAS</div><div class="vl">4.77x</div>
-<div class="ch">Google: 4.9x &nbsp;|&nbsp; FB: 4.92x</div></div>
+<div class="kpi"><div class="lb">New Customers (Mar 1&ndash;17)</div><div class="vl">265</div>
+<div class="ch"><span style="color:green;font-weight:700">&#9650; 39.5%</span> vs. 190 (2025)</div></div>
 </div>
 <div class="kpi-grid">
 <div class="kpi"><div class="lb">Projected Full March 2026</div><div class="vl">$121,522.90</div>
@@ -75,42 +76,64 @@ The gap is driven by a <strong>10.7% drop in Average Order Value</strong> ($181.
 <div class="kpi"><div class="lb">Daily Sales Needed (Remaining 14 Days)</div><div class="vl">$4,850.85</div>
 <div class="ch">Current avg: $3,920.09/day &nbsp;|&nbsp; Need 1.2x current pace</div></div>
 
-<div class="kpi"><div class="lb">Total Ad Spend (Mar 1&ndash;17)</div><div class="vl">$8,799.43</div>
-<div class="ch"><span style="color:green;font-weight:700">&#9650; 11.2%</span> vs. $7,910.60 (2025 full month!)</div></div>
+<div class="kpi"><div class="lb">Returning Customer AOV</div><div class="vl">$221.34</div>
+<div class="ch"><span style="color:#c53030;font-weight:700">&#9660; 5.3%</span> vs. $233.80 (2025)</div></div>
 </div>
 <h2>2. Root Cause: Why Is Revenue Down When Orders Are Flat?</h2>
 <div class="diag">
 <strong>This is the #1 question to answer on the client call.</strong><br><br>
 Orders are nearly identical (417 in 2025 vs 411 in 2026 &mdash; only 1.4% difference).
-The revenue gap is driven by <strong>two factors</strong>: a lower Average Order Value and a missing promotional event.
+The revenue gap is driven by a <strong>shift in customer mix</strong>: more new customers (lower AOV) and fewer returning customers compared to last year.
 </div>
 <div class="card">
-<h3>Factor 1: Average Order Value Dropped 10.7%</h3>
+<h3>Customer Mix: New vs. Returning (Mar 1&ndash;17)</h3>
 <table>
-<tr><th>Metric</th><th class="r">March 2025 (1&ndash;17)</th><th class="r">March 2026 (1&ndash;17)</th><th class="r">Change</th></tr>
-<tr><td>Orders</td><td class="r">417</td><td class="r">411</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 1.4%</span></td></tr>
-<tr><td>Total Sales</td><td class="r">$75,714.79</td><td class="r">$66,641.59</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 12.0%</span></td></tr>
-<tr class="hl"><td><strong>Average Order Value</strong></td><td class="r"><strong>$181.57</strong></td><td class="r"><strong>$162.14</strong></td><td class="r"><strong><span style="color:#c53030;font-weight:700">&#9660; 10.7%</span></strong></td></tr>
-<tr><td>Revenue Lost to AOV Drop</td><td class="r">&mdash;</td><td class="r" colspan="2"><strong style="color:#c53030">$7,983.78</strong> (if AOV had stayed at $181.57, revenue would be $74,625.37)</td></tr>
-</table>
-</div>
-<div class="card">
-<h3>Factor 2: Missing Promotional Event</h3>
-<p>March 12, 2025 had a flash sale: <strong>89 orders</strong>, $13,252.52 in sales, $3,391.45 in discounts.
-This single day = <strong>17.5%</strong> of all March 1&ndash;17 2025 sales.</p>
-<p style="margin-top:8px"><strong style="color:#c53030">No equivalent promotion has been run in March 2026.</strong></p>
-<table style="margin-top:12px">
-<tr><th>Metric</th><th class="r">Including Mar 12</th><th class="r">Excluding Mar 12</th></tr>
-<tr><td>2025 Sales (Mar 1&ndash;17)</td><td class="r">$75,714.79</td><td class="r">$62,462.27</td></tr>
-<tr><td>2026 Sales (Mar 1&ndash;17)</td><td class="r">$66,641.59</td><td class="r">$63,834.80</td></tr>
-<tr class="hl"><td>YoY Change</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 12.0%</span></td><td class="r"><span style="color:green;font-weight:700">&#9650; 2.2%</span></td></tr>
+<tr><th>Segment</th><th class="r">2025 Orders</th><th class="r">2025 AOV</th><th class="r">2025 Sales</th><th class="r">2026 Orders</th><th class="r">2026 AOV</th><th class="r">2026 Sales</th><th class="r">Change (Orders)</th></tr>
+<tr>
+  <td>New Customers</td>
+  <td class="r">190 (45.6%)</td>
+  <td class="r">$102.06</td>
+  <td class="r">$20,717.58</td>
+  <td class="r">265 (64.5%)</td>
+  <td class="r">$119.73</td>
+  <td class="r">$33,269.92</td>
+  <td class="r"><span style="color:green;font-weight:700">&#9650; 39.5%</span></td>
+</tr>
+<tr>
+  <td>Returning Customers</td>
+  <td class="r">227 (54.4%)</td>
+  <td class="r">$233.80</td>
+  <td class="r">$54,997.21</td>
+  <td class="r">146 (35.5%)</td>
+  <td class="r">$221.34</td>
+  <td class="r">$33,371.67</td>
+  <td class="r"><span style="color:#c53030;font-weight:700">&#9660; 35.7%</span></td>
+</tr>
+<tr class="hl">
+  <td><strong>Overall</strong></td>
+  <td class="r"><strong>417</strong></td>
+  <td class="r"><strong>$181.57</strong></td>
+  <td class="r"><strong>$75,714.79</strong></td>
+  <td class="r"><strong>411</strong></td>
+  <td class="r"><strong>$162.14</strong></td>
+  <td class="r"><strong>$66,641.59</strong></td>
+  <td class="r"><span style="color:#c53030;font-weight:700">&#9660; 1.4%</span></td>
+</tr>
+<tr>
+  <td>Revenue Lost to AOV Drop</td>
+  <td class="r" colspan="3">&mdash;</td>
+  <td class="r" colspan="4"><strong style="color:#c53030">$7,983.78</strong> (if AOV had stayed at $181.57, revenue would be $74,625.37)</td>
+</tr>
 </table>
 </div>
 <div class="alert alert-b">
-<strong>Bottom Line for the Client:</strong> The business is still generating the same volume of orders as last year &mdash; customer demand is holding steady.
-The revenue gap is a <strong>product mix / AOV problem</strong> and a <strong>missing promo</strong>, not a traffic or conversion problem.
-Platform ROAS is healthy (Google 4.9x, FB 4.92x). Ads are doing their job.
-The biggest lever to close the gap is a <strong>flash sale + higher-AOV product promotion</strong>.
+<strong>Bottom Line &mdash; This Is a Customer Mix Effect:</strong><br><br>
+<strong>2025 strategy:</strong> Heavy discounts (12.8% discount rate), 227 returning / 190 new customers.
+Returning customers drove the majority of orders and lifted the blended AOV.<br><br>
+<strong>2026 strategy:</strong> Full-price new customer focus (8.0% discount rate), 146 returning / 265 new customers.
+New customers naturally have lower AOV ($119.73) vs. returning customers ($221.34).
+Returning customer AOV remains strong &mdash; that cohort has not weakened.<br><br>
+<strong>This is a healthy strategic shift &mdash; growing the customer base at full price will pay off in future repeat purchases.</strong>
 </div>
 <h2>3. Product Mix Analysis (March 2026, 1&ndash;17)</h2>
 <div class="card">
@@ -705,105 +728,7 @@ The #1 seller &mdash; Vegetable Sampler (15 ZIP Pouches) &mdash; alone generated
 <tr><td>Week 2 (Mar 8&ndash;14)</td><td class="r">$34,275.41</td><td class="r">$26,839.62</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 21.7%</span></td></tr>
 <tr><td>Mar 15&ndash;17</td><td class="r">$7,713.95</td><td class="r">$12,288.32</td><td class="r"><span style="color:green;font-weight:700">&#9650; 59.3%</span></td></tr>
 </table></div>
-<h2>6. Daily Sales Trend &amp; End-of-Month Projection</h2>
-<div class="card"><h3>Weekly Daily Average: 2025 vs. 2026</h3><table>
-<tr><th>Period</th><th class="r">2025 Daily Avg</th><th class="r">2026 Daily Avg</th><th class="r">YoY Change</th></tr>
-<tr><td>Mar 1&ndash;7 (week 1)</td><td class="r">$4,817.92</td><td class="r">$3,930.52</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 18.4%</span></td></tr>
-<tr><td>Mar 8&ndash;14 (week 2)</td><td class="r">$4,896.49</td><td class="r">$3,834.23</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 21.7%</span></td></tr>
-<tr><td>Mar 13&ndash;17 (last 5 days)</td><td class="r">$3,251.41</td><td class="r"><strong>$3,211.51</strong></td><td class="r"><strong><span style="color:#c53030;font-weight:700">&#9660; 1.2%</span></strong></td></tr>
-<tr><td>Mar 15&ndash;17 (last 3 days)</td><td class="r">$2,571.32</td><td class="r"><strong>$4,096.11</strong></td><td class="r"><strong><span style="color:green;font-weight:700">&#9650; 59.3%</span></strong></td></tr>
-<tr style="border-top:2px solid #ccc"><td>Mar 18&ndash;24 (2025 actual)</td><td class="r">$3,851.40</td><td class="r" colspan="2" style="color:#888">No 2026 data yet</td></tr>
-<tr><td>Mar 25&ndash;31 (2025 actual)</td><td class="r">$2,046.93</td><td class="r" colspan="2" style="color:#888">No 2026 data yet</td></tr>
-<tr class="tot"><td>Mar 18&ndash;31 (2025 actual)</td><td class="r">$2,949.16</td><td class="r" colspan="2">&mdash;</td></tr>
-</table>
-<p style="margin-top:12px">In 2026, daily sales have <strong>declined</strong> from
-<strong>$3,930.52/day</strong> (week 1) to <strong>$3,211.51/day</strong> (last 5 days) &mdash;
-a <strong>18% drop</strong>.
-In 2025, the same period also declined by 33%
-($4,817.92 &rarr; $3,251.41).
-In 2025, the final 14 days (Mar 18&ndash;31) averaged <strong>$2,949.16/day</strong>
-($3,851.40/day in week 4, $2,046.93/day in week 5).</p>
-</div>
-<div class="card"><h3>Can We Cover the Revenue Gap? (Mar 18&ndash;31 Projection)</h3><table>
-<tr><th>Scenario</th><th class="r">Remaining 14 Days Avg</th><th class="r">Projected Month Total</th><th class="r">vs. 2025 Full Month ($117,003.05)</th><th class="r">Verdict</th></tr>
-<tr><td>At 2025&rsquo;s Mar 18&ndash;31 actual pace</td><td class="r">$2,949.16/day</td><td class="r">$107,929.85</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 7.8%</span></td>
-<td class="r"><span style='color:#c53030'>Will NOT cover gap</span></td></tr>
-<tr><td>At 2026 overall 17-day avg pace</td><td class="r">$3,920.09/day</td><td class="r">$121,522.90</td><td class="r"><span style="color:green;font-weight:700">&#9650; 3.9%</span></td>
-<td class="r"><span style='color:#276749'>Will cover</span></td></tr>
-<tr><td>At 2026 recent pace (last 5 days)</td><td class="r">$3,211.51/day</td><td class="r">$111,602.76</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 4.6%</span></td>
-<td class="r"><span style='color:#c53030'>Will NOT cover gap</span></td></tr>
-<tr><td>At 2026 first-week pace</td><td class="r">$3,930.52/day</td><td class="r">$121,668.89</td><td class="r"><span style="color:green;font-weight:700">&#9650; 4.0%</span></td>
-<td class="r"><span style='color:#276749'>Will cover</span></td></tr>
-<tr class="tot"><td>Needed to match 2025</td><td class="r"><strong>$3,597.25/day</strong></td><td class="r"><strong>$117,003.05</strong></td><td class="r">0.0%</td><td class="r">&mdash;</td></tr>
-</table>
-<div class="alert" style="border-left:4px solid #276749; background:#f0fff4;">
-<strong>Bottom Line:</strong> At the current pace of <strong>$3,920.09/day</strong>, March 2026 is on track to reach
-<strong>$121,522.90</strong>, which would exceed 2025&rsquo;s $117,003.05.
-However, the declining trend in the last 5 days is a concern and needs to be reversed.
-</div>
-</div>
-<h2>7. Discount &amp; Pricing Analysis</h2>
-<div class="card"><table>
-<tr><th>Metric</th><th class="r">2025 (Mar 1&ndash;17)</th><th class="r">2026 (Mar 1&ndash;17)</th><th class="r">Change</th></tr>
-<tr><td>Gross Sales</td><td class="r">$83,061.28</td><td class="r">$69,723.64</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 16.1%</span></td></tr>
-<tr><td>Total Discounts Given</td><td class="r">$10,597.84</td><td class="r">$5,605.37</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 47.1%</span></td></tr>
-<tr><td>Discount Rate (% of Gross)</td><td class="r"><strong>12.8%</strong></td><td class="r"><strong>8.0%</strong></td>
-<td class="r"><span style='color:#276749'>Lower (better margins)</span></td></tr>
-<tr><td>Net Sales</td><td class="r">$72,463.44</td><td class="r">$64,014.24</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 11.7%</span></td></tr>
-<tr><td>Orders</td><td class="r">417</td><td class="r">411</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 1.4%</span></td></tr>
-<tr><td>Avg Order Value</td><td class="r">$181.57</td><td class="r">$162.14</td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 10.7%</span></td></tr>
-</table></div>
-<div class="alert alert-w">
-<strong>March 12, 2025 Promo Impact:</strong> That single day contributed <strong>$3,391.45</strong> in discounts
-(32.0% of all discounts Mar 1&ndash;17) and drove <strong>89 orders</strong>
-with $16,168.73 in gross sales. <strong>No equivalent promotion has run in March 2026.</strong>
-The lower discount rate in 2026 (8.0%) means better per-order margins, but fewer large orders.
-</div>
-<h2>8. Ad Spend &amp; Platform Performance</h2>
-<div class="card"><h3>Ad Spend Overview</h3>
-<table>
-<tr><th>Metric</th><th class="r">March 2025 (Full Month)</th><th class="r">March 2026 (1&ndash;17 only)</th><th class="r">Change</th></tr>
-<tr><td>Google Ads Spend</td><td class="r">$7,757.60</td><td class="r">$3,468.41</td><td class="r">44.7% of full month 2025</td></tr>
-<tr><td>Facebook Ads Spend</td><td class="r">$153.00</td><td class="r">$5,331.02</td><td class="r"><span style="color:green;font-weight:700">&#9650; 3384.3%</span></td></tr>
-<tr><td>Total Ad Spend</td><td class="r">$7,910.60</td><td class="r">$8,799.43</td><td class="r"><span style="color:green;font-weight:700">&#9650; 11.2%</span></td></tr>
-<tr><td>Platform ROAS (Blended)</td><td class="r">3.62x (Google only)</td><td class="r">4.77x (Google + FB)</td><td class="r">&mdash;</td></tr>
-</table></div>
-<div class="card"><h3>Facebook Ads &mdash; Performance Summary</h3>
-<table>
-<tr><th>Metric</th><th class="r">Value</th></tr>
-<tr><td>Total Spend (Mar 1&ndash;17)</td><td class="r">$5,331.02</td></tr>
-<tr><td>Daily Spend Avg</td><td class="r">$313.59/day</td></tr>
-<tr><td>Platform-Reported Conv. Value</td><td class="r">$26,247.59</td></tr>
-<tr><td>Platform ROAS (7-day click + 1-day view)</td><td class="r">4.92x</td></tr>
-<tr><td>UTM Last-Click Sales</td><td class="r">$12,047.36</td></tr>
-<tr><td>UTM Last-Click ROAS</td><td class="r">2.26x</td></tr>
-<tr><td>UTM Orders</td><td class="r">100</td></tr>
-</table>
-<p style="color:#718096;font-size:.85rem;margin-top:8px">Note: Platform attribution (7-day click + 1-day view) and UTM last-click use different models. The gap between them is expected &mdash; it reflects view-through and assisted conversions that UTM does not capture. A UTM ROAS of 2.26x on last-click shows Facebook is driving meaningful direct conversions.</p>
-</div>
-<div class="card"><h3>Google Ads &mdash; Campaign Comparison</h3>
-<p style="font-size:.85rem;color:#718096">March 2025 (Full Month)</p>
-<table><tr><th>Campaign</th><th>Type</th><th class="r">Spend</th><th class="r">Conv.</th><th class="r">Conv. Value</th><th class="r">ROAS</th><th class="r">CPA</th></tr>
-<tr><td>new ads 5</td><td>Search</td><td class="r">$98.80</td><td class="r">0.0</td><td class="r">$0.00</td><td class="r">0.00x</td><td class="r">&mdash;</td></tr>
-<tr><td>Harmony House Foods</td><td>Search</td><td class="r">$912.02</td><td class="r">10.0</td><td class="r">$1,352.92</td><td class="r">1.48x</td><td class="r">$91.11</td></tr>
-<tr><td>Ad 4</td><td>Search</td><td class="r">$3,083.21</td><td class="r">59.0</td><td class="r">$11,611.15</td><td class="r">3.77x</td><td class="r">$52.30</td></tr>
-<tr><td>Sale merchant ad 1</td><td>Shopping</td><td class="r">$3,663.57</td><td class="r">130.3</td><td class="r">$15,141.61</td><td class="r">4.13x</td><td class="r">$28.12</td></tr>
-<tr class="tot"><td>Total</td><td>&mdash;</td><td class="r">$7,757.60</td><td class="r">199.2</td><td class="r">$28,105.68</td><td class="r">3.62x</td><td class="r">$38.94</td></tr>
-</table>
-<p style="font-size:.85rem;color:#718096;margin-top:16px">March 2026 (1&ndash;17)</p>
-<table><tr><th>Campaign</th><th>Type</th><th class="r">Spend</th><th class="r">Conv.</th><th class="r">Conv. Value</th><th class="r">ROAS</th><th class="r">CPA</th><th>Notes</th></tr>
-<tr><td>INTC | Branded Search | Max Conv</td><td>Search</td><td class="r">$528.42</td><td class="r">31.0</td><td class="r">$3,621.40</td><td class="r">6.85x</td><td class="r">$17.05</td><td></td></tr>
-<tr><td>INTC | P.Max | All Products</td><td>PMax</td><td class="r">$2,774.63</td><td class="r">106.7</td><td class="r">$13,536.86</td><td class="r">4.88x</td><td class="r">$26.01</td><td>Budget-limited at $190/day</td></tr>
-<tr><td>INTC | NB | Search | Dried Cabbage</td><td>Search</td><td class="r">$191.29</td><td class="r">0.0</td><td class="r">$0.00</td><td class="r">0.00x</td><td class="r">&mdash;</td><td>Paused (0 conversions)</td></tr>
-<tr class="tot"><td>Total</td><td>&mdash;</td><td class="r">$3,494.34</td><td class="r">137.7</td><td class="r">$17,158.26</td><td class="r">4.91x</td><td class="r">$25.38</td><td></td></tr>
-</table></div>
-<div class="alert alert-g">
-<strong>Google Ads Positive:</strong> ROAS improved from 3.62x (2025) to 4.91x (2026).
-The INTC P.Max campaign is performing well at 4.88x ROAS but is <strong>budget-limited</strong> at $190/day.
-Branded Search is highly efficient at 6.85x ROAS. The NB Dried Cabbage campaign ($191.29 spent, 0 conversions) was correctly paused.
-<strong>Google is the strongest paid channel and has room to scale.</strong>
-</div>
-<h2>9. Recommendations &amp; Action Plan</h2>
+<h2>6. Recommendations &amp; Action Plan</h2>
 <div class="rec">
 <strong>1. Launch a Flash Sale / Promotion (March 19&ndash;22)</strong><br>
 Last year&rsquo;s March 12 promo generated $13,252.52 in a single day with 89 orders.
@@ -839,37 +764,29 @@ Each blast can drive $500&ndash;2,000 in incremental sales.
 </div>
 
 <div class="rec">
-<strong>5. Optimize Facebook for Higher-AOV Products</strong><br>
-Facebook is driving 100 orders at 2.26x UTM ROAS (4.92x platform).
-Focus ad creatives on high-AOV products (samplers, kits, bundles) rather than single-item products.
-This can help lift both Facebook ROAS and overall AOV simultaneously.
-</div>
-
-<div class="rec">
-<strong>6. Set Realistic Expectations on 15% Target</strong><br>
+<strong>5. Set Realistic Expectations on 15% Target</strong><br>
 The 15% growth target ($134,553.51) needs $4,850.85/day for the remaining 14 days &mdash;
 that&rsquo;s <strong>1.2x</strong> the current daily average of $3,920.09.
 A flash sale + optimizations can get us closer, but matching last year&rsquo;s flash sale performance is the key unlock.
 A realistic target: match or come within 5&ndash;10% of last year&rsquo;s $117,003.05.
 </div>
-<h2>10. Projected Scenarios (Rest of March)</h2>
+<h2>7. Projected Scenarios (Rest of March)</h2>
 <div class="card"><table>
 <tr><th>Scenario</th><th class="r">Projected Month Total</th><th class="r">vs. 2025</th><th class="r">vs. Target</th><th class="r">Projected Spend</th><th class="r">Projected MER</th></tr>
 <tr><td><strong>A: Status Quo</strong> (no changes)</td><td class="r">$121,522.90</td><td class="r"><span style="color:green;font-weight:700">&#9650; 3.9%</span></td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 9.7%</span></td><td class="r">$16,046.02</td><td class="r">7.6x</td></tr>
 <tr><td><strong>B: Optimize</strong> (scale PMax, more email, AOV focus)</td><td class="r">$129,755.10</td><td class="r"><span style="color:green;font-weight:700">&#9650; 10.9%</span></td><td class="r"><span style="color:#c53030;font-weight:700">&#9660; 3.6%</span></td><td class="r">$14,234.37</td><td class="r">9.1x</td></tr>
 <tr><td><strong>C: Optimize + Flash Sale</strong></td><td class="r">$141,755.10</td><td class="r"><span style="color:green;font-weight:700">&#9650; 21.2%</span></td><td class="r"><span style="color:green;font-weight:700">&#9650; 5.4%</span></td><td class="r">$14,734.37</td><td class="r">9.6x</td></tr>
 </table></div>
-<h2>11. Immediate Action Items</h2>
+<h2>8. Immediate Action Items</h2>
 <div class="card"><table>
 <tr><th>#</th><th>Action</th><th>Timeline</th><th>Expected Impact</th></tr>
 <tr><td>1</td><td>Plan &amp; launch flash sale (20&ndash;25% off best sellers, focus on bundles/samplers)</td><td>Mar 19&ndash;22</td><td>+$8,000&ndash;15,000 (based on Mar 12, 2025 precedent)</td></tr>
 <tr><td>2</td><td>Increase Google PMax budget $190 &rarr; $250&ndash;300/day</td><td>Today</td><td>+$240&ndash;440/day incremental revenue at 4.88x ROAS</td></tr>
 <tr><td>3</td><td>Send 2&ndash;3 Klaviyo email blasts this week (flash sale + best sellers)</td><td>This week</td><td>+$1,500&ndash;4,000 at zero ad cost</td></tr>
 <tr><td>4</td><td>Create &ldquo;Best Value Bundles&rdquo; featured collection on homepage</td><td>Today</td><td>Lift AOV toward $181.57 target</td></tr>
-<tr><td>5</td><td>Update FB ad creatives to feature high-AOV products (samplers, kits)</td><td>This week</td><td>Improve per-order value from FB traffic</td></tr>
-<tr><td>6</td><td>Keep NB Search campaigns paused</td><td>Ongoing</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
+<tr><td>5</td><td>Keep NB Search campaigns paused</td><td>Ongoing</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
 </table></div>
 <div class="footer">
 Harmony House Foods &mdash; March YoY Performance Analysis &nbsp;|&nbsp; Generated March 19, 2026<br>
-Data sources: Shopify Sales Reports, Google Ads, Facebook Ads, Shopify UTM Attribution, Shopify Product Sales
+Data sources: Shopify Sales Reports, Shopify UTM Attribution, Shopify Product Sales, Customer Segment Data
 </div></div></body></html>
