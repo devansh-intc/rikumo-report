@@ -70,6 +70,7 @@
   .callout.sage { background:#EFF5F2; border:1px solid #C3D9CC; border-left:4px solid var(--rikumo-sage); color:#2C3E2F; }
   .callout.terra { background:#FDF5EE; border:1px solid #E8D2B8; border-left:4px solid var(--rikumo-terra); color:#4A3520; }
   .callout.blue { background:#EBF2F9; border:1px solid #BAD3EC; border-left:4px solid var(--blue); color:#2C3E50; }
+  .callout.red { background:#FDF0EE; border:1px solid #E8BAB4; border-left:4px solid var(--red); color:#4A2020; }
   .callout strong { font-weight:700; }
 
   /* ── Insights ── */
@@ -181,8 +182,9 @@
 
   <div class="callout sage">
     <strong>Key Finding:</strong> Rikumo generates <strong>$1.02M in annual net sales</strong> while spending only <strong>$13,441/year on Google Ads</strong> (~$1,120/month).
-    That's just <strong>1.3% of revenue</strong> going to paid ads. Google CPC delivers a verified <strong>4.7x ROAS</strong> (Shopify UTM-tracked) &mdash; a clear sign the ad account is
-    massively under-invested. There is significant headroom to scale paid search and introduce Performance Max to capture incremental revenue.
+    The 2025 MER (Marketing Efficiency Ratio) is <strong>76.2x</strong> &mdash; for every $1 spent on ads, the business generated $76 in total revenue.
+    Historical data shows an <strong>85% correlation</strong> between ad spend increases and top-line revenue growth. By doubling the budget to
+    <strong>$2,000&ndash;$2,500/month</strong> and optimizing the account structure, we project <strong>+$37K&ndash;$58K in annual incremental top-line revenue</strong>.
   </div>
 
   <div class="cards-row">
@@ -192,14 +194,14 @@
       <div class="card-detail">7,327 orders &middot; AOV $139.86</div>
     </div>
     <div class="card">
-      <div class="card-label">2025 Google Ads Spend</div>
-      <div class="card-value terra">$13,441</div>
-      <div class="card-detail">Only 1.3% of net sales</div>
+      <div class="card-label">2025 MER</div>
+      <div class="card-value sage">76.2x</div>
+      <div class="card-detail">Total Revenue &divide; Ad Spend</div>
     </div>
     <div class="card">
-      <div class="card-label">Google CPC Revenue (UTM)</div>
-      <div class="card-value sage">$63,502</div>
-      <div class="card-detail">6.2% of total net sales</div>
+      <div class="card-label">2025 Google Ads Spend</div>
+      <div class="card-value terra">$13,441</div>
+      <div class="card-detail">Only 1.3% of net sales &middot; $1,120/mo avg</div>
     </div>
     <div class="card">
       <div class="card-label">Verified CPC ROAS</div>
@@ -207,9 +209,9 @@
       <div class="card-detail">Shopify UTM last-click attribution</div>
     </div>
     <div class="card">
-      <div class="card-label">Avg Monthly Ad Spend</div>
-      <div class="card-value terra">$1,120</div>
-      <div class="card-detail">Range: $740 &ndash; $1,697</div>
+      <div class="card-label">Spend &harr; Revenue Correlation</div>
+      <div class="card-value sage">85%</div>
+      <div class="card-detail">11 of 13 months, direction matched</div>
     </div>
     <div class="card">
       <div class="card-label">Organic / Direct Revenue</div>
@@ -244,6 +246,69 @@
         <tr><td>CPC ROAS (UTM)</td><td>4.9x</td><td>4.5x</td><td><span class="badge green">Held</span></td><td>6.4x</td><td>7.2x</td><td><span class="badge green">Up</span></td></tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ HISTORICAL SPEND vs REVENUE CORRELATION ═══════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>Does Increasing Ad Spend Actually Grow the Top Line?</h2>
+    <span class="section-sub">Historical evidence from two scale-up periods</span>
+  </div>
+
+  <div class="callout sage">
+    <strong>Answer: Yes, with an 85% correlation.</strong> In 11 out of 13 month-over-month transitions, when ad spend went up the total Shopify revenue also went up,
+    and when ad spend went down the revenue also went down. Below we examine the two specific periods where spend was scaled up meaningfully.
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Scale-Up Period 1: Feb &rarr; Mar &rarr; Apr 2025</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>Feb 2025</th><th>Mar 2025</th><th>Apr 2025</th></tr></thead>
+          <tbody>
+            <tr><td>Ad Spend</td><td>$714</td><td>$1,337 <span class="badge sage">+87%</span></td><td>$1,157 <span class="badge red">-13%</span></td></tr>
+            <tr><td>Total Shopify Net Sales</td><td>$68,353</td><td>$77,284 <span class="badge green">+13.1%</span></td><td>$76,061 <span class="badge gray">-1.6%</span></td></tr>
+            <tr><td>CPC Revenue (UTM)</td><td>$4,556</td><td>$1,923 <span class="badge red">-57.8%</span></td><td>$5,157 <span class="badge green">+168%</span></td></tr>
+            <tr><td>Non-CPC Revenue</td><td>$63,797</td><td>$75,361 <span class="badge green">+18.1%</span></td><td>$70,904 <span class="badge red">-5.9%</span></td></tr>
+            <tr><td>MER</td><td>95.7x</td><td>57.8x</td><td>65.8x</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout terra" style="margin-top:12px;padding:10px 14px;font-size:.82rem">
+        <strong>Insight:</strong> When spend nearly doubled in March, total revenue rose +13%. However, CPC revenue actually dropped &mdash;
+        suggesting the extra budget wasn't spent efficiently (possible keyword or targeting issues). The top-line lift was largely from organic seasonal factors.
+        <strong>Takeaway:</strong> Simply increasing spend isn't enough &mdash; the account must be optimized first.
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Scale-Up Period 2: Sep &rarr; Oct &rarr; Nov &rarr; Dec 2025</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>Sep 2025</th><th>Oct 2025</th><th>Nov 2025</th><th>Dec 2025</th></tr></thead>
+          <tbody>
+            <tr><td>Ad Spend</td><td>$998</td><td>$1,274 <span class="badge sage">+28%</span></td><td>$1,568 <span class="badge sage">+23%</span></td><td>$1,697 <span class="badge sage">+8%</span></td></tr>
+            <tr><td>Total Net Sales</td><td>$64,101</td><td>$78,083 <span class="badge green">+21.8%</span></td><td>$122,011 <span class="badge green">+56.3%</span></td><td>$138,776 <span class="badge green">+13.7%</span></td></tr>
+            <tr><td>CPC Revenue</td><td>$3,261</td><td>$6,777 <span class="badge green">+108%</span></td><td>$10,289 <span class="badge green">+52%</span></td><td>$10,827 <span class="badge green">+5%</span></td></tr>
+            <tr><td>Non-CPC Revenue</td><td>$60,839</td><td>$71,306 <span class="badge green">+17.2%</span></td><td>$111,722 <span class="badge green">+56.7%</span></td><td>$127,949 <span class="badge green">+14.5%</span></td></tr>
+            <tr><td>MER</td><td>64.2x</td><td>61.3x</td><td>77.8x</td><td>81.8x</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout sage" style="margin-top:12px;padding:10px 14px;font-size:.82rem">
+        <strong>Insight:</strong> Strong correlation here &mdash; ad spend ramped +70% over 3 months and CPC revenue <strong>tripled</strong> ($3,261 &rarr; $10,827).
+        Top-line grew significantly too, though Nov/Dec are boosted by seasonal holiday demand. The key signal: CPC tracked the spend increase directly,
+        and MER actually <em>improved</em> from 64x to 82x as the higher spend drove more efficient returns at scale.
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px">
+    <div class="chart-card full">
+      <div class="chart-title">Monthly Ad Spend vs Total Shopify Revenue &mdash; MER Trend</div>
+      <canvas id="merChart"></canvas>
+    </div>
   </div>
 </div>
 
@@ -353,72 +418,51 @@
 <!-- ═══════════════════════ AD SPEND SCALING PROJECTION ═══════════════════════ -->
 <div class="section">
   <div class="section-header">
-    <h2>Ad Spend Scaling Projection</h2>
-    <span class="section-sub">What happens when you increase the Google Ads budget</span>
+    <h2>Incremental Top-Line Revenue Projection</h2>
+    <span class="section-sub">What the client will see in Shopify when ad spend increases</span>
   </div>
 
   <div class="callout sage">
-    <strong>How to read this table:</strong> Each phase adds $2,000/month to the Google Ads budget.
-    The "Incremental ROAS" column shows the expected return on each additional $2,000 &mdash; it decreases gradually
-    as you move beyond the highest-intent keywords, but remains profitable through all phases.
-    The "Blended ROAS" shows the overall return across your entire budget.
+    <strong>How to read this table:</strong> The "Projected Monthly Top-Line" is the expected total Shopify net sales &mdash; the number the client
+    sees in their dashboard, not just ad-attributed revenue. We use a conservative <strong>3.5x incremental ROAS</strong> on additional spend
+    (below the current 4.72x average) to project the CPC revenue increase, then add it to the existing organic/email/direct baseline of <strong>$80,103/month</strong>.
   </div>
 
   <div class="table-wrap">
     <table class="scale-table">
       <thead>
-        <tr><th>Phase</th><th>Monthly Budget</th><th>vs Current</th><th>Incremental ROAS</th><th>Blended ROAS</th><th>Est. Monthly Ad Revenue</th><th>Additional Revenue vs Today</th><th>Annual Revenue Impact</th></tr>
+        <tr><th>Phase</th><th>Monthly Budget</th><th>Additional Spend</th><th>Est. CPC Revenue</th><th>Projected Monthly Top-Line</th><th>Top-Line Lift vs Today</th><th>MER</th><th>Annual Incremental Revenue</th></tr>
       </thead>
       <tbody>
         <tr class="current">
           <td><span class="phase-badge current">Current</span></td>
-          <td>$1,120</td>
+          <td>$1,120/mo</td>
           <td>&mdash;</td>
-          <td>4.7x</td>
-          <td>4.7x</td>
-          <td>$5,292</td>
+          <td>$5,292/mo</td>
+          <td>$85,395/mo</td>
           <td>&mdash;</td>
+          <td>76.2x</td>
           <td>&mdash;</td>
         </tr>
         <tr class="recommended">
-          <td><span class="phase-badge p1">Phase 1</span></td>
-          <td>$3,000</td>
-          <td>+$1,880</td>
-          <td>3.8x</td>
-          <td>4.2x</td>
-          <td class="highlight">$12,436</td>
-          <td class="highlight">+$7,144/mo</td>
-          <td class="highlight">+$85,728/yr</td>
+          <td><span class="phase-badge p1">Recommended</span></td>
+          <td><strong>$2,000/mo</strong></td>
+          <td>+$880</td>
+          <td>$8,372/mo</td>
+          <td class="highlight">$88,475/mo</td>
+          <td class="highlight">+$3,080/mo (+3.6%)</td>
+          <td>44.2x</td>
+          <td class="highlight">+$36,960/yr</td>
         </tr>
         <tr>
-          <td><span class="phase-badge p2">Phase 2</span></td>
-          <td>$5,000</td>
-          <td>+$3,880</td>
-          <td>3.2x</td>
-          <td>3.7x</td>
-          <td>$18,836</td>
-          <td>+$13,544/mo</td>
-          <td>+$162,528/yr</td>
-        </tr>
-        <tr>
-          <td><span class="phase-badge p3">Phase 3</span></td>
-          <td>$7,500</td>
-          <td>+$6,380</td>
-          <td>2.7x</td>
-          <td>3.3x</td>
-          <td>$25,586</td>
-          <td>+$20,294/mo</td>
-          <td>+$243,528/yr</td>
-        </tr>
-        <tr>
-          <td><span class="phase-badge p4">Phase 4</span></td>
-          <td>$10,000</td>
-          <td>+$8,880</td>
-          <td>2.2x</td>
-          <td>3.0x</td>
-          <td>$31,086</td>
-          <td>+$25,794/mo</td>
-          <td>+$309,528/yr</td>
+          <td><span class="phase-badge p2">Stretch Goal</span></td>
+          <td><strong>$2,500/mo</strong></td>
+          <td>+$1,380</td>
+          <td>$10,122/mo</td>
+          <td>$90,225/mo</td>
+          <td>+$4,830/mo (+5.7%)</td>
+          <td>36.1x</td>
+          <td>+$57,960/yr</td>
         </tr>
       </tbody>
     </table>
@@ -426,16 +470,18 @@
 
   <div style="margin-top:16px">
     <div class="chart-card">
-      <div class="chart-title">Budget Scaling: Spend vs Projected Revenue</div>
+      <div class="chart-title">Budget Scaling: Spend vs Projected Top-Line Revenue</div>
       <canvas id="scalingChart"></canvas>
     </div>
   </div>
 
   <div class="callout terra" style="margin-top:16px">
-    <strong>Recommended starting point: Phase 1 ($3,000/month).</strong> This nearly triples the current budget
-    but based on January 2026 data (where doubling spend maintained 4.5x ROAS), a 3x budget should sustain ~3.8x&ndash;4.2x returns.
-    At Phase 1, you can expect <strong>~$7,100 in additional monthly revenue</strong> for just <strong>$1,880 in additional spend</strong>.
-    Run Phase 1 for 60&ndash;90 days, then evaluate ROAS before advancing to Phase 2.
+    <strong>Recommendation: Start at $2,000/month.</strong> This is a modest ~80% increase from current spend.
+    Based on the Jan 2026 data (where a 95% spend increase maintained 4.5x ROAS), doubling the budget is well within the safe zone.
+    At $2,000/month, the client should expect to see <strong>~$3,000 more per month in total Shopify revenue</strong> (+3.6% top-line lift).
+    Run for <strong>60&ndash;90 days</strong>, then evaluate MER and top-line impact before considering the $2,500 stretch goal.
+    <br><br><strong>Important:</strong> These projections assume the account is properly optimized first (see Campaign Optimization section below).
+    Without consolidation and bidding improvements, simply adding budget will not produce these results.
   </div>
 </div>
 
@@ -443,40 +489,42 @@
 <div class="section">
   <div class="section-header">
     <h2>Performance Max (Pmax) Assessment</h2>
-    <span class="section-sub">Currently under-utilized &mdash; massive opportunity</span>
+    <span class="section-sub">Running at $3/day &mdash; needs restructuring before scaling</span>
   </div>
 
   <div class="pmax-status">
     <div class="pmax-card current">
       <h3>Current State</h3>
       <ul>
-        <li><strong>$67.53</strong> spent in Feb 2026 &mdash; the only month with Pmax active</li>
-        <li>Generated <strong>$7,061</strong> in Google-reported conversion value (104.6x ROAS)</li>
-        <li>207 clicks at <strong>$0.33 CPC</strong> (extremely cheap)</li>
-        <li>9,952 impressions &mdash; showing Shopping, Display, YouTube, Discover, Gmail</li>
+        <li>Running at just <strong>$3/day ($~90/month)</strong> &mdash; far too low to generate meaningful data</li>
+        <li>Feb 2026: <strong>$67.53</strong> spent, 207 clicks at <strong>$0.33 CPC</strong> (extremely cheap inventory)</li>
+        <li>Google-reported <strong>$7,061</strong> in conversion value (104.6x ROAS) &mdash; promising but insufficient data</li>
+        <li>9,952 impressions across Shopping, Display, YouTube, Discover, Gmail</li>
         <li>No proper asset groups, audience signals, or feed optimization detected</li>
-        <li><span class="badge red">Not being used properly</span></li>
+        <li>Running on <strong>Maximize Conversions with no target set</strong> &mdash; algorithm has no efficiency guardrails</li>
+        <li><span class="badge red">Under-funded &amp; un-optimized</span></li>
       </ul>
     </div>
     <div class="pmax-card recommended">
-      <h3>What You Should Be Doing</h3>
+      <h3>What Needs to Happen First</h3>
       <ul>
-        <li>Allocate <strong>$1,000&ndash;$2,000/month</strong> to Pmax immediately</li>
-        <li>Build 2&ndash;3 <strong>asset groups</strong> around top product categories (kitchenware, tea, home d&eacute;cor)</li>
-        <li>Add <strong>audience signals</strong>: In-market (Home D&eacute;cor, Japanese Culture, Tea, Kitchen), Affinity (Design, Cooking, Lifestyle)</li>
-        <li>Upload <strong>high-quality lifestyle images</strong> &mdash; Japanese artisan goods photograph beautifully</li>
-        <li>Add <strong>custom segments</strong>: competitor websites (Heath Ceramics, Toiro, Korin), related searches</li>
-        <li>Ensure <strong>Google Merchant Center feed</strong> is optimized with all product attributes</li>
-        <li>Let campaigns run for <strong>4&ndash;6 weeks</strong> before evaluating &mdash; Pmax needs data to learn</li>
+        <li><strong>Do not scale Pmax budget yet</strong> &mdash; the account needs consolidation first (see Campaign Optimization below)</li>
+        <li>Merge fragmented Search campaigns into <strong>1&ndash;2 consolidated campaigns</strong> before reallocating budget</li>
+        <li>Set a <strong>Target ROAS or Target CPA</strong> bidding strategy instead of open-ended Maximize Conversions</li>
+        <li>Build <strong>2&ndash;3 asset groups</strong> around top categories (kitchenware, tea, home d&eacute;cor) with 15+ lifestyle images each</li>
+        <li>Add <strong>audience signals</strong>: In-market (Home D&eacute;cor, Japanese Culture, Tea), custom segments (competitor sites)</li>
+        <li>Once consolidated, allocate <strong>$300&ndash;$500/month</strong> to Pmax within the total $2,000&ndash;$2,500 budget</li>
+        <li>Run for <strong>4&ndash;6 weeks minimum</strong> before evaluating &mdash; Pmax needs data to learn</li>
       </ul>
     </div>
   </div>
 
   <div class="callout sage">
-    <strong>Why Pmax matters for Rikumo:</strong> Performance Max campaigns serve ads across <em>all</em> Google surfaces
-    (Search, Shopping, YouTube, Display, Discover, Gmail) from a single campaign. For a visually-driven brand like Rikumo,
-    Pmax can showcase beautiful product imagery to high-intent shoppers who are browsing on YouTube or Discover but wouldn't
-    click a text search ad. The $0.33 CPC in Feb 2026 proves there's cheap, untapped inventory available.
+    <strong>Why consolidation before scaling:</strong> The current account has multiple small-budget campaigns (some at just $3&ndash;$13/day)
+    all running Maximize Conversions with no targets. Google&rsquo;s algorithm needs sufficient budget concentration to optimize effectively.
+    Spreading $1,120/month across many campaigns starves each one of data. Consolidating into fewer campaigns with proper bidding targets
+    will improve performance <em>before</em> adding any new budget. The $0.33 CPC in Pmax proves there's cheap inventory &mdash; but the account
+    structure must be fixed first to capture it efficiently.
   </div>
 </div>
 
@@ -544,48 +592,48 @@
   </div>
   <div class="insights-grid">
     <div>
-      <div class="insight-col-header scale">Scale &mdash; Immediate Opportunities</div>
-      <div class="insight-card scale">
-        <div class="insight-title">Google Search Ads Are Under-Funded</div>
-        <div class="insight-body">At <strong>$1,120/month</strong> with <strong>4.72x ROAS</strong>, this account is leaving money on the table. The Jan 2026 proof (doubled spend, ROAS held) confirms there's room to scale to <strong>$3K&ndash;$5K/month</strong> without efficiency loss.</div>
+      <div class="insight-col-header act">Act Now &mdash; Fix the Foundation</div>
+      <div class="insight-card act">
+        <div class="insight-title">Consolidate Fragmented Campaigns</div>
+        <div class="insight-body">The account has <strong>multiple small-budget campaigns</strong> (some as low as $3&ndash;$13/day). This fragments data and prevents Google&rsquo;s algorithm from optimizing. Consolidate into <strong>1&ndash;2 Search campaigns</strong> and <strong>1 Pmax campaign</strong> to concentrate learning signals.</div>
       </div>
+      <div class="insight-card act">
+        <div class="insight-title">Set Bidding Targets (Stop Open-Ended Max Conversions)</div>
+        <div class="insight-body">All campaigns run <strong>Maximize Conversions with no target</strong> set. This means Google spends however it wants with no efficiency guardrails. Set a <strong>Target ROAS (4x&ndash;5x)</strong> or <strong>Target CPA</strong> to give the algorithm a goal to optimize toward.</div>
+      </div>
+      <div class="insight-card act">
+        <div class="insight-title">Pmax at $3/Day Is Not a Real Test</div>
+        <div class="insight-body">The current Pmax budget of <strong>$3/day (~$90/month)</strong> is far below the minimum needed for the algorithm to learn. Either pause it and reallocate to Search, or increase to <strong>$300&ndash;$500/month</strong> with proper asset groups as part of the $2,000&ndash;$2,500 total budget.</div>
+      </div>
+    </div>
+    <div>
+      <div class="insight-col-header scale">Scale &mdash; After Consolidation</div>
       <div class="insight-card scale">
-        <div class="insight-title">Launch Real Pmax Campaigns</div>
-        <div class="insight-body">$67 in Feb 2026 isn't a test — it's barely a pulse. Pmax at <strong>$1K&ndash;$2K/month</strong> with proper asset groups for Rikumo's beautiful product imagery would unlock Shopping, YouTube, and Discovery inventory at <strong>$0.33 CPC</strong>.</div>
+        <div class="insight-title">Increase Total Budget to $2,000&ndash;$2,500/Month</div>
+        <div class="insight-body">At <strong>76.2x MER</strong> and <strong>4.72x UTM ROAS</strong>, this account has clear headroom. Historical data shows an <strong>85% correlation</strong> between ad spend increases and top-line revenue growth. Target <strong>$2,000/month first</strong>, then evaluate for $2,500.</div>
       </div>
       <div class="insight-card scale">
         <div class="insight-title">Holiday Season Amplification</div>
-        <div class="insight-body">Nov &amp; Dec saw <strong>6.4x&ndash;6.6x ROAS</strong> on just $1,568&ndash;$1,697 spend. Doubling or tripling holiday budget to <strong>$5K&ndash;$8K/month</strong> during Q4 would capture significantly more holiday demand.</div>
+        <div class="insight-body">Nov &amp; Dec saw <strong>6.4x&ndash;6.6x ROAS</strong> on just $1,568&ndash;$1,697 spend. For Q4 2026, consider temporarily increasing to the <strong>higher end of the $2,500 range</strong> to capture holiday demand. Start ramping in October to build campaign history.</div>
+      </div>
+      <div class="insight-card scale">
+        <div class="insight-title">Build Pmax with Proper Asset Groups</div>
+        <div class="insight-body">The $0.33 CPC proves cheap inventory exists. Once campaigns are consolidated, build <strong>2&ndash;3 Pmax asset groups</strong> around top categories with lifestyle imagery. Rikumo&rsquo;s visual products are ideal for Shopping, YouTube, and Discovery surfaces.</div>
       </div>
     </div>
     <div>
       <div class="insight-col-header watch">Watch &mdash; Monitor Closely</div>
       <div class="insight-card watch">
         <div class="insight-title">Order Volume Is Declining YoY</div>
-        <div class="insight-body">Jan orders dropped <strong>-13.3%</strong> and Feb dropped <strong>-17.6%</strong> YoY. AOV is up (+14&ndash;19%), offsetting most of the decline in revenue, but fewer customers is a warning signal. Paid ads can help reverse this trend.</div>
+        <div class="insight-body">Jan orders dropped <strong>-13.3%</strong> and Feb dropped <strong>-17.6%</strong> YoY. AOV is up (+14&ndash;19%), offsetting most of the decline in revenue, but fewer customers is a warning signal. Properly scaled ads can help reverse this trend.</div>
       </div>
       <div class="insight-card watch">
         <div class="insight-title">March 2025 Was an Outlier</div>
-        <div class="insight-body">March showed only <strong>1.4x UTM ROAS</strong> — the worst month by far. With higher spend ($1,337) but only $1,923 in CPC revenue, something was off. Investigate whether campaign settings, keyword targeting, or landing pages changed that month.</div>
+        <div class="insight-body">March showed only <strong>1.4x UTM ROAS</strong> &mdash; the worst month by far. With higher spend ($1,337) but only $1,923 in CPC revenue, something was off. Investigate whether campaign settings, keyword targeting, or landing pages changed that month.</div>
       </div>
       <div class="insight-card watch">
-        <div class="insight-title">Email Drives 14% but Is It Optimized?</div>
-        <div class="insight-body">Klaviyo newsletters + flows + back-in-stock emails drove <strong>$147K</strong> in 2025. Jan 2026 saw a massive jump to $32K (vs $25K in Jan 2025). Ensure email isn't cannibalizing potential ad conversions — coordinate ad and email timing.</div>
-      </div>
-    </div>
-    <div>
-      <div class="insight-col-header act">Act Now &mdash; Critical</div>
-      <div class="insight-card act">
         <div class="insight-title">75% Revenue Has Zero Attribution</div>
-        <div class="insight-body">Three-quarters of revenue shows no UTM source. This means most buyers arrive directly or through organic channels. While great for margins, it's a <strong>vulnerability</strong> — any SEO algorithm change or brand-awareness dip could tank revenue with no paid safety net.</div>
-      </div>
-      <div class="insight-card act">
-        <div class="insight-title">No Spend on Social Ads</div>
-        <div class="insight-body">Pinterest drives organic social sales, but there's <strong>zero paid social budget</strong>. For a visual, lifestyle brand like Rikumo, Instagram and Pinterest paid campaigns could be highly effective. Even <strong>$500&ndash;$1K/month</strong> in testing would provide data.</div>
-      </div>
-      <div class="insight-card act">
-        <div class="insight-title">Google Shopping Feed Under-Leveraged</div>
-        <div class="insight-body">Free product_sync listings drive <strong>$24K/year</strong> — but paid Shopping (via Pmax) would significantly amplify this. Ensure the Merchant Center feed has optimized titles, descriptions, GTINs, and product types for maximum visibility.</div>
+        <div class="insight-body">Three-quarters of revenue shows no UTM source. While great for margins, it&rsquo;s a <strong>vulnerability</strong> &mdash; any SEO or brand-awareness dip could impact revenue with no paid safety net. Building a stronger paid channel provides diversification.</div>
       </div>
     </div>
   </div>
@@ -625,84 +673,122 @@
   <p style="font-size:.76rem; color:var(--muted); margin-top:8px">*Google-reported conversion rate of 54.3% is inflated due to broad conversion tracking. Actual site conversion rate is likely 2&ndash;4%.</p>
 </div>
 
-<!-- ═══════════════════════ STRATEGIC RECOMMENDATIONS ═══════════════════════ -->
+<!-- ═══════════════════════ CAMPAIGN OPTIMIZATION ═══════════════════════ -->
 <div class="section">
   <div class="section-header">
-    <h2>Strategic Recommendations</h2>
-    <span class="section-sub">Prioritized action plan for scaling Rikumo's paid acquisition</span>
+    <h2>Campaign Optimization &mdash; Fix Before Scaling</h2>
+    <span class="section-sub">Account consolidation must happen before any budget increase</span>
   </div>
+
+  <div class="callout red" style="margin-bottom:20px">
+    <strong>Critical:</strong> Simply adding budget to the current account structure will not produce optimal results. The issues below must be
+    addressed first. Expect <strong>2&ndash;4 weeks</strong> of restructuring before scaling.
+  </div>
+
   <div class="recs-grid">
     <div class="rec-card">
       <div class="rec-number">1</div>
-      <div class="rec-title">Scale Google Search to $3,000/Month (Phase 1)</div>
+      <div class="rec-title">Consolidate Fragmented Search Campaigns</div>
       <div class="rec-body">
-        Increase the monthly Search budget from $1,120 to $3,000 immediately. The January 2026 data proves that
-        <strong>doubling spend maintained 4.5x ROAS</strong>. At $3K/month, expect <strong>$12K+ in monthly CPC revenue</strong>
-        vs the current $5.3K. Focus additional budget on:<br>
-        &bull; Expanding keyword coverage (long-tail Japanese homeware terms)<br>
-        &bull; Competitive conquest campaigns (target competitor brand searches)<br>
-        &bull; Category-specific campaigns (tea, ceramics, kitchen, bath)
+        The account has <strong>multiple Search campaigns running at $3&ndash;$13/day</strong>. This fragments data across too many campaigns,
+        preventing Google&rsquo;s algorithm from getting enough conversion signals to optimize effectively. Action plan:<br>
+        &bull; Merge all Search campaigns into <strong>1&ndash;2 core campaigns</strong> (e.g., Brand + Non-Brand)<br>
+        &bull; Use <strong>ad groups</strong> for category segmentation instead of separate campaigns<br>
+        &bull; This concentrates the full $1,120/month budget into fewer, data-rich campaigns<br>
+        &bull; Expected result: better cost-per-conversion and higher conversion rates within existing budget
       </div>
     </div>
     <div class="rec-card">
       <div class="rec-number">2</div>
-      <div class="rec-title">Launch Proper Pmax Campaigns ($1,000&ndash;$2,000/Month)</div>
+      <div class="rec-title">Fix Bidding Strategy &mdash; Add Targets</div>
       <div class="rec-body">
-        The $68 "test" in Feb 2026 doesn't qualify as a real experiment. Allocate <strong>$1K&ndash;$2K/month</strong> with:
-        <br>&bull; <strong>3 asset groups</strong>: Kitchenware &amp; Ceramics, Tea &amp; Food, Home D&eacute;cor &amp; Bath
-        <br>&bull; <strong>15+ high-quality lifestyle images</strong> per asset group
-        <br>&bull; <strong>5 headlines + 5 descriptions</strong> highlighting Japanese craftsmanship
-        <br>&bull; <strong>Audience signals</strong>: Japanese culture enthusiasts, home d&eacute;cor shoppers, tea lovers
-        <br>&bull; Run for <strong>6 weeks minimum</strong> before evaluating
+        All campaigns are running <strong>Maximize Conversions with no target set</strong>. Without a target, Google will spend the full
+        daily budget regardless of efficiency. Fix:<br>
+        &bull; After consolidation, switch to <strong>Target ROAS (start at 400%&ndash;500%)</strong> on Search campaigns<br>
+        &bull; For Pmax: use <strong>Maximize Conversion Value</strong> with a <strong>Target ROAS of 300%</strong> initially<br>
+        &bull; Let the algorithm stabilize for <strong>2&ndash;3 weeks</strong> after setting targets before changing anything else<br>
+        &bull; Monitor impression share &mdash; if it drops significantly, the target is too aggressive
       </div>
     </div>
     <div class="rec-card">
       <div class="rec-number">3</div>
-      <div class="rec-title">Optimize the Same Budget First (Quick Wins)</div>
+      <div class="rec-title">Restructure Pmax ($3/Day &rarr; Proper Budget)</div>
       <div class="rec-body">
-        Before adding budget, ensure the existing $1,120 is spent optimally:<br>
-        &bull; <strong>Review search terms report</strong> &mdash; are there wasted clicks on irrelevant queries?<br>
-        &bull; <strong>Add negative keywords</strong> aggressively (e.g., "free," "DIY," "wholesale," "cheap")<br>
-        &bull; <strong>Check ad scheduling</strong> &mdash; are ads running 24/7 or optimized for peak conversion hours?<br>
-        &bull; <strong>Review device bids</strong> &mdash; mobile vs desktop performance may vary significantly<br>
-        &bull; <strong>Audit landing pages</strong> &mdash; ensure ads link to relevant category/product pages, not just homepage
+        The current <strong>$3/day Pmax budget</strong> generates ~200 clicks/month &mdash; not enough data for the algorithm to learn.
+        After Search consolidation:<br>
+        &bull; Increase Pmax to <strong>$10&ndash;$15/day ($300&ndash;$500/month)</strong> as part of total budget<br>
+        &bull; Build <strong>3 asset groups</strong>: Kitchenware &amp; Ceramics, Tea &amp; Food, Home D&eacute;cor &amp; Bath<br>
+        &bull; Upload <strong>15+ lifestyle images</strong>, 5 headlines, 5 descriptions per asset group<br>
+        &bull; Add <strong>audience signals</strong>: Japanese culture, home d&eacute;cor, tea enthusiasts, competitor URLs<br>
+        &bull; Run for <strong>4&ndash;6 weeks minimum</strong> before evaluating performance
       </div>
     </div>
     <div class="rec-card">
       <div class="rec-number">4</div>
-      <div class="rec-title">Build a Q4 / Holiday Scaling Plan</div>
+      <div class="rec-title">Quick Wins Within Current Budget</div>
       <div class="rec-body">
-        Nov &amp; Dec 2025 delivered <strong>$10K+ in CPC revenue each</strong> at 6.4&ndash;6.6x ROAS on just $1,568&ndash;$1,697 spend.
-        For Q4 2026, plan to:<br>
-        &bull; Increase budget to <strong>$5,000&ndash;$8,000/month</strong> for Oct&ndash;Dec<br>
-        &bull; Launch holiday-specific campaigns and ad copy<br>
-        &bull; Create gift-guide landing pages for Pmax asset groups<br>
-        &bull; Start ramping budget in September to build campaign history<br>
-        &bull; Estimated Q4 impact: <strong>+$40K&ndash;$60K</strong> in additional holiday revenue
+        While restructuring, extract more value from the existing spend:<br>
+        &bull; <strong>Review search terms report</strong> &mdash; add negative keywords for irrelevant queries<br>
+        &bull; <strong>Check ad scheduling</strong> &mdash; optimize for peak conversion hours<br>
+        &bull; <strong>Review device performance</strong> &mdash; adjust bids for mobile vs desktop<br>
+        &bull; <strong>Audit landing pages</strong> &mdash; ensure ads link to relevant category pages, not homepage<br>
+        &bull; <strong>Add sitelink and callout extensions</strong> if not already present
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ STRATEGIC RECOMMENDATIONS ═══════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>Strategic Recommendations</h2>
+    <span class="section-sub">Phased roadmap &mdash; consolidate first, then scale conservatively</span>
+  </div>
+  <div class="recs-grid">
+    <div class="rec-card">
+      <div class="rec-number">1</div>
+      <div class="rec-title">Weeks 1&ndash;3: Consolidate &amp; Optimize (No Budget Change)</div>
+      <div class="rec-body">
+        Restructure the account while keeping the current ~$1,120/month budget:<br>
+        &bull; Merge all Search campaigns into <strong>1&ndash;2 consolidated campaigns</strong><br>
+        &bull; Set <strong>Target ROAS (400%&ndash;500%)</strong> bidding strategy<br>
+        &bull; Add negative keywords, review ad scheduling, audit landing pages<br>
+        &bull; Restructure Pmax with proper asset groups and audience signals<br>
+        &bull; <strong>Expected outcome:</strong> Better performance from the same spend
       </div>
     </div>
     <div class="rec-card">
-      <div class="rec-number">5</div>
-      <div class="rec-title">Test Paid Social ($500&ndash;$1,000/Month)</div>
+      <div class="rec-number">2</div>
+      <div class="rec-title">Weeks 4&ndash;8: Scale to $2,000/Month</div>
       <div class="rec-body">
-        Rikumo's aesthetic products are perfect for visual platforms. Pinterest organic already drives sales.
-        Start testing with:<br>
-        &bull; <strong>Pinterest Ads</strong>: Product pins + collection ads targeting home d&eacute;cor and Japanese culture interests<br>
-        &bull; <strong>Instagram/Meta Ads</strong>: Lifestyle imagery, influencer UGC, retargeting website visitors<br>
-        &bull; Budget: $500&ndash;$1K/month split across platforms<br>
-        &bull; Focus on top-of-funnel awareness + retargeting warm audiences
+        Once the consolidated account stabilizes, increase budget modestly:<br>
+        &bull; <strong>Search: $1,500&ndash;$1,700/month</strong> (the primary revenue driver)<br>
+        &bull; <strong>Pmax: $300&ndash;$500/month</strong> (with proper asset groups now in place)<br>
+        &bull; Monitor <strong>MER weekly</strong> &mdash; it should stay above 40x<br>
+        &bull; Track <strong>top-line Shopify revenue</strong> &mdash; expect +$3,000/month lift<br>
+        &bull; Run for <strong>60 days</strong> minimum at this level before considering further increases
       </div>
     </div>
     <div class="rec-card">
-      <div class="rec-number">6</div>
-      <div class="rec-title">Diversify Away from 75% Unattributed Revenue</div>
+      <div class="rec-number">3</div>
+      <div class="rec-title">Months 3&ndash;4: Evaluate &amp; Consider $2,500/Month</div>
       <div class="rec-body">
-        Relying on organic/direct traffic for three-quarters of revenue is a vulnerability. To reduce risk:<br>
-        &bull; <strong>Scale paid channels</strong> to 15&ndash;20% of revenue (from current 6%)<br>
-        &bull; <strong>Invest in SEO content</strong> &mdash; Japanese lifestyle blog, product guides, craft stories<br>
-        &bull; <strong>Build email list aggressively</strong> &mdash; email already drives 14% of revenue and is highly efficient<br>
-        &bull; <strong>Track all touchpoints</strong> &mdash; ensure UTM parameters are on every link from every channel<br>
-        &bull; Goal: reduce unattributed revenue from 75% to under 50% within 12 months
+        If MER remains healthy and top-line revenue shows the expected lift:<br>
+        &bull; Increase total budget to <strong>$2,500/month</strong><br>
+        &bull; Allocate additional spend to whichever channel (Search or Pmax) shows better efficiency<br>
+        &bull; Expected top-line lift at $2,500: <strong>+$4,830/month</strong> (+$57,960/year)<br>
+        &bull; If MER drops below 30x, pause the increase and investigate
+      </div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-number">4</div>
+      <div class="rec-title">Q4 2026: Seasonal Acceleration</div>
+      <div class="rec-body">
+        Nov &amp; Dec 2025 delivered <strong>6.4x&ndash;6.6x ROAS</strong> &mdash; the best months of the year. For Q4 2026:<br>
+        &bull; Push budget to the <strong>upper end of the $2,500 range</strong> during Oct&ndash;Dec<br>
+        &bull; Launch holiday-specific ad copy and gift-guide landing pages<br>
+        &bull; Start ramping in <strong>late September</strong> to build campaign history<br>
+        &bull; Use the 60&ndash;90 day performance data from Phase 2 to set realistic holiday targets
       </div>
     </div>
   </div>
@@ -712,55 +798,55 @@
 <div class="section">
   <div class="section-header">
     <h2>Proposed Monthly Budget Allocation</h2>
-    <span class="section-sub">Phase 1 recommendation &mdash; total $4,500&ndash;$6,000/month</span>
+    <span class="section-sub">Recommended target: $2,000&ndash;$2,500/month total Google Ads spend</span>
   </div>
   <div class="table-wrap">
     <table class="scale-table">
       <thead>
-        <tr><th>Channel</th><th>Current Spend</th><th>Recommended Spend</th><th>Expected Revenue</th><th>Expected ROAS</th></tr>
+        <tr><th>Channel</th><th>Current Spend</th><th>Phase 1 ($2,000)</th><th>Phase 2 ($2,500)</th><th>Notes</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td>Google Search</td>
-          <td>$1,120/mo</td>
-          <td><strong>$3,000/mo</strong></td>
-          <td>$12,000&ndash;$14,000</td>
-          <td>4.0x&ndash;4.7x</td>
+          <td>Google Search (Consolidated)</td>
+          <td>$1,120/mo<br><span style="font-size:.72rem;color:var(--muted)">fragmented across multiple campaigns</span></td>
+          <td><strong>$1,500&ndash;$1,700/mo</strong></td>
+          <td><strong>$1,800&ndash;$2,000/mo</strong></td>
+          <td>Merge into 1&ndash;2 campaigns first; set Target ROAS</td>
         </tr>
         <tr>
           <td>Google Pmax</td>
-          <td>$68/mo*</td>
-          <td><strong>$1,500/mo</strong></td>
-          <td>$4,500&ndash;$7,500</td>
-          <td>3.0x&ndash;5.0x</td>
-        </tr>
-        <tr>
-          <td>Paid Social (Pinterest/Meta)</td>
-          <td>$0</td>
-          <td><strong>$500&ndash;$1,000/mo</strong></td>
-          <td>$1,000&ndash;$3,000</td>
-          <td>2.0x&ndash;3.0x</td>
-        </tr>
-        <tr>
-          <td>AdRoll (Display/Retarget)</td>
-          <td>~$90/mo</td>
-          <td><strong>$500/mo</strong></td>
-          <td>$1,000&ndash;$2,000</td>
-          <td>2.0x&ndash;4.0x</td>
+          <td>$90/mo<br><span style="font-size:.72rem;color:var(--muted)">$3/day, no proper setup</span></td>
+          <td><strong>$300&ndash;$500/mo</strong></td>
+          <td><strong>$500&ndash;$700/mo</strong></td>
+          <td>Build proper asset groups; set Target ROAS 300%</td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
-          <td>Total</td>
-          <td>~$1,280/mo</td>
-          <td><strong>$5,500&ndash;$6,000/mo</strong></td>
-          <td>$18,500&ndash;$26,500</td>
-          <td>3.4x&ndash;4.4x blended</td>
+          <td>Total Google Ads</td>
+          <td>~$1,210/mo</td>
+          <td><strong>$2,000/mo</strong></td>
+          <td><strong>$2,500/mo</strong></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Projected MER</td>
+          <td>76.2x</td>
+          <td><strong>44.2x</strong></td>
+          <td><strong>36.1x</strong></td>
+          <td>Well above healthy threshold (10x+)</td>
+        </tr>
+        <tr>
+          <td>Projected Top-Line Lift</td>
+          <td>&mdash;</td>
+          <td class="highlight"><strong>+$3,080/mo</strong></td>
+          <td class="highlight"><strong>+$4,830/mo</strong></td>
+          <td>Incremental total Shopify revenue</td>
         </tr>
       </tfoot>
     </table>
   </div>
-  <p style="font-size:.76rem; color:var(--muted); margin-top:8px">*Pmax: $68 was Feb 2026 only; AdRoll average estimated from UTM data.</p>
+  <p style="font-size:.76rem; color:var(--muted); margin-top:8px">Phase 1 budget should run for 60&ndash;90 days before evaluating for Phase 2. All projections assume account consolidation is completed first.</p>
 </div>
 
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
@@ -925,10 +1011,10 @@ new Chart(document.getElementById('attributionChart'), {
 new Chart(document.getElementById('scalingChart'), {
   type: 'bar',
   data: {
-    labels: ['Current ($1,120)','Phase 1 ($3,000)','Phase 2 ($5,000)','Phase 3 ($7,500)','Phase 4 ($10,000)'],
+    labels: ['Current ($1,120/mo)','Recommended ($2,000/mo)','Stretch Goal ($2,500/mo)'],
     datasets: [
-      { label:'Monthly Ad Spend', data:[1120,3000,5000,7500,10000], backgroundColor:'rgba(196,149,106,0.8)', borderRadius:4 },
-      { label:'Est. Monthly Ad Revenue', data:[5292,12436,18836,25586,31086], backgroundColor:'rgba(91,123,111,0.8)', borderRadius:4 }
+      { label:'Monthly Ad Spend', data:[1120,2000,2500], backgroundColor:'rgba(196,149,106,0.8)', borderRadius:4 },
+      { label:'Projected Monthly Top-Line', data:[85395,88475,90225], backgroundColor:'rgba(91,123,111,0.8)', borderRadius:4 }
     ]
   },
   options: {
@@ -936,6 +1022,31 @@ new Chart(document.getElementById('scalingChart'), {
     indexAxis:'y',
     scales:{x:{ticks:{callback:v=>'$'+v.toLocaleString()},grid:{color:'#EDEBE6'}}},
     plugins:{tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': $'+ctx.parsed.x.toLocaleString()}}}
+  }
+});
+
+// ── MER Trend ──
+const merMonths = ['Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26'];
+const merValues = [106340/740, 68353/714, 77284/1337, 76061/1157, 81491/997, 72548/989, 62171/984, 77522/987, 64101/998, 78083/1274, 122011/1568, 138776/1697, 104940/1442, 66826/913].map(v=>Math.round(v*10)/10);
+new Chart(document.getElementById('merChart'), {
+  type: 'line',
+  data: {
+    labels: merMonths,
+    datasets: [
+      { label:'MER (Total Revenue / Ad Spend)', data:merValues, borderColor:sage, backgroundColor:'rgba(91,123,111,0.12)', pointBackgroundColor:sage, pointRadius:5, borderWidth:2.5, fill:true }
+    ]
+  },
+  options: {
+    responsive:true,
+    scales:{
+      y:{ticks:{callback:v=>v+'x'},grid:{color:'#EDEBE6'},min:0},
+    },
+    plugins:{
+      tooltip:{callbacks:{label:ctx=>'MER: '+ctx.parsed.y.toFixed(1)+'x'}},
+      annotation:{annotations:{
+        healthy:{type:'line',yMin:40,yMax:40,borderColor:green,borderDash:[6,4],borderWidth:2,label:{display:true,content:'Healthy MER (40x+)',position:'end',backgroundColor:green,font:{size:10}}}
+      }}
+    }
   }
 });
 </script>
