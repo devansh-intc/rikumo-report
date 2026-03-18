@@ -273,6 +273,37 @@ week1_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(7))
 week2_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(7, 14))
 week3p_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(14, 17))
 
+# ── Daily Trend & End-of-Month Projection ──────────────────────────────────
+# Daily sales list for 2026
+daily_sales_2026 = [days_2026_sorted[i][1]["total_sales"] for i in range(17)]
+
+# First 7 days vs last 5 days (Mar 13-17) to show decline
+first7_avg = sum(daily_sales_2026[:7]) / 7
+last5_sales = daily_sales_2026[12:]  # Mar 13-17
+last5_avg = sum(last5_sales) / 5
+last3_sales = daily_sales_2026[14:]  # Mar 15-17
+last3_avg = sum(last3_sales) / 3
+trend_drop_pct = (last5_avg - first7_avg) / first7_avg * 100
+
+# 2025 remaining period (Mar 18-31)
+s25_remaining = s25_full["total_sales"] - s25_17["total_sales"]
+s25_remaining_daily_avg = s25_remaining / 14  # 14 days remaining
+
+# Projection scenarios for 2026 remaining days (Mar 18-31)
+# Scenario 1: If daily avg stays at last 5 days pace
+proj_last5_pace = s26_total_sales + last5_avg * remaining_days
+# Scenario 2: If daily avg stays at overall 17-day pace
+proj_overall_pace = s26_total_sales + avg_daily_2026 * remaining_days
+# Scenario 3: If daily avg matches first 7 days pace
+proj_first7_pace = s26_total_sales + first7_avg * remaining_days
+
+# Revenue needed per day to match 2025 full month
+daily_needed_match_2025 = (s25_full["total_sales"] - s26_total_sales) / remaining_days
+# Can we cover the gap?
+will_cover_at_current_pace = proj_overall_pace >= s25_full["total_sales"]
+shortfall_at_current = s25_full["total_sales"] - proj_overall_pace
+shortfall_at_last5 = s25_full["total_sales"] - proj_last5_pace
+
 # ── AOV Analysis (THE core finding) ─────────────────────────────────────────
 aov_25 = s25_17["aov"]
 aov_26 = s26_utm["aov"]
@@ -641,9 +672,60 @@ h(f'<tr><td>Mar 15&ndash;17</td><td class="r">{fmt(week3p_25)}</td><td class="r"
 h('</table></div>')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 6. DISCOUNT ANALYSIS
+# 6. DAILY SALES TREND & END-OF-MONTH PROJECTION
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>6. Discount &amp; Pricing Analysis</h2>')
+h('<h2>6. Daily Sales Trend &amp; End-of-Month Projection</h2>')
+
+h(f'''<div class="card"><h3>Daily Average Sales Trend (March 2026)</h3><table>
+<tr><th>Period</th><th class="r">Daily Avg Sales</th><th class="r">vs. First 7 Days</th></tr>
+<tr><td>Mar 1&ndash;7 (first 7 days)</td><td class="r">{fmt(first7_avg)}</td><td class="r">&mdash;</td></tr>
+<tr><td>Mar 8&ndash;14 (week 2)</td><td class="r">{fmt(week2_26 / 7)}</td><td class="r">{chg(week2_26 / 7, first7_avg)}</td></tr>
+<tr><td>Mar 13&ndash;17 (last 5 days)</td><td class="r"><strong>{fmt(last5_avg)}</strong></td><td class="r"><strong>{chg(last5_avg, first7_avg)}</strong></td></tr>
+<tr><td>Mar 15&ndash;17 (last 3 days)</td><td class="r"><strong>{fmt(last3_avg)}</strong></td><td class="r"><strong>{chg(last3_avg, first7_avg)}</strong></td></tr>
+</table>''')
+
+h(f'''<p style="margin-top:12px">Daily sales have <strong>{"declined" if last5_avg < first7_avg else "increased"} significantly</strong> &mdash;
+the last 5 days averaged <strong>{fmt(last5_avg)}/day</strong> compared to <strong>{fmt(first7_avg)}/day</strong> in the first week
+(<strong>{abs(trend_drop_pct):.0f}% {"drop" if trend_drop_pct < 0 else "increase"}</strong>).
+The most recent 3 days (Mar 15&ndash;17) averaged just <strong>{fmt(last3_avg)}/day</strong>.</p>
+</div>''')
+
+h(f'''<div class="card"><h3>Can We Cover the Revenue Gap? (Mar 18&ndash;31 Projection)</h3><table>
+<tr><th>Scenario</th><th class="r">Remaining 14 Days Avg</th><th class="r">Projected Month Total</th><th class="r">vs. 2025 Full Month ({fmt(s25_full["total_sales"])})</th><th class="r">Verdict</th></tr>
+<tr><td>At recent pace (last 5 days avg)</td><td class="r">{fmt(last5_avg)}/day</td><td class="r">{fmt(proj_last5_pace)}</td><td class="r">{chg(proj_last5_pace, s25_full["total_sales"])}</td>
+<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_last5_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
+<tr><td>At overall 17-day avg pace</td><td class="r">{fmt(avg_daily_2026)}/day</td><td class="r">{fmt(proj_overall_pace)}</td><td class="r">{chg(proj_overall_pace, s25_full["total_sales"])}</td>
+<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_overall_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
+<tr><td>At first-week pace</td><td class="r">{fmt(first7_avg)}/day</td><td class="r">{fmt(proj_first7_pace)}</td><td class="r">{chg(proj_first7_pace, s25_full["total_sales"])}</td>
+<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_first7_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
+<tr class="tot"><td>Needed to match 2025</td><td class="r"><strong>{fmt(daily_needed_match_2025)}/day</strong></td><td class="r"><strong>{fmt(s25_full["total_sales"])}</strong></td><td class="r">0.0%</td><td class="r">&mdash;</td></tr>
+</table>''')
+
+h(f'''<p style="margin-top:12px"><strong>2025 context:</strong> In March 2025, the remaining 14 days (Mar 18&ndash;31) generated
+<strong>{fmt(s25_remaining)}</strong> at <strong>{fmt(s25_remaining_daily_avg)}/day</strong>.</p>''')
+
+if proj_overall_pace < s25_full["total_sales"]:
+    h(f'''<div class="alert alert-w">
+<strong>Bottom Line:</strong> At the current 17-day average of <strong>{fmt(avg_daily_2026)}/day</strong>, March 2026 will end at approximately
+<strong>{fmt(proj_overall_pace)}</strong> &mdash; a <strong>{fmt(abs(shortfall_at_current))}</strong> shortfall vs. 2025.
+At the declining recent pace ({fmt(last5_avg)}/day), it drops further to <strong>{fmt(proj_last5_pace)}</strong>.
+To match 2025&rsquo;s {fmt(s25_full["total_sales"])}, the remaining 14 days need <strong>{fmt(daily_needed_match_2025)}/day</strong> &mdash;
+that&rsquo;s <strong>{daily_needed_match_2025 / avg_daily_2026:.1f}x</strong> the current daily average.
+<strong>Without a flash sale or major promotional push, the gap will not close.</strong>
+</div>''')
+else:
+    h(f'''<div class="alert" style="border-left:4px solid #276749; background:#f0fff4;">
+<strong>Bottom Line:</strong> At the current pace of <strong>{fmt(avg_daily_2026)}/day</strong>, March 2026 is on track to reach
+<strong>{fmt(proj_overall_pace)}</strong>, which would {"match" if abs(chg_val(proj_overall_pace, s25_full["total_sales"])) < 2 else "exceed"} 2025&rsquo;s {fmt(s25_full["total_sales"])}.
+However, the declining trend in the last 5 days is a concern and needs to be reversed.
+</div>''')
+
+h('</div>')
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 7. DISCOUNT ANALYSIS
+# ═══════════════════════════════════════════════════════════════════════════════
+h('<h2>7. Discount &amp; Pricing Analysis</h2>')
 h(f'''<div class="card"><table>
 <tr><th>Metric</th><th class="r">2025 (Mar 1&ndash;17)</th><th class="r">2026 (Mar 1&ndash;17)</th><th class="r">Change</th></tr>
 <tr><td>Gross Sales</td><td class="r">{fmt(s25_17["gross_sales"])}</td><td class="r">{fmt(s26_utm["gross_sales"])}</td><td class="r">{chg(s26_utm["gross_sales"], s25_17["gross_sales"])}</td></tr>
@@ -663,9 +745,9 @@ The lower discount rate in 2026 ({pct(s26_utm["discount_rate"])}) means better p
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 7. AD SPEND & PLATFORM PERFORMANCE
+# 8. AD SPEND & PLATFORM PERFORMANCE
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>7. Ad Spend &amp; Platform Performance</h2>')
+h('<h2>8. Ad Spend &amp; Platform Performance</h2>')
 
 h('<div class="card"><h3>Ad Spend Overview</h3>')
 h(f'''<table>
@@ -716,9 +798,9 @@ Branded Search is highly efficient at 6.85x ROAS. The NB Dried Cabbage campaign 
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 8. RECOMMENDATIONS
+# 9. RECOMMENDATIONS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>8. Recommendations &amp; Action Plan</h2>')
+h('<h2>9. Recommendations &amp; Action Plan</h2>')
 
 h(f'''<div class="rec">
 <strong>1. Launch a Flash Sale / Promotion (March 19&ndash;22)</strong><br>
@@ -770,9 +852,9 @@ A realistic target: match or come within 5&ndash;10% of last year&rsquo;s {fmt(s
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 9. PROJECTED SCENARIOS
+# 10. PROJECTED SCENARIOS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>9. Projected Scenarios (Rest of March)</h2>')
+h('<h2>10. Projected Scenarios (Rest of March)</h2>')
 
 scenario_a = s26_projected  # status quo
 scenario_a_spend = s26_projected_spend
@@ -793,9 +875,9 @@ h(f'''<div class="card"><table>
 </table></div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 10. IMMEDIATE ACTION ITEMS
+# 11. IMMEDIATE ACTION ITEMS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>10. Immediate Action Items</h2>')
+h('<h2>11. Immediate Action Items</h2>')
 h(f'''<div class="card"><table>
 <tr><th>#</th><th>Action</th><th>Timeline</th><th>Expected Impact</th></tr>
 <tr><td>1</td><td>Plan &amp; launch flash sale (20&ndash;25% off best sellers, focus on bundles/samplers)</td><td>Mar 19&ndash;22</td><td>+$8,000&ndash;15,000 (based on Mar 12, 2025 precedent)</td></tr>
