@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Harmony House Foods — March YoY Analysis (v2)
+Harmony House Foods — March YoY Analysis (v3)
 Compares March 2025 vs March 2026 (1-17) performance.
 Generates an HTML report with insights for client call.
 """
@@ -64,9 +64,26 @@ def load_ad_spend_2026():
             })
     return rows
 
+def load_products_2026():
+    rows = []
+    with open(os.path.join(BASE, "shopify_products_march_2026.csv")) as f:
+        for r in csv.DictReader(f):
+            rows.append({
+                "name": r["Product title"],
+                "items_sold": int(r["Net items sold"]),
+                "gross_sales": float(r["Gross sales"]),
+                "discounts": float(r["Discounts"]),
+                "returns": float(r["Returns"]),
+                "net_sales": float(r["Net sales"]),
+                "taxes": float(r["Taxes"]),
+                "total_sales": float(r["Total sales"]),
+            })
+    return rows
+
 shopify_2025 = load_shopify_2025()
 utm_2026 = load_utm_2026()
 ad_spend_2026 = load_ad_spend_2026()
+products_2026 = load_products_2026()
 
 # ── Aggregate: March 2025 ───────────────────────────────────────────────────
 def agg(rows, keys=("orders", "gross_sales", "total_sales", "net_sales")):
@@ -168,7 +185,7 @@ total_ch_sales = sum(v["total_sales"] for _, v in channels_sorted)
 channel_spend = {
     "Facebook & Instagram Paid": s26_fb_spent,
     "Google Ads (CPC)": s26_google_spent,
-    "Google Shopping (Product Sync)": 0,  # included in Google spend (PMax)
+    "Google Shopping (Product Sync)": 0,
     "Google Organic": 0,
     "Klaviyo Email": 0,
     "Shopify Email": 0,
@@ -178,7 +195,7 @@ channel_spend = {
     "Direct / Organic / Unattributed": 0,
 }
 
-# FB paid channel totals (now a single merged channel)
+# FB paid channel totals
 fb_paid_total_sales = channels.get("Facebook & Instagram Paid", {}).get("total_sales", 0)
 fb_paid_total_orders = channels.get("Facebook & Instagram Paid", {}).get("orders", 0)
 
@@ -250,20 +267,44 @@ week1_26 = sum(ad_march[i]["daily_shopify_sales"] for i in range(7))
 week2_26 = sum(ad_march[i]["daily_shopify_sales"] for i in range(7, 14))
 week3p_26 = sum(ad_march[i]["daily_shopify_sales"] for i in range(14, 17))
 
-# ── The Key Diagnosis: Why Top Line Down When ROAS Is Good ──────────────────
-# 2025: Organic was doing the heavy lifting (Google full month conv value = $28,106)
-# Prorated Google conv value for Mar 1-17 2025 ≈ $28,106 * 17/31 = $15,405
-google_conv_2025_prorated = google_2025["conv_value"] * 17 / 31
-organic_estimate_2025 = s25_17["total_sales"] - google_conv_2025_prorated - (fb_spend_2025 * 17 / 31 * 2)  # minimal FB
+# ── AOV Analysis (THE core finding) ─────────────────────────────────────────
+aov_25 = s25_17["aov"]
+aov_26 = s26_utm["aov"]
+aov_drop_pct = (aov_26 - aov_25) / aov_25 * 100
+aov_drop_abs = aov_25 - aov_26
+orders_25 = s25_17["orders"]
+orders_26 = s26_utm["orders"]
+orders_chg_pct = (orders_26 - orders_25) / orders_25 * 100
 
-# 2026: Platform claims $41,931 in conv value but total Shopify is only $53,891
-# So platforms claim 78% of all revenue — which means organic baseline has collapsed
-platform_claimed_2026 = s26_fb_conv + s26_google_conv
-organic_estimate_2026 = s26_total_sales - platform_claimed_2026
-if organic_estimate_2026 < 0:
-    organic_estimate_2026 = 0  # platforms over-claiming
+# Revenue impact: if AOV stayed the same, how much would we have?
+hypothetical_rev_same_aov = orders_26 * aov_25
+revenue_lost_to_aov = hypothetical_rev_same_aov - s26_utm["total_sales"]
 
-# Real organic from UTM (direct/unattributed)
+# ── Product-Level Analysis (March 2026) ──────────────────────────────────────
+products_sorted = sorted(products_2026, key=lambda x: x["total_sales"], reverse=True)
+top_20_products = products_sorted[:20]
+total_product_sales = sum(p["total_sales"] for p in products_2026)
+total_product_items = sum(p["items_sold"] for p in products_2026)
+top_20_sales = sum(p["total_sales"] for p in top_20_products)
+top_20_pct = top_20_sales / total_product_sales * 100 if total_product_sales else 0
+
+# Categorize products
+samplers_kits = [p for p in products_2026 if any(kw in p["name"].lower() for kw in ["sampler", "kit", "pack", "stuffer", "combo", "assortment", "medley", "essentials", "favorites"])]
+beans_legumes = [p for p in products_2026 if any(kw in p["name"].lower() for kw in ["bean", "lentil", "pinto", "garbanzo", "pea", "split pea"]) and not any(kw in p["name"].lower() for kw in ["sampler", "kit", "pack", "stuffer"])]
+freeze_dried_fruit = [p for p in products_2026 if any(kw in p["name"].lower() for kw in ["freeze-dried", "freeze dried"]) and any(kw in p["name"].lower() for kw in ["blueberr", "strawberr", "raspberr", "banana", "mango", "cherry", "cherries", "peach", "apple", "pineapple", "grape", "fruit"])]
+individual_veggies = [p for p in products_2026 if any(kw in p["name"].lower() for kw in ["dried bell", "dried broccoli", "dried cabbage", "dried carrot", "dried celery", "dried onion", "dried potato", "dried spinach", "dried tomato", "dried sweet potato", "dried garlic", "dried jalap", "dried zucchini", "dried butternut", "dried leek", "dried green bean", "dried shallot", "dried chive", "tomato powder"])]
+soup_blends = [p for p in products_2026 if any(kw in p["name"].lower() for kw in ["soup", "chili", "chowder", "stew"]) and not any(kw in p["name"].lower() for kw in ["sampler", "kit", "pack", "stuffer", "combo"])]
+
+def cat_total(items):
+    return sum(p["total_sales"] for p in items), sum(p["items_sold"] for p in items), len(items)
+
+cat_samplers = cat_total(samplers_kits)
+cat_beans = cat_total(beans_legumes)
+cat_fruit = cat_total(freeze_dried_fruit)
+cat_veggies = cat_total(individual_veggies)
+cat_soups = cat_total(soup_blends)
+
+# Direct/organic from UTM
 direct_sales = channels.get("Direct / Organic / Unattributed", {}).get("total_sales", 0)
 direct_orders = channels.get("Direct / Organic / Unattributed", {}).get("orders", 0)
 
@@ -349,9 +390,9 @@ h(f'<p class="sub">March 2025 vs. March 2026 (1&ndash;17) &nbsp;|&nbsp; Prepared
 h('<h2>1. Executive Summary</h2>')
 
 h(f'''<div class="alert">
-<strong>Key Finding:</strong> March 2026 total Shopify sales (Mar 1&ndash;17) are <strong>{pct(abs(chg_val(s26_total_sales, s25_17["total_sales"])))}</strong> below the same period in 2025,
-while ad spend has already exceeded last year&rsquo;s <em>full month</em> budget ({fmt(total_spend_2025)}) in just 17 days ({fmt(s26_total_spent)}).
-MER has collapsed from <strong>{mer_2025_full:.1f}x</strong> to <strong>{mer_2026:.1f}x</strong>.
+<strong>Key Finding:</strong> March 2026 total Shopify sales (Mar 1&ndash;17) are <strong>{pct(abs(chg_val(s26_total_sales, s25_17["total_sales"])))}</strong> below the same period in 2025.
+However, <strong>order count is nearly identical</strong> ({orders_25} vs {orders_26} orders, just {pct(abs(orders_chg_pct))} difference).
+The gap is driven by a <strong>{pct(abs(aov_drop_pct))} drop in Average Order Value</strong> ({fmt(aov_25)} &rarr; {fmt(aov_26)}) and a <strong>missing promotional event</strong> (Mar 12, 2025 flash sale).
 </div>''')
 
 h(f'''<div class="alert alert-w">
@@ -364,11 +405,11 @@ h(f'''<div class="kpi-grid">
 <div class="kpi"><div class="lb">Total Shopify Sales (Mar 1&ndash;17)</div><div class="vl">{fmt(s26_total_sales)}</div>
 <div class="ch">{chg(s26_total_sales, s25_17["total_sales"])} vs. {fmt(s25_17["total_sales"])} (2025)</div></div>
 
-<div class="kpi"><div class="lb">Total Ad Spend (Mar 1&ndash;17)</div><div class="vl">{fmt(s26_total_spent)}</div>
-<div class="ch">{chg(s26_total_spent, total_spend_2025)} vs. {fmt(total_spend_2025)} (2025 full month!)</div></div>
+<div class="kpi"><div class="lb">Orders (Mar 1&ndash;17)</div><div class="vl">{orders_26}</div>
+<div class="ch">{chg(orders_26, orders_25)} vs. {orders_25} (2025)</div></div>
 
-<div class="kpi"><div class="lb">MER (Revenue / Spend)</div><div class="vl">{mer_2026:.1f}x</div>
-<div class="ch">{chg(mer_2026, mer_2025_full)} vs. {mer_2025_full:.1f}x (2025)</div></div>
+<div class="kpi"><div class="lb">Average Order Value</div><div class="vl">{fmt(aov_26)}</div>
+<div class="ch">{chg(aov_26, aov_25)} vs. {fmt(aov_25)} (2025)</div></div>
 
 <div class="kpi"><div class="lb">Blended Platform ROAS</div><div class="vl">{s26_total_conv / s26_total_spent:.2f}x</div>
 <div class="ch">Google: {google_2026["roas"]:.1f}x &nbsp;|&nbsp; FB: {s26_fb_conv / s26_fb_spent:.2f}x</div></div>
@@ -384,83 +425,120 @@ h(f'''<div class="kpi-grid">
 <div class="kpi"><div class="lb">Daily Sales Needed (Remaining {remaining_days} Days)</div><div class="vl">{fmt(daily_needed)}</div>
 <div class="ch">Current avg: {fmt(avg_daily_2026)}/day &nbsp;|&nbsp; Need {daily_needed / avg_daily_2026:.1f}x current pace</div></div>
 
-<div class="kpi"><div class="lb">Projected Full Month Spend</div><div class="vl">{fmt(s26_projected_spend)}</div>
-<div class="ch">{chg(s26_projected_spend, total_spend_2025)} vs. {fmt(total_spend_2025)} (2025 total)</div></div>
+<div class="kpi"><div class="lb">Total Ad Spend (Mar 1&ndash;17)</div><div class="vl">{fmt(s26_total_spent)}</div>
+<div class="ch">{chg(s26_total_spent, total_spend_2025)} vs. {fmt(total_spend_2025)} (2025 full month!)</div></div>
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 2. THE REAL ISSUE: WHY IS TOP LINE DOWN WHEN PLATFORM ROAS IS GOOD?
+# 2. THE REAL ISSUE: AOV DROP + MISSING PROMO
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>2. The Real Issue: Why Is Top Line Down When Platform ROAS Looks Good?</h2>')
+h('<h2>2. Root Cause: Why Is Revenue Down When Orders Are Flat?</h2>')
 
 h(f'''<div class="diag">
 <strong>This is the #1 question to answer on the client call.</strong><br><br>
-Platform ROAS looks healthy &mdash; Google at <strong>{google_2026["roas"]:.1f}x</strong>, Facebook at <strong>{s26_fb_conv / s26_fb_spent:.2f}x</strong>,
-blended at <strong>{s26_total_conv / s26_total_spent:.2f}x</strong>. So why is total Shopify revenue down {pct(abs(chg_val(s26_total_sales, s25_17["total_sales"])))} YoY?
+Orders are nearly identical ({orders_25} in 2025 vs {orders_26} in 2026 &mdash; only {pct(abs(orders_chg_pct))} difference).
+The revenue gap is driven by <strong>two factors</strong>: a lower Average Order Value and a missing promotional event.
 </div>''')
 
 h('<div class="card">')
-h('<h3>The Disconnect: Platform ROAS vs. MER</h3>')
+h('<h3>Factor 1: Average Order Value Dropped {}</h3>'.format(pct(abs(aov_drop_pct))))
 h(f'''<table>
-<tr><th>Metric</th><th class="r">March 2025 (full month)</th><th class="r">March 2026 (1&ndash;17)</th></tr>
-<tr><td>Total Ad Spend</td><td class="r">{fmt(total_spend_2025)}</td><td class="r">{fmt(s26_total_spent)}</td></tr>
-<tr><td>Platform-Reported Conversion Value</td><td class="r">{fmt(google_2025["conv_value"])} (Google only)</td><td class="r">{fmt(platform_claimed_2026)} (Google + FB)</td></tr>
-<tr><td>Total Shopify Sales</td><td class="r">{fmt(s25_full["total_sales"])}</td><td class="r">{fmt(s26_total_sales)}</td></tr>
-<tr><td>Platform ROAS</td><td class="r">{google_2025["roas"]:.2f}x</td><td class="r">{s26_total_conv / s26_total_spent:.2f}x</td></tr>
-<tr><td>MER (Shopify Sales / Ad Spend)</td><td class="r"><strong>{mer_2025_full:.1f}x</strong></td><td class="r"><strong>{mer_2026:.1f}x</strong></td></tr>
-<tr><td>Revenue NOT claimed by platforms</td><td class="r">{fmt(s25_full["total_sales"] - google_2025["conv_value"])}</td><td class="r">{fmt(max(0, s26_total_sales - platform_claimed_2026))}</td></tr>
+<tr><th>Metric</th><th class="r">March 2025 (1&ndash;17)</th><th class="r">March 2026 (1&ndash;17)</th><th class="r">Change</th></tr>
+<tr><td>Orders</td><td class="r">{orders_25}</td><td class="r">{orders_26}</td><td class="r">{chg(orders_26, orders_25)}</td></tr>
+<tr><td>Total Sales</td><td class="r">{fmt(s25_17["total_sales"])}</td><td class="r">{fmt(s26_total_sales)}</td><td class="r">{chg(s26_total_sales, s25_17["total_sales"])}</td></tr>
+<tr class="hl"><td><strong>Average Order Value</strong></td><td class="r"><strong>{fmt(aov_25)}</strong></td><td class="r"><strong>{fmt(aov_26)}</strong></td><td class="r"><strong>{chg(aov_26, aov_25)}</strong></td></tr>
+<tr><td>Revenue Lost to AOV Drop</td><td class="r">&mdash;</td><td class="r" colspan="2"><strong style="color:#c53030">{fmt(revenue_lost_to_aov)}</strong> (if AOV had stayed at {fmt(aov_25)}, revenue would be {fmt(hypothetical_rev_same_aov)})</td></tr>
+</table>''')
+h('</div>')
+
+h(f'''<div class="card">
+<h3>Factor 2: Missing Promotional Event</h3>
+<p>March 12, 2025 had a flash sale: <strong>89 orders</strong>, {fmt(mar12_2025["total_sales"])} in sales, {fmt(abs(mar12_2025["discounts"]))} in discounts.
+This single day = <strong>{pct(mar12_2025["total_sales"] / s25_17["total_sales"] * 100)}</strong> of all March 1&ndash;17 2025 sales.</p>
+<p style="margin-top:8px"><strong style="color:#c53030">No equivalent promotion has been run in March 2026.</strong></p>
+<table style="margin-top:12px">
+<tr><th>Metric</th><th class="r">Including Mar 12</th><th class="r">Excluding Mar 12</th></tr>
+<tr><td>2025 Sales (Mar 1&ndash;17)</td><td class="r">{fmt(s25_17["total_sales"])}</td><td class="r">{fmt(s25_17_ex12)}</td></tr>
+<tr><td>2026 Sales (Mar 1&ndash;17)</td><td class="r">{fmt(s26_total_sales)}</td><td class="r">{fmt(s26_17_ex12)}</td></tr>
+<tr class="hl"><td>YoY Change</td><td class="r">{chg(s26_total_sales, s25_17["total_sales"])}</td><td class="r">{chg(s26_17_ex12, s25_17_ex12)}</td></tr>
 </table>
 </div>''')
 
-h('<div class="card">')
-h('<h3>Root Cause Analysis</h3>')
-h(f'''<ol>
-<li><strong style="color:#c53030">The Organic/Direct Baseline Has Eroded</strong><br>
-In 2025, platforms claimed only {fmt(google_2025["conv_value"])} in conversion value for the full month, but total Shopify sales were {fmt(s25_full["total_sales"])}.
-That means <strong>{fmt(s25_full["total_sales"] - google_2025["conv_value"])}</strong> ({pct((s25_full["total_sales"] - google_2025["conv_value"]) / s25_full["total_sales"] * 100)}) came from
-organic, direct, email, and other non-ad channels. The high MER of {mer_2025_full:.1f}x existed because <em>organic was doing the heavy lifting</em> and ads were a small supplement.<br><br>
-In 2026, the business&rsquo;s organic baseline has continued its multi-year decline (annual revenue: $1.81M in 2021 &rarr; $1.02M in 2025 &mdash; down 44%).
-Scaling paid ads cannot reverse this structural decline. More ad spend just masks it.
-</li>
-
-<li style="margin-top:12px"><strong style="color:#c53030">Facebook Is the Biggest Spend Line But Has Low Incrementality</strong><br>
-Facebook consumes <strong>{pct(s26_fb_spent / s26_total_spent * 100)}</strong> of total ad budget ({fmt(s26_fb_spent)} of {fmt(s26_total_spent)}).<br>
-<ul>
-<li>FB <em>self-reports</em> {fmt(s26_fb_conv)} in conversion value &mdash; a {s26_fb_conv / s26_fb_spent:.2f}x ROAS. Looks great.</li>
-<li>But Shopify UTM last-click attributes only <strong>{fmt(fb_paid_total_sales)}</strong> to all Facebook/Instagram paid sources &mdash; an effective ROAS of just <strong>{fb_paid_total_sales / s26_fb_spent:.2f}x</strong>.</li>
-<li>The gap ({fmt(s26_fb_conv - fb_paid_total_sales)}) is FB claiming credit for <em>view-through conversions</em> and <em>assisted clicks</em> that Shopify attributes to direct/organic.</li>
-<li>In 2025, FB spend was only <strong>$153 for the entire month</strong>. Those &ldquo;FB-attributed&rdquo; customers were buying anyway through organic search, direct, and email.</li>
-</ul>
-</li>
-
-<li style="margin-top:12px"><strong style="color:#c05621">Missing Promotional Event</strong><br>
-March 12, 2025 had a flash sale: <strong>89 orders</strong>, {fmt(mar12_2025["total_sales"])} in sales, {fmt(abs(mar12_2025["discounts"]))} in discounts.
-This single day = {pct(mar12_2025["total_sales"] / s25_17["total_sales"] * 100)} of all March 1&ndash;17 2025 sales.
-<strong>No equivalent promotion has been run in 2026.</strong>
-</li>
-
-<li style="margin-top:12px"><strong style="color:#c05621">Lower Discount Aggressiveness</strong><br>
-2025 (Mar 1&ndash;17) discount rate: <strong>{pct(s25_17["discount_rate"])}</strong> of gross sales<br>
-2026 (Mar 1&ndash;17) discount rate: <strong>{pct(s26_utm["discount_rate"])}</strong> of gross sales<br>
-Less discounting = better margins per order, but fewer total orders and lower top-line volume.
-</li>
-</ol>
-</div>''')
-
 h(f'''<div class="alert alert-b">
-<strong>Bottom Line for the Client:</strong> Platform ROAS is a measure of <em>efficiency within the paid channel</em> &mdash; and that IS good.
-But MER measures how much <em>total revenue</em> you generate per ad dollar. The MER drop from {mer_2025_full:.1f}x to {mer_2026:.1f}x means
-the incremental revenue from scaling ads (especially Facebook) is much lower than expected, because a large portion of &ldquo;ad-attributed&rdquo; purchases would have happened organically anyway.
-The top line is down because <strong>organic demand has weakened</strong> and <strong>aggressive FB spend isn&rsquo;t creating enough new demand to compensate</strong>.
+<strong>Bottom Line for the Client:</strong> The business is still generating the same volume of orders as last year &mdash; customer demand is holding steady.
+The revenue gap is a <strong>product mix / AOV problem</strong> and a <strong>missing promo</strong>, not a traffic or conversion problem.
+Platform ROAS is healthy (Google {google_2026["roas"]:.1f}x, FB {s26_fb_conv / s26_fb_spent:.2f}x). Ads are doing their job.
+The biggest lever to close the gap is a <strong>flash sale + higher-AOV product promotion</strong>.
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 3. CHANNEL ATTRIBUTION WITH SPEND
+# 3. PRODUCT MIX ANALYSIS (MARCH 2026)
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>3. Channel Attribution Breakdown with Ad Spend (March 2026, 1&ndash;17)</h2>')
+h('<h2>3. Product Mix Analysis (March 2026, 1&ndash;17)</h2>')
 
 h('<div class="card">')
-h('<p style="color:#718096;font-size:.85rem;margin-bottom:8px">Revenue is from Shopify UTM last-click attribution. Ad spend is from platform dashboards. Note: UTM attribution totals may differ slightly from Shopify daily totals due to attribution methodology.</p>')
+h(f'<h3>Top 20 Products by Total Sales</h3>')
+h(f'<p style="color:#718096;font-size:.85rem;margin-bottom:8px">Top 20 products account for <strong>{pct(top_20_pct)}</strong> of total product sales ({fmt(top_20_sales)} of {fmt(total_product_sales)}). {len(products_2026)} SKUs sold in total.</p>')
+h('''<table>
+<tr><th>#</th><th>Product</th><th class="r">Units</th><th class="r">Gross Sales</th><th class="r">Discounts</th><th class="r">Net Sales</th><th class="r">Total Sales</th><th class="r">% of Total</th></tr>''')
+
+for i, p in enumerate(top_20_products):
+    pct_of = p["total_sales"] / total_product_sales * 100
+    disc_str = fmt(abs(p["discounts"])) if p["discounts"] != 0 else "&mdash;"
+    h(f'''<tr>
+    <td>{i+1}</td>
+    <td>{p["name"]}</td>
+    <td class="r">{p["items_sold"]}</td>
+    <td class="r">{fmt(p["gross_sales"])}</td>
+    <td class="r">{disc_str}</td>
+    <td class="r">{fmt(p["net_sales"])}</td>
+    <td class="r">{fmt(p["total_sales"])}</td>
+    <td class="r">{pct(pct_of)}</td>
+    </tr>''')
+
+h('</table></div>')
+
+h('<div class="card">')
+h('<h3>Sales by Product Category</h3>')
+h('''<table>
+<tr><th>Category</th><th class="r">SKUs</th><th class="r">Units Sold</th><th class="r">Total Sales</th><th class="r">% of Total</th><th class="r">Avg Sale/SKU</th></tr>''')
+
+categories = [
+    ("Samplers, Kits & Bundles", cat_samplers),
+    ("Beans & Legumes", cat_beans),
+    ("Freeze-Dried Fruit", cat_fruit),
+    ("Individual Dried Vegetables", cat_veggies),
+    ("Soup & Chili Blends", cat_soups),
+]
+for cat_name, (cat_sales, cat_items, cat_count) in categories:
+    cat_pct = cat_sales / total_product_sales * 100 if total_product_sales else 0
+    avg_per_sku = cat_sales / cat_count if cat_count else 0
+    h(f'''<tr>
+    <td>{cat_name}</td>
+    <td class="r">{cat_count}</td>
+    <td class="r">{cat_items}</td>
+    <td class="r">{fmt(cat_sales)}</td>
+    <td class="r">{pct(cat_pct)}</td>
+    <td class="r">{fmt(avg_per_sku)}</td>
+    </tr>''')
+
+h('</table>')
+h(f'''<p style="color:#718096;font-size:.85rem;margin-top:8px">Note: Categories may not sum to 100% as some products (mushrooms, protein, seasonings, accessories) are not categorized above.</p>''')
+h('</div>')
+
+h(f'''<div class="alert alert-w">
+<strong>AOV Insight:</strong> The highest-AOV products are the <strong>samplers, kits &amp; bundles</strong> (Vegetable Sampler, Deluxe Sampler, Pantry Stuffers, Family Packs).
+These are the products that drive higher cart values. Promoting these in a flash sale or featured collection could directly address the AOV gap.
+The #1 seller &mdash; Vegetable Sampler (15 ZIP Pouches) &mdash; alone generated {fmt(top_20_products[0]["total_sales"])} from {top_20_products[0]["items_sold"]} units.
+</div>''')
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 4. CHANNEL ATTRIBUTION WITH SPEND
+# ═══════════════════════════════════════════════════════════════════════════════
+h('<h2>4. Channel Attribution Breakdown with Ad Spend (March 2026, 1&ndash;17)</h2>')
+
+h('<div class="card">')
+h('<p style="color:#718096;font-size:.85rem;margin-bottom:8px">Revenue is from Shopify UTM last-click attribution. Ad spend is from platform dashboards. Note: UTM last-click and platform attribution use different models and will naturally differ &mdash; this is expected.</p>')
 h('''<table>
 <tr>
 <th>Channel</th>
@@ -497,49 +575,12 @@ h(f'''<tr class="tot">
 <td class="r">{total_ch_sales / s26_total_spent:.2f}x (blended)</td>
 </tr>''')
 h('</table>')
-
-# Combined paid channel summary
-h('<h3 style="margin-top:16px">Paid Channel Summary (Combined)</h3>')
-h(f'''<table>
-<tr><th>Paid Channel Group</th><th class="r">Ad Spend</th><th class="r">Platform Conv. Value</th><th class="r">Platform ROAS</th>
-<th class="r">UTM Orders</th><th class="r">UTM Total Sales</th><th class="r">UTM ROAS</th><th class="r">ROAS Gap</th></tr>
-<tr>
-<td>Facebook + Instagram (all paid)</td>
-<td class="r">{fmt(s26_fb_spent)}</td>
-<td class="r">{fmt(s26_fb_conv)}</td>
-<td class="r">{s26_fb_conv / s26_fb_spent:.2f}x</td>
-<td class="r">{fb_paid_total_orders}</td>
-<td class="r">{fmt(fb_paid_total_sales)}</td>
-<td class="r">{fb_paid_total_sales / s26_fb_spent:.2f}x</td>
-<td class="r"><span style="color:#c53030">{pct((s26_fb_conv - fb_paid_total_sales) / s26_fb_conv * 100)} over-reported</span></td>
-</tr>
-<tr>
-<td>Google (CPC + PMax + Shopping)</td>
-<td class="r">{fmt(s26_google_spent)}</td>
-<td class="r">{fmt(s26_google_conv)}</td>
-<td class="r">{s26_google_conv / s26_google_spent:.2f}x</td>
-<td class="r">{google_paid_total_orders}</td>
-<td class="r">{fmt(google_paid_total_sales)}</td>
-<td class="r">{google_paid_total_sales / s26_google_spent:.2f}x</td>
-<td class="r"><span style="color:{"#c53030" if s26_google_conv > google_paid_total_sales else "#276749"}">{pct(abs(s26_google_conv - google_paid_total_sales) / s26_google_conv * 100)} {"over" if s26_google_conv > google_paid_total_sales else "under"}-reported</span></td>
-</tr>
-<tr class="tot">
-<td>Total Paid</td>
-<td class="r">{fmt(s26_total_spent)}</td>
-<td class="r">{fmt(platform_claimed_2026)}</td>
-<td class="r">{platform_claimed_2026 / s26_total_spent:.2f}x</td>
-<td class="r">{fb_paid_total_orders + google_paid_total_orders}</td>
-<td class="r">{fmt(fb_paid_total_sales + google_paid_total_sales)}</td>
-<td class="r">{(fb_paid_total_sales + google_paid_total_sales) / s26_total_spent:.2f}x</td>
-<td class="r">&mdash;</td>
-</tr>
-</table>''')
 h('</div>')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 4. DAY-BY-DAY COMPARISON
+# 5. DAY-BY-DAY COMPARISON
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>4. Day-by-Day YoY Comparison (March 1&ndash;17)</h2>')
+h('<h2>5. Day-by-Day YoY Comparison (March 1&ndash;17)</h2>')
 h('<div class="card"><table>')
 h('<tr><th>Day</th><th class="r">2025 Total Sales</th><th class="r">2025 Orders</th><th class="r">2025 Discounts</th><th class="r">2026 Total Sales</th><th class="r">2026 Ad Spend</th><th class="r">2026 MER</th><th class="r">YoY Change</th></tr>')
 
@@ -588,9 +629,9 @@ h(f'<tr><td>Mar 15&ndash;17</td><td class="r">{fmt(week3p_25)}</td><td class="r"
 h('</table></div>')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 5. DISCOUNT ANALYSIS
+# 6. DISCOUNT ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>5. Discount &amp; Pricing Analysis</h2>')
+h('<h2>6. Discount &amp; Pricing Analysis</h2>')
 h(f'''<div class="card"><table>
 <tr><th>Metric</th><th class="r">2025 (Mar 1&ndash;17)</th><th class="r">2026 (Mar 1&ndash;17)</th><th class="r">Change</th></tr>
 <tr><td>Gross Sales</td><td class="r">{fmt(s25_17["gross_sales"])}</td><td class="r">{fmt(s26_utm["gross_sales"])}</td><td class="r">{chg(s26_utm["gross_sales"], s25_17["gross_sales"])}</td></tr>
@@ -606,12 +647,13 @@ h(f'''<div class="alert alert-w">
 <strong>March 12, 2025 Promo Impact:</strong> That single day contributed <strong>{fmt(abs(mar12_2025["discounts"]))}</strong> in discounts
 ({pct(abs(mar12_2025["discounts"]) / s25_17["discounts"] * 100)} of all discounts Mar 1&ndash;17) and drove <strong>89 orders</strong>
 with {fmt(mar12_2025["gross_sales"])} in gross sales. <strong>No equivalent promotion has run in March 2026.</strong>
+The lower discount rate in 2026 ({pct(s26_utm["discount_rate"])}) means better per-order margins, but fewer large orders.
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 6. AD SPEND & PLATFORM DEEP DIVE
+# 7. AD SPEND & PLATFORM PERFORMANCE
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>6. Ad Spend &amp; Platform Performance</h2>')
+h('<h2>7. Ad Spend &amp; Platform Performance</h2>')
 
 h('<div class="card"><h3>Ad Spend Overview</h3>')
 h(f'''<table>
@@ -619,8 +661,22 @@ h(f'''<table>
 <tr><td>Google Ads Spend</td><td class="r">{fmt(google_spend_2025)}</td><td class="r">{fmt(s26_google_spent)}</td><td class="r">{pct(s26_google_spent / google_spend_2025 * 100)} of full month 2025</td></tr>
 <tr><td>Facebook Ads Spend</td><td class="r">{fmt(fb_spend_2025)}</td><td class="r">{fmt(s26_fb_spent)}</td><td class="r">{chg(s26_fb_spent, fb_spend_2025)}</td></tr>
 <tr><td>Total Ad Spend</td><td class="r">{fmt(total_spend_2025)}</td><td class="r">{fmt(s26_total_spent)}</td><td class="r">{chg(s26_total_spent, total_spend_2025)}</td></tr>
-<tr><td>MER</td><td class="r"><strong>{mer_2025_full:.1f}x</strong></td><td class="r"><strong>{mer_2026:.1f}x</strong></td><td class="r">{chg(mer_2026, mer_2025_full)}</td></tr>
+<tr><td>Platform ROAS (Blended)</td><td class="r">{google_2025["roas"]:.2f}x (Google only)</td><td class="r">{s26_total_conv / s26_total_spent:.2f}x (Google + FB)</td><td class="r">&mdash;</td></tr>
 </table></div>''')
+
+h(f'''<div class="card"><h3>Facebook Ads &mdash; Performance Summary</h3>
+<table>
+<tr><th>Metric</th><th class="r">Value</th></tr>
+<tr><td>Total Spend (Mar 1&ndash;17)</td><td class="r">{fmt(s26_fb_spent)}</td></tr>
+<tr><td>Daily Spend Avg</td><td class="r">{fmt(s26_fb_spent / 17)}/day</td></tr>
+<tr><td>Platform-Reported Conv. Value</td><td class="r">{fmt(s26_fb_conv)}</td></tr>
+<tr><td>Platform ROAS (7-day click + 1-day view)</td><td class="r">{s26_fb_conv / s26_fb_spent:.2f}x</td></tr>
+<tr><td>UTM Last-Click Sales</td><td class="r">{fmt(fb_paid_total_sales)}</td></tr>
+<tr><td>UTM Last-Click ROAS</td><td class="r">{fb_paid_total_sales / s26_fb_spent:.2f}x</td></tr>
+<tr><td>UTM Orders</td><td class="r">{fb_paid_total_orders}</td></tr>
+</table>
+<p style="color:#718096;font-size:.85rem;margin-top:8px">Note: Platform attribution (7-day click + 1-day view) and UTM last-click use different models. The gap between them is expected &mdash; it reflects view-through and assisted conversions that UTM does not capture. A UTM ROAS of {fb_paid_total_sales / s26_fb_spent:.2f}x on last-click shows Facebook is driving meaningful direct conversions.</p>
+</div>''')
 
 h('<div class="card"><h3>Google Ads &mdash; Campaign Comparison</h3>')
 h('<p style="font-size:.85rem;color:#718096">March 2025 (Full Month)</p>')
@@ -644,80 +700,67 @@ h(f'''<div class="alert alert-g">
 <strong>Google Ads Positive:</strong> ROAS improved from {google_2025["roas"]:.2f}x (2025) to {google_2026["roas"]:.2f}x (2026).
 The INTC P.Max campaign is performing well at 4.88x ROAS but is <strong>budget-limited</strong> at $190/day.
 Branded Search is highly efficient at 6.85x ROAS. The NB Dried Cabbage campaign ($191.29 spent, 0 conversions) was correctly paused.
-<strong>Google is not the problem &mdash; it&rsquo;s the strongest paid channel.</strong>
-</div>''')
-
-h(f'''<div class="card"><h3>Facebook &mdash; Platform vs. UTM Attribution</h3>
-<table>
-<tr><th>Attribution Method</th><th class="r">Conv. Value / Sales</th><th class="r">ROAS (vs. {fmt(s26_fb_spent)} spend)</th></tr>
-<tr><td>FB Platform Reported (7-day click + 1-day view)</td><td class="r">{fmt(s26_fb_conv)}</td><td class="r">{s26_fb_conv / s26_fb_spent:.2f}x</td></tr>
-<tr><td>Shopify UTM Last-Click (facebook+fb+ig / paid+ads+social)</td><td class="r">{fmt(fb_paid_total_sales)}</td><td class="r">{fb_paid_total_sales / s26_fb_spent:.2f}x</td></tr>
-<tr class="hl"><td>Gap (FB over-claiming)</td><td class="r">{fmt(s26_fb_conv - fb_paid_total_sales)}</td><td class="r">{pct((s26_fb_conv - fb_paid_total_sales) / s26_fb_conv * 100)} of reported value</td></tr>
-</table></div>''')
-
-h(f'''<div class="alert">
-<strong>Facebook is the budget drain.</strong> FB is spending <strong>{fmt(s26_fb_spent / 17)}/day</strong> (${s26_fb_spent/17*31:,.0f}/month projected)
-vs. just $153/month in March 2025. FB self-reports a healthy {s26_fb_conv / s26_fb_spent:.2f}x ROAS, but Shopify UTM last-click shows only
-<strong>{fb_paid_total_sales / s26_fb_spent:.2f}x</strong>. The {fmt(s26_fb_conv - fb_paid_total_sales)} gap means FB is claiming credit for purchases that
-Shopify attributes to direct/organic visits &mdash; these are likely customers who <em>would have bought anyway</em>.
+<strong>Google is the strongest paid channel and has room to scale.</strong>
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 7. RECOMMENDATIONS
+# 8. RECOMMENDATIONS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>7. Recommendations &amp; Action Plan</h2>')
+h('<h2>8. Recommendations &amp; Action Plan</h2>')
 
 h(f'''<div class="rec">
-<strong>1. Cut Facebook Daily Budget Immediately ({fmt(s26_fb_spent/17)}/day &rarr; $100&ndash;150/day)</strong><br>
-Shift to retargeting-only (warm audiences, cart abandoners, past purchasers). Kill prospecting/cold campaigns.
-This saves ~$150&ndash;200/day ({fmt(150 * remaining_days)}&ndash;{fmt(200 * remaining_days)} for remaining {remaining_days} days).
-The UTM data shows FB last-click ROAS is only {fb_paid_total_sales / s26_fb_spent:.2f}x &mdash; the platform is over-reporting by {pct((s26_fb_conv - fb_paid_total_sales) / s26_fb_conv * 100)}.
+<strong>1. Launch a Flash Sale / Promotion (March 19&ndash;22)</strong><br>
+Last year&rsquo;s March 12 promo generated {fmt(mar12_2025["total_sales"])} in a single day with 89 orders.
+Run a 48&ndash;72hr flash sale (20&ndash;25% off best sellers) promoted via Klaviyo email blast + social.
+<strong>This is the single biggest lever to close the gap.</strong>
+Target: $8,000&ndash;15,000 in incremental sales.
 </div>
 
 <div class="rec">
-<strong>2. Scale Google PMax Budget ($190/day &rarr; $250&ndash;300/day)</strong><br>
+<strong>2. Promote High-AOV Products (Samplers, Kits &amp; Bundles)</strong><br>
+The AOV drop is the core revenue issue. Push high-AOV products in the flash sale and email campaigns:
+<ul>
+<li>Vegetable Sampler (15 ZIP) &mdash; #1 seller at {fmt(top_20_products[0]["total_sales"])}</li>
+<li>Deluxe Sampler (32 ZIP), Pantry Stuffers, Family Packs &mdash; all $100+ AOV products</li>
+<li>Create a &ldquo;Best Value Bundles&rdquo; featured collection on the homepage</li>
+</ul>
+Goal: bring AOV back toward {fmt(aov_25)} (from current {fmt(aov_26)}).
+</div>
+
+<div class="rec">
+<strong>3. Scale Google PMax Budget ($190/day &rarr; $250&ndash;300/day)</strong><br>
 PMax is budget-limited at 4.88x ROAS &mdash; this is the highest-efficiency paid channel.
 Increasing budget should capture incremental Shopping traffic. Branded Search (6.85x ROAS) should remain as-is.
 Estimated incremental: $60&ndash;110/day extra spend &times; ~4x ROAS = $240&ndash;440/day additional revenue.
 </div>
 
 <div class="rec">
-<strong>3. Launch a Flash Sale / Promotion (March 19&ndash;22)</strong><br>
-Last year&rsquo;s March 12 promo generated {fmt(mar12_2025["total_sales"])} in a single day with 89 orders.
-Run a 48&ndash;72hr flash sale (20&ndash;25% off best sellers) promoted via Klaviyo email blast + social.
-Target: $8,000&ndash;15,000 in incremental sales. This is the single biggest lever to close the gap.
-</div>
-
-<div class="rec">
 <strong>4. Increase Email Frequency (Klaviyo)</strong><br>
 Email is driving <strong>{email_orders} orders / {fmt(email_sales)} in total sales</strong> at <strong>zero ad cost</strong> (infinite ROI).
-This is the most efficient channel. Send 2&ndash;3 additional blasts this week:
+Send 2&ndash;3 additional blasts this week:
 flash sale announcement, abandoned cart recovery push, &ldquo;best sellers of March&rdquo; curated collection.
 Each blast can drive $500&ndash;2,000 in incremental sales.
 </div>
 
 <div class="rec">
-<strong>5. Set Realistic Expectations on 15% Target</strong><br>
-The 15% growth target ({fmt(target_total)}) needs {fmt(daily_needed)}/day for the remaining {remaining_days} days &mdash;
-that&rsquo;s <strong>{daily_needed / avg_daily_2026:.1f}x</strong> the current daily average of {fmt(avg_daily_2026)}.
-This is only achievable with a major promotional event. A realistic target: come within 10&ndash;15% of last year&rsquo;s {fmt(s25_full["total_sales"])}.
+<strong>5. Optimize Facebook for Higher-AOV Products</strong><br>
+Facebook is driving {fb_paid_total_orders} orders at {fb_paid_total_sales / s26_fb_spent:.2f}x UTM ROAS ({s26_fb_conv / s26_fb_spent:.2f}x platform).
+Focus ad creatives on high-AOV products (samplers, kits, bundles) rather than single-item products.
+This can help lift both Facebook ROAS and overall AOV simultaneously.
 </div>
 
 <div class="rec">
-<strong>6. Reframe the Narrative for the Client</strong><br>
-<ul>
-<li>Last year&rsquo;s March was inflated by a one-time flash sale ({fmt(mar12_2025["total_sales"])} on Mar 12). Excl. that, real gap is ~{pct(abs(chg_val(s26_17_ex12, s25_17_ex12)))} not ~{pct(abs(chg_val(s26_total_sales, s25_17["total_sales"])))}.</li>
-<li>Google Ads efficiency has <strong>improved</strong> (ROAS {google_2025["roas"]:.2f}x &rarr; {google_2026["roas"]:.2f}x). We&rsquo;re spending smarter on Google.</li>
-<li>We&rsquo;ve identified FB as the budget drain and are course-correcting now.</li>
-<li>Immediate plan: flash sale + email push + FB budget reallocation = potential $10K&ndash;20K uplift before month-end.</li>
-<li>Long-term: annual revenue has declined 44% since 2021. Paid media optimizes within that reality &mdash; we need to also discuss SEO, retention, and product strategy.</li>
-</ul>
+<strong>6. Set Realistic Expectations on 15% Target</strong><br>
+The 15% growth target ({fmt(target_total)}) needs {fmt(daily_needed)}/day for the remaining {remaining_days} days &mdash;
+that&rsquo;s <strong>{daily_needed / avg_daily_2026:.1f}x</strong> the current daily average of {fmt(avg_daily_2026)}.
+A flash sale + optimizations can get us closer, but matching last year&rsquo;s flash sale performance is the key unlock.
+A realistic target: match or come within 5&ndash;10% of last year&rsquo;s {fmt(s25_full["total_sales"])}.
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 8. PROJECTED SCENARIOS
+# 9. PROJECTED SCENARIOS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>8. Projected Scenarios (Rest of March)</h2>')
+h('<h2>9. Projected Scenarios (Rest of March)</h2>')
 
 scenario_a = s26_projected  # status quo
 scenario_a_spend = s26_projected_spend
@@ -733,27 +776,27 @@ scenario_c_spend = scenario_b_spend + 500
 h(f'''<div class="card"><table>
 <tr><th>Scenario</th><th class="r">Projected Month Total</th><th class="r">vs. 2025</th><th class="r">vs. Target</th><th class="r">Projected Spend</th><th class="r">Projected MER</th></tr>
 <tr><td><strong>A: Status Quo</strong> (no changes)</td><td class="r">{fmt(scenario_a)}</td><td class="r">{chg(scenario_a, s25_full["total_sales"])}</td><td class="r">{chg(scenario_a, target_total)}</td><td class="r">{fmt(scenario_a_spend)}</td><td class="r">{scenario_a / scenario_a_spend:.1f}x</td></tr>
-<tr><td><strong>B: Optimize</strong> (cut FB, scale PMax, more email)</td><td class="r">{fmt(scenario_b)}</td><td class="r">{chg(scenario_b, s25_full["total_sales"])}</td><td class="r">{chg(scenario_b, target_total)}</td><td class="r">{fmt(scenario_b_spend)}</td><td class="r">{scenario_b / scenario_b_spend:.1f}x</td></tr>
+<tr><td><strong>B: Optimize</strong> (scale PMax, more email, AOV focus)</td><td class="r">{fmt(scenario_b)}</td><td class="r">{chg(scenario_b, s25_full["total_sales"])}</td><td class="r">{chg(scenario_b, target_total)}</td><td class="r">{fmt(scenario_b_spend)}</td><td class="r">{scenario_b / scenario_b_spend:.1f}x</td></tr>
 <tr><td><strong>C: Optimize + Flash Sale</strong></td><td class="r">{fmt(scenario_c)}</td><td class="r">{chg(scenario_c, s25_full["total_sales"])}</td><td class="r">{chg(scenario_c, target_total)}</td><td class="r">{fmt(scenario_c_spend)}</td><td class="r">{scenario_c / scenario_c_spend:.1f}x</td></tr>
 </table></div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 9. IMMEDIATE ACTION ITEMS
+# 10. IMMEDIATE ACTION ITEMS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>9. Immediate Action Items</h2>')
+h('<h2>10. Immediate Action Items</h2>')
 h(f'''<div class="card"><table>
 <tr><th>#</th><th>Action</th><th>Timeline</th><th>Expected Impact</th></tr>
-<tr><td>1</td><td>Cut Facebook daily budget to $100&ndash;150 (retargeting only)</td><td>Today</td><td>Save ~$150&ndash;200/day; improve MER immediately</td></tr>
+<tr><td>1</td><td>Plan &amp; launch flash sale (20&ndash;25% off best sellers, focus on bundles/samplers)</td><td>Mar 19&ndash;22</td><td>+$8,000&ndash;15,000 (based on Mar 12, 2025 precedent)</td></tr>
 <tr><td>2</td><td>Increase Google PMax budget $190 &rarr; $250&ndash;300/day</td><td>Today</td><td>+$240&ndash;440/day incremental revenue at 4.88x ROAS</td></tr>
-<tr><td>3</td><td>Plan &amp; launch flash sale (20&ndash;25% off, 48&ndash;72hr)</td><td>Mar 19&ndash;22</td><td>+$8,000&ndash;15,000 (based on Mar 12, 2025 precedent)</td></tr>
-<tr><td>4</td><td>Send 2&ndash;3 Klaviyo email blasts this week</td><td>This week</td><td>+$1,500&ndash;4,000 at zero ad cost</td></tr>
-<tr><td>5</td><td>Keep NB Search campaigns paused</td><td>Ongoing</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
-<tr><td>6</td><td>Monitor daily MER &mdash; target 7x+ for remaining days</td><td>Daily</td><td>Track spend efficiency post-optimization</td></tr>
+<tr><td>3</td><td>Send 2&ndash;3 Klaviyo email blasts this week (flash sale + best sellers)</td><td>This week</td><td>+$1,500&ndash;4,000 at zero ad cost</td></tr>
+<tr><td>4</td><td>Create &ldquo;Best Value Bundles&rdquo; featured collection on homepage</td><td>Today</td><td>Lift AOV toward {fmt(aov_25)} target</td></tr>
+<tr><td>5</td><td>Update FB ad creatives to feature high-AOV products (samplers, kits)</td><td>This week</td><td>Improve per-order value from FB traffic</td></tr>
+<tr><td>6</td><td>Keep NB Search campaigns paused</td><td>Ongoing</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
 </table></div>''')
 
 h(f'''<div class="footer">
 Harmony House Foods &mdash; March YoY Performance Analysis &nbsp;|&nbsp; Generated {report_date}<br>
-Data sources: Shopify Sales Reports, Google Ads, Facebook Ads, Shopify UTM Attribution
+Data sources: Shopify Sales Reports, Google Ads, Facebook Ads, Shopify UTM Attribution, Shopify Product Sales
 </div></div></body></html>''')
 
 # ── Write Report ─────────────────────────────────────────────────────────────
@@ -776,19 +819,23 @@ print(f"March 2026 (1-17) Shopify Sales:     {fmt(s26_total_sales)}")
 print(f"YoY Change (1-17):                   {chg_val(s26_total_sales, s25_17['total_sales']):.1f}%")
 print(f"Excl Mar 12: 2025={fmt(s25_17_ex12)} 2026={fmt(s26_17_ex12)} => {chg_val(s26_17_ex12, s25_17_ex12):.1f}%")
 print()
+print(f"Orders 2025 (1-17):                  {orders_25}")
+print(f"Orders 2026 (1-17):                  {orders_26}")
+print(f"Order Change:                        {orders_chg_pct:.1f}%")
+print(f"AOV 2025 (1-17):                     {fmt(aov_25)}")
+print(f"AOV 2026 (1-17):                     {fmt(aov_26)}")
+print(f"AOV Change:                          {aov_drop_pct:.1f}%")
+print(f"Revenue Lost to AOV Drop:            {fmt(revenue_lost_to_aov)}")
+print()
 print(f"Ad Spend 2025 (full month):          {fmt(total_spend_2025)}")
 print(f"  Google: {fmt(google_spend_2025)}  |  FB: {fmt(fb_spend_2025)}")
 print(f"Ad Spend 2026 (Mar 1-17):            {fmt(s26_total_spent)}")
 print(f"  Google: {fmt(s26_google_spent)}  |  FB: {fmt(s26_fb_spent)}")
 print()
-print(f"MER 2025 (full month):               {mer_2025_full:.1f}x")
-print(f"MER 2026 (Mar 1-17):                 {mer_2026:.1f}x")
-print()
 print(f"Google ROAS 2025:                    {google_2025['roas']:.2f}x")
 print(f"Google ROAS 2026:                    {google_2026['roas']:.2f}x")
 print(f"FB Platform ROAS 2026:               {s26_fb_conv / s26_fb_spent:.2f}x")
 print(f"FB UTM Last-Click ROAS 2026:         {fb_paid_total_sales / s26_fb_spent:.2f}x")
-print(f"FB over-reporting gap:               {fmt(s26_fb_conv - fb_paid_total_sales)}")
 print()
 print(f"Discount Rate 2025 (1-17):           {pct(s25_17['discount_rate'])}")
 print(f"Discount Rate 2026 (1-17):           {pct(s26_utm['discount_rate'])}")
@@ -797,5 +844,7 @@ print(f"Direct/Organic/Unattributed (2026):  {fmt(direct_sales)} ({direct_orders
 print(f"Email (Klaviyo+Shopify) (2026):      {fmt(email_sales)} ({email_orders} orders)")
 print(f"FB Paid UTM (2026):                  {fmt(fb_paid_total_sales)} ({fb_paid_total_orders} orders)")
 print(f"Google CPC UTM (2026):               {fmt(google_paid_total_sales)} ({google_paid_total_orders} orders)")
-print(f"Platform claimed (FB+Google):        {fmt(platform_claimed_2026)}")
-print(f"Actual Shopify:                      {fmt(s26_total_sales)}")
+print()
+print(f"Top 20 Products (2026):              {fmt(top_20_sales)} ({pct(top_20_pct)} of total)")
+print(f"Total Product SKUs:                  {len(products_2026)}")
+print(f"Total Product Sales:                 {fmt(total_product_sales)}")
