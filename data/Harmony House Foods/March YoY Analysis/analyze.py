@@ -761,16 +761,16 @@ h('</table></div>')
 h('<h2>6. Recommendations &amp; Action Plan</h2>')
 
 h(f'''<div class="rec">
-<strong>1. Launch a Flash Sale / Promotion (March 19&ndash;22)</strong><br>
-Last year&rsquo;s March 12 promo generated {fmt(mar12_2025["total_sales"])} in a single day with 89 orders.
-Run a 48&ndash;72hr flash sale (20&ndash;25% off best sellers) promoted via Klaviyo email blast + social.
-<strong>This is the single biggest lever to close the gap.</strong>
-Target: $8,000&ndash;15,000 in incremental sales.
+<strong>1. Launch Sale &amp; Offer Ads on Facebook</strong><br>
+Facebook is already driving {fb_paid_total_orders} UTM-attributed orders. Lean into this channel by launching
+dedicated sale/offer creative (bundle deals, seasonal promotions, limited-time offers).
+This can increase conversion rates and order volume without raising the budget ceiling.
+Target: increase FB order volume by 20&ndash;30% through better-converting creative.
 </div>
 
 <div class="rec">
 <strong>2. Promote High-AOV Products (Samplers, Kits &amp; Bundles)</strong><br>
-The AOV drop is the core revenue issue. Push high-AOV products in the flash sale and email campaigns:
+The AOV drop is the core revenue issue. Push high-AOV products in email campaigns and Facebook ads:
 <ul>
 <li>Vegetable Sampler (15 ZIP) &mdash; #1 seller at {fmt(top_20_products[0]["total_sales"])}</li>
 <li>Deluxe Sampler (32 ZIP), Pantry Stuffers, Family Packs &mdash; all $100+ AOV products</li>
@@ -780,17 +780,17 @@ Goal: bring AOV back toward {fmt(aov_25)} (from current {fmt(aov_26)}).
 </div>
 
 <div class="rec">
-<strong>3. Scale Google PMax Budget ($190/day &rarr; $250&ndash;300/day)</strong><br>
-PMax is budget-limited at 4.88x ROAS &mdash; this is the highest-efficiency paid channel.
-Increasing budget should capture incremental Shopping traffic. Branded Search (6.85x ROAS) should remain as-is.
-Estimated incremental: $60&ndash;110/day extra spend &times; ~4x ROAS = $240&ndash;440/day additional revenue.
+<strong>3. Optimize Google PMax for Better ROAS (Keep Budget As-Is)</strong><br>
+PMax is running at 4.88x ROAS on $190/day &mdash; solid performance. Rather than scaling budget,
+focus on optimizing the existing account: refine audience signals, improve product feed, and test asset groups.
+Total ad spend should stay under <strong>$14,000/month</strong>. Branded Search (6.85x ROAS) should remain as-is.
 </div>
 
 <div class="rec">
 <strong>4. Increase Email Frequency (Klaviyo)</strong><br>
 Email is driving <strong>{email_orders} orders / {fmt(email_sales)} in total sales</strong> at <strong>zero ad cost</strong> (infinite ROI).
 Send 2&ndash;3 additional blasts this week:
-flash sale announcement, abandoned cart recovery push, &ldquo;best sellers of March&rdquo; curated collection.
+best sellers of March, abandoned cart recovery push, seasonal &ldquo;spring pantry refresh&rdquo; collection.
 Each blast can drive $500&ndash;2,000 in incremental sales.
 </div>
 
@@ -798,7 +798,8 @@ Each blast can drive $500&ndash;2,000 in incremental sales.
 <strong>5. Set Realistic Expectations on 15% Target</strong><br>
 The 15% growth target ({fmt(target_total)}) needs {fmt(daily_needed)}/day for the remaining {remaining_days} days &mdash;
 that&rsquo;s <strong>{daily_needed / avg_daily_2026:.1f}x</strong> the current daily average of {fmt(avg_daily_2026)}.
-A flash sale + optimizations can get us closer, but matching last year&rsquo;s flash sale performance is the key unlock.
+With the $14K ad spend cap and no flash sale, the focus should be on maximizing efficiency across
+email, Facebook offer ads, and Google PMax optimization.
 A realistic target: match or come within 5&ndash;10% of last year&rsquo;s {fmt(s25_full["total_sales"])}.
 </div>''')
 
@@ -812,17 +813,17 @@ scenario_a_spend = s26_projected_spend
 
 scenario_b_daily = avg_daily_2026 * 1.15
 scenario_b = s26_total_sales + scenario_b_daily * remaining_days
-scenario_b_spend = s26_total_spent + (s26_total_spent / 17 * 0.75) * remaining_days
+scenario_b_spend = min(14000, s26_total_spent + (s26_total_spent / 17 * 0.75) * remaining_days)
 
-flash_boost = 12000
-scenario_c = scenario_b + flash_boost
-scenario_c_spend = scenario_b_spend + 500
+scenario_c_daily = avg_daily_2026 * 1.25
+scenario_c = s26_total_sales + scenario_c_daily * remaining_days
+scenario_c_spend = min(14000, s26_total_spent + (s26_total_spent / 17 * 0.85) * remaining_days)
 
 h(f'''<div class="card"><table>
 <tr><th>Scenario</th><th class="r">Projected Month Total</th><th class="r">vs. 2025</th><th class="r">vs. Target</th><th class="r">Projected Spend</th><th class="r">Projected MER</th></tr>
 <tr><td><strong>A: Status Quo</strong> (no changes)</td><td class="r">{fmt(scenario_a)}</td><td class="r">{chg(scenario_a, s25_full["total_sales"])}</td><td class="r">{chg(scenario_a, target_total)}</td><td class="r">{fmt(scenario_a_spend)}</td><td class="r">{scenario_a / scenario_a_spend:.1f}x</td></tr>
-<tr><td><strong>B: Optimize</strong> (scale PMax, more email, AOV focus)</td><td class="r">{fmt(scenario_b)}</td><td class="r">{chg(scenario_b, s25_full["total_sales"])}</td><td class="r">{chg(scenario_b, target_total)}</td><td class="r">{fmt(scenario_b_spend)}</td><td class="r">{scenario_b / scenario_b_spend:.1f}x</td></tr>
-<tr><td><strong>C: Optimize + Flash Sale</strong></td><td class="r">{fmt(scenario_c)}</td><td class="r">{chg(scenario_c, s25_full["total_sales"])}</td><td class="r">{chg(scenario_c, target_total)}</td><td class="r">{fmt(scenario_c_spend)}</td><td class="r">{scenario_c / scenario_c_spend:.1f}x</td></tr>
+<tr><td><strong>B: Optimize</strong> (FB offer ads, more email, AOV focus)</td><td class="r">{fmt(scenario_b)}</td><td class="r">{chg(scenario_b, s25_full["total_sales"])}</td><td class="r">{chg(scenario_b, target_total)}</td><td class="r">{fmt(scenario_b_spend)}</td><td class="r">{scenario_b / scenario_b_spend:.1f}x</td></tr>
+<tr><td><strong>C: Best Case</strong> (all optimizations + strong email response)</td><td class="r">{fmt(scenario_c)}</td><td class="r">{chg(scenario_c, s25_full["total_sales"])}</td><td class="r">{chg(scenario_c, target_total)}</td><td class="r">{fmt(scenario_c_spend)}</td><td class="r">{scenario_c / scenario_c_spend:.1f}x</td></tr>
 </table></div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -831,9 +832,9 @@ h(f'''<div class="card"><table>
 h('<h2>8. Immediate Action Items</h2>')
 h(f'''<div class="card"><table>
 <tr><th>#</th><th>Action</th><th>Timeline</th><th>Expected Impact</th></tr>
-<tr><td>1</td><td>Plan &amp; launch flash sale (20&ndash;25% off best sellers, focus on bundles/samplers)</td><td>Mar 19&ndash;22</td><td>+$8,000&ndash;15,000 (based on Mar 12, 2025 precedent)</td></tr>
-<tr><td>2</td><td>Increase Google PMax budget $190 &rarr; $250&ndash;300/day</td><td>Today</td><td>+$240&ndash;440/day incremental revenue at 4.88x ROAS</td></tr>
-<tr><td>3</td><td>Send 2&ndash;3 Klaviyo email blasts this week (flash sale + best sellers)</td><td>This week</td><td>+$1,500&ndash;4,000 at zero ad cost</td></tr>
+<tr><td>1</td><td>Launch sale/offer creative on Facebook Ads (bundle deals, seasonal promos)</td><td>This week</td><td>Increase FB conversion rate &amp; order volume by 20&ndash;30%</td></tr>
+<tr><td>2</td><td>Send 2&ndash;3 Klaviyo email blasts (best sellers, spring pantry refresh, abandoned carts)</td><td>This week</td><td>+$1,500&ndash;4,000 at zero ad cost</td></tr>
+<tr><td>3</td><td>Optimize Google PMax (audience signals, product feed, asset groups) &mdash; keep budget at $190/day</td><td>This week</td><td>Improve ROAS from 4.88x; stay under $14K total spend</td></tr>
 <tr><td>4</td><td>Create &ldquo;Best Value Bundles&rdquo; featured collection on homepage</td><td>Today</td><td>Lift AOV toward {fmt(aov_25)} target</td></tr>
 <tr><td>5</td><td>Keep NB Search campaigns paused</td><td>Ongoing</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
 </table></div>''')
@@ -894,9 +895,10 @@ ha(f'''<div class="card"><h3>Facebook Ads &mdash; Performance Summary</h3>
 </div>''')
 
 ha(f'''<div class="alert alert-g">
-<strong>Facebook is doing its job:</strong> FB is driving {fb_paid_total_orders} new-customer-heavy orders.
-Strategy of using Facebook to acquire new customers at full price is working &mdash;
-new customer orders are up {chg(new_26["orders"], new_25["orders"])} YoY.
+<strong>Facebook is driving conversions:</strong> FB generated {fb_paid_total_orders} UTM-attributed orders
+at {fb_paid_total_sales / s26_fb_spent:.2f}x last-click ROAS.
+Overall new customer orders are up {chg(new_26["orders"], new_25["orders"])} YoY across all channels,
+and Facebook is contributing meaningfully to that growth.
 </div>''')
 
 # Section 3: Google Ads Campaign Comparison
@@ -921,9 +923,9 @@ ha('</table></div>')
 
 ha(f'''<div class="alert alert-g">
 <strong>Google Ads Positive:</strong> ROAS improved from {google_2025["roas"]:.2f}x (2025) to {google_2026["roas"]:.2f}x (2026).
-The INTC P.Max campaign is performing well at 4.88x ROAS but is <strong>budget-limited</strong> at $190/day.
+The INTC P.Max campaign is performing well at 4.88x ROAS on $190/day.
 Branded Search is highly efficient at 6.85x ROAS. The NB Dried Cabbage campaign ($191.29 spent, 0 conversions) was correctly paused.
-<strong>Google is the strongest paid channel and has room to scale.</strong>
+<strong>Focus: optimize existing campaigns for better ROAS while keeping total ad spend under $14K/month.</strong>
 </div>''')
 
 ha(f'''<div class="footer">
