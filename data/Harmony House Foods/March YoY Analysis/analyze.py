@@ -128,24 +128,18 @@ for r in utm_2026:
     src = r["source"].lower()
     med = r["medium"].lower()
 
-    if src in ("facebook",) and med == "paid":
-        ch = "Facebook Paid"
-    elif src == "fb" and med == "ads":
-        ch = "Facebook Paid (fb/Ads)"
-    elif src == "ig" and med in ("ads", "social"):
-        ch = "Instagram (ig)"
+    if src in ("facebook", "fb", "ig") and med in ("paid", "ads", "social"):
+        ch = "Facebook & Instagram Paid"
     elif src in ("facebook",) and med == "(none)":
-        ch = "Facebook Organic"
+        ch = "Direct / Organic / Unattributed"  # FB organic = not paid traffic
     elif src == "google" and med == "cpc":
         ch = "Google Ads (CPC)"
     elif src == "google" and med == "product_sync":
         ch = "Google Shopping (Product Sync)"
     elif src == "google" and med == "(none)":
         ch = "Google Organic"
-    elif src in ("klaviyo",) and med == "email":
+    elif src in ("klaviyo",) and med in ("email", "(none)"):
         ch = "Klaviyo Email"
-    elif src in ("klaviyo",) and med == "(none)":
-        ch = "Klaviyo (other)"
     elif src == "shopify_email" and med == "email":
         ch = "Shopify Email"
     elif src == "shop_app":
@@ -172,15 +166,11 @@ total_ch_sales = sum(v["total_sales"] for _, v in channels_sorted)
 
 # Assign ad spend to channels
 channel_spend = {
-    "Facebook Paid": s26_fb_spent,
-    "Facebook Paid (fb/Ads)": 0,  # included in FB spend above
-    "Instagram (ig)": 0,  # included in FB spend above
-    "Facebook Organic": 0,
+    "Facebook & Instagram Paid": s26_fb_spent,
     "Google Ads (CPC)": s26_google_spent,
     "Google Shopping (Product Sync)": 0,  # included in Google spend (PMax)
     "Google Organic": 0,
     "Klaviyo Email": 0,
-    "Klaviyo (other)": 0,
     "Shopify Email": 0,
     "Shop App": 0,
     "ChatGPT Referral": 0,
@@ -188,15 +178,9 @@ channel_spend = {
     "Direct / Organic / Unattributed": 0,
 }
 
-# Combine FB paid channels for spend allocation
-fb_paid_total_sales = sum(
-    channels.get(ch, {}).get("total_sales", 0)
-    for ch in ["Facebook Paid", "Facebook Paid (fb/Ads)", "Instagram (ig)"]
-)
-fb_paid_total_orders = sum(
-    channels.get(ch, {}).get("orders", 0)
-    for ch in ["Facebook Paid", "Facebook Paid (fb/Ads)", "Instagram (ig)"]
-)
+# FB paid channel totals (now a single merged channel)
+fb_paid_total_sales = channels.get("Facebook & Instagram Paid", {}).get("total_sales", 0)
+fb_paid_total_orders = channels.get("Facebook & Instagram Paid", {}).get("orders", 0)
 
 # Google CPC + Product Sync combined
 google_paid_total_sales = sum(
@@ -286,11 +270,11 @@ direct_orders = channels.get("Direct / Organic / Unattributed", {}).get("orders"
 # Email totals
 email_sales = sum(
     channels.get(ch, {}).get("total_sales", 0)
-    for ch in ["Klaviyo Email", "Klaviyo (other)", "Shopify Email"]
+    for ch in ["Klaviyo Email", "Shopify Email"]
 )
 email_orders = sum(
     channels.get(ch, {}).get("orders", 0)
-    for ch in ["Klaviyo Email", "Klaviyo (other)", "Shopify Email"]
+    for ch in ["Klaviyo Email", "Shopify Email"]
 )
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
