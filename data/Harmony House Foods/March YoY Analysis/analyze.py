@@ -480,11 +480,12 @@ h('<div class="card">')
 h(f'<h3>Top 20 Products by Total Sales</h3>')
 h(f'<p style="color:#718096;font-size:.85rem;margin-bottom:8px">Top 20 products account for <strong>{pct(top_20_pct)}</strong> of total product sales ({fmt(top_20_sales)} of {fmt(total_product_sales)}). {len(products_2026)} SKUs sold in total.</p>')
 h('''<table>
-<tr><th>#</th><th>Product</th><th class="r">Units</th><th class="r">Gross Sales</th><th class="r">Discounts</th><th class="r">Net Sales</th><th class="r">Total Sales</th><th class="r">% of Total</th></tr>''')
+<tr><th>#</th><th>Product</th><th class="r">Units</th><th class="r">Gross Sales</th><th class="r">Discounts</th><th class="r">Net Sales</th><th class="r">Total Sales</th><th class="r">AOV/Unit</th><th class="r">% of Total</th></tr>''')
 
 for i, p in enumerate(top_20_products):
     pct_of = p["total_sales"] / total_product_sales * 100
     disc_str = fmt(abs(p["discounts"])) if p["discounts"] != 0 else "&mdash;"
+    aov_unit = p["total_sales"] / p["items_sold"] if p["items_sold"] > 0 else 0
     h(f'''<tr>
     <td>{i+1}</td>
     <td>{p["name"]}</td>
@@ -493,6 +494,7 @@ for i, p in enumerate(top_20_products):
     <td class="r">{disc_str}</td>
     <td class="r">{fmt(p["net_sales"])}</td>
     <td class="r">{fmt(p["total_sales"])}</td>
+    <td class="r">{fmt(aov_unit)}</td>
     <td class="r">{pct(pct_of)}</td>
     </tr>''')
 
