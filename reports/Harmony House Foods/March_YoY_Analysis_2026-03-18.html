@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmony House Foods — March YoY Performance Analysis</title>
+<style>
+    :root {
+        --primary: #1a365d;
+        --accent: #2b6cb0;
+        --red: #c53030;
+        --green: #276749;
+        --orange: #c05621;
+        --bg: #f7fafc;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: #2d3748;
+        line-height: 1.6;
+        padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 {
+        color: var(--primary);
+        font-size: 1.8rem;
+        margin-bottom: 4px;
+    }
+    .subtitle {
+        color: #718096;
+        font-size: 0.95rem;
+        margin-bottom: 24px;
+    }
+    h2 {
+        color: var(--primary);
+        font-size: 1.3rem;
+        margin: 28px 0 12px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--accent);
+    }
+    h3 {
+        color: var(--accent);
+        font-size: 1.1rem;
+        margin: 16px 0 8px;
+    }
+    .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 12px 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .alert {
+        border-left: 4px solid var(--red);
+        background: #fff5f5;
+        padding: 16px 20px;
+        border-radius: 4px;
+        margin: 12px 0;
+    }
+    .alert-warning {
+        border-left-color: var(--orange);
+        background: #fffaf0;
+    }
+    .alert-success {
+        border-left-color: var(--green);
+        background: #f0fff4;
+    }
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+    }
+    .kpi-box {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+    }
+    .kpi-box .label { font-size: 0.8rem; color: #718096; text-transform: uppercase; letter-spacing: 0.05em; }
+    .kpi-box .value { font-size: 1.6rem; font-weight: 700; color: var(--primary); margin: 4px 0; }
+    .kpi-box .change { font-size: 0.85rem; }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+        font-size: 0.9rem;
+    }
+    th {
+        background: var(--primary);
+        color: white;
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+    td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+    }
+    tr:nth-child(even) { background: #f7fafc; }
+    tr:hover { background: #edf2f7; }
+    .text-right { text-align: right; }
+    .highlight-row { background: #fffaf0 !important; font-weight: 600; }
+    .section-intro { color: #4a5568; margin-bottom: 12px; }
+    ul { margin: 8px 0 8px 20px; }
+    li { margin: 4px 0; }
+    .rec-box {
+        background: #ebf8ff;
+        border: 1px solid #bee3f8;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 8px 0;
+    }
+    .rec-box strong { color: var(--accent); }
+    .footer {
+        text-align: center;
+        color: #a0aec0;
+        font-size: 0.8rem;
+        margin-top: 40px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+    }
+    @media print {
+        body { padding: 0; }
+        .card { box-shadow: none; break-inside: avoid; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Harmony House Foods — March YoY Performance Analysis</h1>
+<p class="subtitle">March 2025 vs. March 2026 (1–17) &nbsp;|&nbsp; Prepared March 18, 2026</p>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>1. Executive Summary</h2>
+
+<div class="alert">
+<strong>Key Finding:</strong> March 2026 total sales are tracking <strong>28.8%</strong> below the same period last year,
+while ad spend has already exceeded last year's <em>full month</em> budget ($7,910.60) in just 17 days ($8,799.43).
+MER has collapsed from <strong>14.8x</strong> to <strong>6.1x</strong>.
+</div>
+
+<div class="alert alert-warning">
+<strong>Important Context:</strong> March 12, 2025 saw a massive spike — 89 orders and $13,252.52 in a single day (likely a flash sale/promo).
+Excluding that outlier, the true YoY gap (Mar 1–17) narrows from ~28.8% to ~17.7%.
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-box">
+        <div class="label">Total Sales (Mar 1–17)</div>
+        <div class="value">$53,890.71</div>
+        <div class="change"><span style="color:red;font-weight:bold">▼ 28.8%</span> vs. $75,714.79 (2025)</div>
+    </div>
+    <div class="kpi-box">
+        <div class="label">Total Ad Spend (Mar 1–17)</div>
+        <div class="value">$8,799.43</div>
+        <div class="change"><span style="color:green;font-weight:bold">▲ 11.2%</span> vs. $7,910.60 (2025 full month)</div>
+    </div>
+    <div class="kpi-box">
+        <div class="label">MER (Revenue / Spend)</div>
+        <div class="value">6.1x</div>
+        <div class="change"><span style="color:red;font-weight:bold">▼ 58.6%</span> vs. 14.8x (2025)</div>
+    </div>
+    <div class="kpi-box">
+        <div class="label">Blended ROAS (Platform)</div>
+        <div class="value">4.77x</div>
+        <div class="change">Google: 4.9x &nbsp;|&nbsp; FB: 4.92x</div>
+    </div>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-box">
+        <div class="label">Projected Full March 2026</div>
+        <div class="value">$98,271.29</div>
+        <div class="change"><span style="color:red;font-weight:bold">▼ 16.0%</span> vs. $117,003.05 (2025 actual)</div>
+    </div>
+    <div class="kpi-box">
+        <div class="label">15% Growth Target</div>
+        <div class="value">$134,553.51</div>
+        <div class="change">Gap: <span style="color:red;font-weight:bold">$36,282.21</span> short</div>
+    </div>
+    <div class="kpi-box">
+        <div class="label">Daily Sales Needed (Rest of Month)</div>
+        <div class="value">$5,761.63</div>
+        <div class="change">Current avg: $3,170.04/day &nbsp;|&nbsp; 2025 avg: $3,774.29/day</div>
+    </div>
+    <div class="kpi-box">
+        <div class="label">Projected Full Month Ad Spend</div>
+        <div class="value">$16,046.02</div>
+        <div class="change"><span style="color:green;font-weight:bold">▲ 102.8%</span> vs. $7,910.60 (2025)</div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>2. Day-by-Day Comparison (March 1–17)</h2>
+
+<div class="card">
+<table>
+<tr>
+    <th>Day</th>
+    <th class="text-right">2025 Total Sales</th>
+    <th class="text-right">2025 Orders</th>
+    <th class="text-right">2025 Discounts</th>
+    <th class="text-right">2026 Total Sales</th>
+    <th class="text-right">YoY Change</th>
+</tr>
+<tr>
+    <td>Mar 1</td>
+    <td class="text-right">$4,672.23</td>
+    <td class="text-right">14</td>
+    <td class="text-right">$86.56</td>
+    <td class="text-right">$3,230.57</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 30.9%</span></td>
+</tr>
+<tr>
+    <td>Mar 2</td>
+    <td class="text-right">$1,592.24</td>
+    <td class="text-right">13</td>
+    <td class="text-right">$231.13</td>
+    <td class="text-right">$4,434.64</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 178.5%</span></td>
+</tr>
+<tr>
+    <td>Mar 3</td>
+    <td class="text-right">$2,622.59</td>
+    <td class="text-right">20</td>
+    <td class="text-right">$459.65</td>
+    <td class="text-right">$3,246.60</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 23.8%</span></td>
+</tr>
+<tr>
+    <td>Mar 4</td>
+    <td class="text-right">$5,458.14</td>
+    <td class="text-right">23</td>
+    <td class="text-right">$801.12</td>
+    <td class="text-right">$3,856.81</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 29.3%</span></td>
+</tr>
+<tr>
+    <td>Mar 5</td>
+    <td class="text-right">$9,949.83</td>
+    <td class="text-right">28</td>
+    <td class="text-right">$1,386.96</td>
+    <td class="text-right">$3,999.30</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 59.8%</span></td>
+</tr>
+<tr>
+    <td>Mar 6</td>
+    <td class="text-right">$4,389.49</td>
+    <td class="text-right">25</td>
+    <td class="text-right">$605.35</td>
+    <td class="text-right">$3,888.88</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 11.4%</span></td>
+</tr>
+<tr>
+    <td>Mar 7</td>
+    <td class="text-right">$5,040.91</td>
+    <td class="text-right">22</td>
+    <td class="text-right">$514.90</td>
+    <td class="text-right">$2,868.37</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 43.1%</span></td>
+</tr>
+<tr>
+    <td>Mar 8</td>
+    <td class="text-right">$4,198.05</td>
+    <td class="text-right">17</td>
+    <td class="text-right">$601.66</td>
+    <td class="text-right">$2,463.32</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 41.3%</span></td>
+</tr>
+<tr>
+    <td>Mar 9</td>
+    <td class="text-right">$1,148.58</td>
+    <td class="text-right">14</td>
+    <td class="text-right">$150.61</td>
+    <td class="text-right">$2,509.35</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 118.5%</span></td>
+</tr>
+<tr>
+    <td>Mar 10</td>
+    <td class="text-right">$5,864.57</td>
+    <td class="text-right">24</td>
+    <td class="text-right">$680.49</td>
+    <td class="text-right">$4,540.59</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 22.6%</span></td>
+</tr>
+<tr>
+    <td>Mar 11</td>
+    <td class="text-right">$1,268.60</td>
+    <td class="text-right">16</td>
+    <td class="text-right">$127.85</td>
+    <td class="text-right">$3,081.43</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 142.9%</span></td>
+</tr>
+<tr class="highlight-row">
+    <td>Mar 12</td>
+    <td class="text-right">$13,252.52</td>
+    <td class="text-right">89</td>
+    <td class="text-right">$3,391.45</td>
+    <td class="text-right">$2,462.19</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 81.4%</span></td>
+</tr>
+<tr>
+    <td>Mar 13</td>
+    <td class="text-right">$6,503.53</td>
+    <td class="text-right">35</td>
+    <td class="text-right">$536.59</td>
+    <td class="text-right">$2,159.52</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 66.8%</span></td>
+</tr>
+<tr>
+    <td>Mar 14</td>
+    <td class="text-right">$2,039.56</td>
+    <td class="text-right">20</td>
+    <td class="text-right">$261.31</td>
+    <td class="text-right">$1,519.31</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 25.5%</span></td>
+</tr>
+<tr>
+    <td>Mar 15</td>
+    <td class="text-right">$1,438.79</td>
+    <td class="text-right">15</td>
+    <td class="text-right">$120.67</td>
+    <td class="text-right">$2,831.93</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 96.8%</span></td>
+</tr>
+<tr>
+    <td>Mar 16</td>
+    <td class="text-right">$1,285.08</td>
+    <td class="text-right">15</td>
+    <td class="text-right">$282.85</td>
+    <td class="text-right">$2,090.56</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 62.7%</span></td>
+</tr>
+<tr>
+    <td>Mar 17</td>
+    <td class="text-right">$4,990.08</td>
+    <td class="text-right">27</td>
+    <td class="text-right">$358.69</td>
+    <td class="text-right">$4,707.34</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 5.7%</span></td>
+</tr>
+<tr style="font-weight:bold;background:#edf2f7">
+    <td>Total (1–17)</td>
+    <td class="text-right">$75,714.79</td>
+    <td class="text-right">417</td>
+    <td class="text-right">$10,597.84</td>
+    <td class="text-right">$53,890.71</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 28.8%</span></td>
+</tr>
+<tr style="font-weight:bold;background:#fffaf0">
+    <td>Total (excl. Mar 12 outlier)</td>
+    <td class="text-right">$62,462.27</td>
+    <td class="text-right">328</td>
+    <td class="text-right">$7,206.39</td>
+    <td class="text-right">$51,428.52</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 17.7%</span></td>
+</tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Weekly Trend</h3>
+<table>
+<tr>
+    <th>Period</th>
+    <th class="text-right">2025 Sales</th>
+    <th class="text-right">2026 Sales</th>
+    <th class="text-right">YoY Change</th>
+</tr>
+<tr>
+    <td>Week 1 (Mar 1–7)</td>
+    <td class="text-right">$33,725.43</td>
+    <td class="text-right">$25,525.17</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 24.3%</span></td>
+</tr>
+<tr>
+    <td>Week 2 (Mar 8–14)</td>
+    <td class="text-right">$34,275.41</td>
+    <td class="text-right">$18,735.71</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 45.3%</span></td>
+</tr>
+<tr>
+    <td>Mar 15–17</td>
+    <td class="text-right">$7,713.95</td>
+    <td class="text-right">$9,629.83</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 24.8%</span></td>
+</tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>3. Discount Analysis</h2>
+
+<div class="card">
+<table>
+<tr>
+    <th>Metric</th>
+    <th class="text-right">March 2025 (1–17)</th>
+    <th class="text-right">March 2026 (1–17)</th>
+    <th class="text-right">Change</th>
+</tr>
+<tr>
+    <td>Gross Sales</td>
+    <td class="text-right">$83,061.28</td>
+    <td class="text-right">$69,723.64</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 16.1%</span></td>
+</tr>
+<tr>
+    <td>Total Discounts</td>
+    <td class="text-right">$10,597.84</td>
+    <td class="text-right">$5,605.37</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 47.1%</span></td>
+</tr>
+<tr>
+    <td>Discount Rate (% of Gross)</td>
+    <td class="text-right">12.8%</td>
+    <td class="text-right">8.0%</td>
+    <td class="text-right"><span style='color:green'>Lower</span></td>
+</tr>
+<tr>
+    <td>Net Sales</td>
+    <td class="text-right">$72,463.44</td>
+    <td class="text-right">$64,014.24</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 11.7%</span></td>
+</tr>
+<tr>
+    <td>Avg Order Value (Total Sales / Orders)</td>
+    <td class="text-right">$181.57</td>
+    <td class="text-right">$162.14</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 10.7%</span></td>
+</tr>
+</table>
+</div>
+
+<div class="alert alert-warning">
+<strong>March 12, 2025 Promo Impact:</strong> That single day contributed $3,391.45 in discounts
+(32.0% of all discounts in the first 17 days)
+and $16,168.73 in gross sales (89 orders).
+This was clearly a major promotional event that has <strong>no equivalent in March 2026</strong>.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>4. Ad Spend & Efficiency Deep Dive</h2>
+
+<div class="card">
+<h3>Ad Spend Comparison</h3>
+<table>
+<tr>
+    <th>Metric</th>
+    <th class="text-right">March 2025 (Full Month)</th>
+    <th class="text-right">March 2026 (1–17 only)</th>
+    <th class="text-right">Change</th>
+</tr>
+<tr>
+    <td>Google Ads Spend</td>
+    <td class="text-right">$7,757.60</td>
+    <td class="text-right">$3,468.41</td>
+    <td class="text-right">44.7% of 2025 total</td>
+</tr>
+<tr>
+    <td>Facebook Ads Spend</td>
+    <td class="text-right">$153.00</td>
+    <td class="text-right">$5,331.02</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 3384.3%</span></td>
+</tr>
+<tr>
+    <td>Total Ad Spend</td>
+    <td class="text-right">$7,910.60</td>
+    <td class="text-right">$8,799.43</td>
+    <td class="text-right"><span style="color:green;font-weight:bold">▲ 11.2%</span></td>
+</tr>
+<tr>
+    <td>Shopify Total Sales</td>
+    <td class="text-right">$117,003.05 (full)</td>
+    <td class="text-right">$53,890.71 (17 days)</td>
+    <td class="text-right">—</td>
+</tr>
+<tr>
+    <td>MER (Total Sales / Total Ad Spend)</td>
+    <td class="text-right">14.8x</td>
+    <td class="text-right">6.1x</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 58.6%</span></td>
+</tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Google Ads — Campaign Performance</h3>
+
+<h3 style="font-size:0.95rem;color:#718096">March 2025 (Full Month)</h3>
+<table>
+<tr><th>Campaign</th><th class="text-right">Spend</th><th class="text-right">Conv.</th><th class="text-right">Conv. Value</th><th class="text-right">ROAS</th><th class="text-right">CPA</th></tr>
+<tr>
+    <td>new ads 5 (Search)</td>
+    <td class="text-right">$98.80</td>
+    <td class="text-right">0.0</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">0.00x</td>
+    <td class="text-right">—</td>
+</tr>
+<tr>
+    <td>Harmony House Foods (Search)</td>
+    <td class="text-right">$912.02</td>
+    <td class="text-right">10.0</td>
+    <td class="text-right">$1,352.92</td>
+    <td class="text-right">1.48x</td>
+    <td class="text-right">$91.11</td>
+</tr>
+<tr>
+    <td>Ad 4 (Search)</td>
+    <td class="text-right">$3,083.21</td>
+    <td class="text-right">59.0</td>
+    <td class="text-right">$11,611.15</td>
+    <td class="text-right">3.77x</td>
+    <td class="text-right">$52.30</td>
+</tr>
+<tr>
+    <td>Sale merchant ad 1 (Shopping)</td>
+    <td class="text-right">$3,663.57</td>
+    <td class="text-right">130.3</td>
+    <td class="text-right">$15,141.61</td>
+    <td class="text-right">4.13x</td>
+    <td class="text-right">$28.12</td>
+</tr>
+<tr style="font-weight:bold;background:#edf2f7">
+    <td>Total</td>
+    <td class="text-right">$7,757.60</td>
+    <td class="text-right">199.2</td>
+    <td class="text-right">$28,105.68</td>
+    <td class="text-right">3.62x</td>
+    <td class="text-right">$38.94</td>
+</tr>
+</table>
+
+<h3 style="font-size:0.95rem;color:#718096;margin-top:16px">March 2026 (1–17)</h3>
+<table>
+<tr><th>Campaign</th><th class="text-right">Spend</th><th class="text-right">Conv.</th><th class="text-right">Conv. Value</th><th class="text-right">ROAS</th><th class="text-right">CPA</th></tr>
+<tr>
+    <td>INTC | Branded Search | Max Conv</td>
+    <td class="text-right">$528.42</td>
+    <td class="text-right">31.0</td>
+    <td class="text-right">$3,621.40</td>
+    <td class="text-right">6.85x</td>
+    <td class="text-right">$17.05</td>
+</tr>
+<tr>
+    <td>INTC | P.Max | All Products</td>
+    <td class="text-right">$2,774.63</td>
+    <td class="text-right">106.7</td>
+    <td class="text-right">$13,536.86</td>
+    <td class="text-right">4.88x</td>
+    <td class="text-right">$26.01</td>
+</tr>
+<tr>
+    <td>INTC | NB | Search | Dried Cabbage</td>
+    <td class="text-right">$191.29</td>
+    <td class="text-right">0.0</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">0.00x</td>
+    <td class="text-right">—</td>
+</tr>
+<tr style="font-weight:bold;background:#edf2f7">
+    <td>Total</td>
+    <td class="text-right">$3,494.34</td>
+    <td class="text-right">137.7</td>
+    <td class="text-right">$17,158.26</td>
+    <td class="text-right">4.91x</td>
+    <td class="text-right">$25.38</td>
+</tr>
+</table>
+</div>
+
+<div class="alert alert-success">
+<strong>Google Ads Positive:</strong> ROAS improved from 3.62x (2025) to 4.91x (2026). The INTC | P.Max campaign is performing well at 4.88x ROAS
+but is <strong>budget-limited</strong> ($190/day). Branded Search is highly efficient at 6.85x ROAS. The NB Dried Cabbage campaign ($191.29 spent, 0 conversions) was correctly paused.
+</div>
+
+<div class="card">
+<h3>Facebook Ads Performance (March 2026)</h3>
+<table>
+<tr>
+    <th>Metric</th>
+    <th class="text-right">Value</th>
+</tr>
+<tr><td>Total FB Spend (Mar 1–17)</td><td class="text-right">$5,331.02</td></tr>
+<tr><td>FB Platform Conversion Value</td><td class="text-right">$26,247.59</td></tr>
+<tr><td>FB Platform ROAS</td><td class="text-right">4.92x</td></tr>
+<tr><td>Daily Average FB Spend</td><td class="text-right">$313.59</td></tr>
+</table>
+
+<h3 style="margin-top:12px">Facebook — UTM Last-Click Attribution vs Platform</h3>
+<table>
+<tr>
+    <th>Attribution</th>
+    <th class="text-right">Orders</th>
+    <th class="text-right">Gross Sales</th>
+    <th class="text-right">Total Sales</th>
+    <th class="text-right">Effective ROAS</th>
+</tr>
+<tr>
+    <td>FB Platform Reported</td>
+    <td class="text-right">—</td>
+    <td class="text-right">—</td>
+    <td class="text-right">$26,247.59</td>
+    <td class="text-right">4.92x</td>
+</tr>
+<tr>
+    <td>Shopify UTM Last-Click (facebook/fb/ig paid)</td>
+    <td class="text-right">100</td>
+    <td class="text-right">$11,994.12</td>
+    <td class="text-right">$12,047.36</td>
+    <td class="text-right">2.26x</td>
+</tr>
+</table>
+</div>
+
+<div class="alert">
+<strong>Facebook Concern:</strong> FB is consuming <strong>60.6%</strong> of total ad spend
+($5,331.02 of $8,799.43) but Shopify UTM last-click attributes only
+$12,047.36 in sales — an effective ROAS of just <strong>2.26x</strong>.
+Even FB's self-reported conversion value ($26,247.59) only yields 4.92x ROAS.
+Compared to 2025 when FB spend was only $153 for the entire month, this represents a massive and potentially inefficient increase.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>5. Channel Attribution Breakdown (March 2026, UTM Last-Click)</h2>
+
+<div class="card">
+<table>
+<tr>
+    <th>Channel</th>
+    <th class="text-right">Orders</th>
+    <th class="text-right">Gross Sales</th>
+    <th class="text-right">Discounts</th>
+    <th class="text-right">Total Sales</th>
+    <th class="text-right">% of Total Sales</th>
+</tr>
+<tr>
+    <td>Direct / Organic / Unattributed</td>
+    <td class="text-right">191</td>
+    <td class="text-right">$44,254.13</td>
+    <td class="text-right">$4,972.12</td>
+    <td class="text-right">$40,443.70</td>
+    <td class="text-right">60.7%</td>
+</tr>
+<tr>
+    <td>Facebook/Instagram Paid</td>
+    <td class="text-right">99</td>
+    <td class="text-right">$11,786.42</td>
+    <td class="text-right">$447.03</td>
+    <td class="text-right">$11,839.66</td>
+    <td class="text-right">17.8%</td>
+</tr>
+<tr>
+    <td>Google Ads (CPC)</td>
+    <td class="text-right">89</td>
+    <td class="text-right">$8,597.76</td>
+    <td class="text-right">$88.13</td>
+    <td class="text-right">$9,192.89</td>
+    <td class="text-right">13.8%</td>
+</tr>
+<tr>
+    <td>Email (Klaviyo/Shopify)</td>
+    <td class="text-right">21</td>
+    <td class="text-right">$3,828.37</td>
+    <td class="text-right">$98.09</td>
+    <td class="text-right">$3,875.77</td>
+    <td class="text-right">5.8%</td>
+</tr>
+<tr>
+    <td>Google Shopping (Product Sync)</td>
+    <td class="text-right">4</td>
+    <td class="text-right">$319.25</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">$343.91</td>
+    <td class="text-right">0.5%</td>
+</tr>
+<tr>
+    <td>Facebook Organic/Other</td>
+    <td class="text-right">3</td>
+    <td class="text-right">$279.80</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">$287.75</td>
+    <td class="text-right">0.4%</td>
+</tr>
+<tr>
+    <td>Instagram Organic</td>
+    <td class="text-right">1</td>
+    <td class="text-right">$207.70</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">$207.70</td>
+    <td class="text-right">0.3%</td>
+</tr>
+<tr>
+    <td>Shop App</td>
+    <td class="text-right">1</td>
+    <td class="text-right">$190.41</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">$190.41</td>
+    <td class="text-right">0.3%</td>
+</tr>
+<tr>
+    <td>Google Organic/Other</td>
+    <td class="text-right">1</td>
+    <td class="text-right">$134.90</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">$134.90</td>
+    <td class="text-right">0.2%</td>
+</tr>
+<tr>
+    <td>ChatGPT Referral</td>
+    <td class="text-right">1</td>
+    <td class="text-right">$124.90</td>
+    <td class="text-right">$0.00</td>
+    <td class="text-right">$124.90</td>
+    <td class="text-right">0.2%</td>
+</tr>
+<tr style="font-weight:bold;background:#edf2f7">
+    <td>Total</td>
+    <td class="text-right">411</td>
+    <td class="text-right">$69,723.64</td>
+    <td class="text-right">$5,605.37</td>
+    <td class="text-right">$66,641.59</td>
+    <td class="text-right">100%</td>
+</tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>6. Google Ads — Channel Type Comparison (2025 vs 2026)</h2>
+
+<div class="card">
+<table>
+<tr>
+    <th>Channel Type</th>
+    <th class="text-right">2025 Spend</th>
+    <th class="text-right">2025 ROAS</th>
+    <th class="text-right">2026 Spend</th>
+    <th class="text-right">2026 ROAS</th>
+    <th>Notes</th>
+</tr>
+<tr>
+    <td>Search (Branded + Non-Branded)</td>
+    <td class="text-right">$4,094.03</td>
+    <td class="text-right">3.17x</td>
+    <td class="text-right">$719.71</td>
+    <td class="text-right">5.03x</td>
+    <td>Branded search very efficient; NB Cabbage paused (good)</td>
+</tr>
+<tr>
+    <td>Shopping / Performance Max</td>
+    <td class="text-right">$3,663.57</td>
+    <td class="text-right">4.13x</td>
+    <td class="text-right">$2,774.63</td>
+    <td class="text-right">4.88x</td>
+    <td>PMax outperforming old Shopping; budget-limited</td>
+</tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>7. What's Driving the Gap?</h2>
+
+<div class="card">
+<h3>Root Causes</h3>
+<ol style="margin:8px 0 8px 20px">
+<li><strong>Missing Promotional Event:</strong> March 12, 2025's flash sale/promo generated $13,252.52 (89 orders, $3,391.45 in discounts).
+No equivalent event has occurred in 2026. This single day accounts for ~17.5% of March 1–17 2025 sales.</li>
+
+<li><strong>Organic/Direct Traffic Decline:</strong> The "Direct / Organic / Unattributed" channel drives 60.7%
+of 2026 sales. Without 2025 UTM data for comparison, we can't measure the exact decline, but the overall business is trending down YoY even outside of paid channels.</li>
+
+<li><strong>Facebook Spend Scaling Too Aggressively:</strong> FB spend went from $153/month to ~$9,721/month (projected).
+The incremental revenue is not keeping pace — the marginal ROAS on FB is poor.</li>
+
+<li><strong>Lower Discount Aggressiveness in 2026:</strong>
+2025 (Mar 1–17) discount rate: <strong>12.8%</strong> |
+2026 (Mar 1–17) discount rate: <strong>8.0%</strong>.
+Lower discounts = better margins but fewer orders.</li>
+
+<li><strong>Underlying Business Trend:</strong> Annual revenue has declined every year since 2021 ($1.81M → $1.02M in 2025, per annual data).
+This is a structural headwind — paid media alone cannot reverse a 44% organic decline.</li>
+</ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>8. Recommendations for the Client Call</h2>
+
+<div class="rec-box">
+<strong>1. Run a Flash Sale / Promotion ASAP (March 19–22)</strong><br>
+Last year's March 12 promo generated $13,252 in a single day with 89 orders. A similar event could close much of the gap.
+Recommend a 48–72 hour flash sale (20–25% off popular items) promoted via email + social.
+This alone could add $8,000–15,000 in incremental revenue.
+</div>
+
+<div class="rec-box">
+<strong>2. Scale Down Facebook Ads Immediately</strong><br>
+Cut FB daily budget from ~$314/day to $100–150/day (retargeting only).
+FB is burning $314/day with UTM-attributed ROAS of only 2.26x.
+Reallocate savings to Google PMax and email campaigns. Potential savings: ~$2,500–3,000 for the rest of March.
+</div>
+
+<div class="rec-box">
+<strong>3. Increase Google PMax Budget</strong><br>
+The PMax campaign has 4.88x ROAS and is <strong>budget-limited</strong> at $190/day.
+Increase to $250–300/day. This is the highest-efficiency paid channel.
+The branded search campaign is already efficient at 6.85x ROAS — keep as-is.
+</div>
+
+<div class="rec-box">
+<strong>4. Double Down on Email (Klaviyo)</strong><br>
+Email is attributing 21 orders / $3,875.77
+in total sales with <strong>zero ad cost</strong> (infinite ROI).
+Send 2–3 additional campaigns this week: flash sale announcement, abandoned cart push, and a "best sellers" feature.
+Each email blast can drive $500–2,000 in incremental sales.
+</div>
+
+<div class="rec-box">
+<strong>5. Set Realistic Expectations on the 15% Target</strong><br>
+The 15% YoY growth target ($134,553.51) requires $5,761.63/day for the remaining 14 days —
+that's <strong>1.8x</strong> the current daily average.
+This is only achievable with a major promotional event.
+A more realistic target given current trends: match or come within 10–15% of last year's $117,003.05.
+</div>
+
+<div class="rec-box">
+<strong>6. Reframe the Narrative for the Client</strong><br>
+Key talking points:
+<ul>
+<li>Last year's March was inflated by a massive single-day promo ($13,252.52 on Mar 12). Excluding that, the real gap is ~17.7% not ~28.8%.</li>
+<li>Google Ads efficiency has <strong>improved</strong> — ROAS up from 3.62x to 4.91x. We're spending smarter.</li>
+<li>We've identified FB as the budget drain and are course-correcting now.</li>
+<li>Immediate action plan: flash sale + email push + FB budget reallocation can recover $10,000–20,000 before month-end.</li>
+<li>The business has a structural organic decline (revenue down 44% since 2021). Paid media optimizes within that reality — we need to also discuss SEO, retention, and product strategy.</li>
+</ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>9. Projected Scenarios for Rest of March</h2>
+
+<div class="card">
+<table>
+<tr>
+    <th>Scenario</th>
+    <th class="text-right">Remaining Spend</th>
+    <th class="text-right">Projected Month Total</th>
+    <th class="text-right">vs. 2025</th>
+    <th class="text-right">vs. Target</th>
+</tr>
+<tr>
+    <td><strong>A: Status Quo</strong> (no changes)</td>
+    <td class="text-right">$7,246.59</td>
+    <td class="text-right">$98,271.29</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 16.0%</span></td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 27.0%</span></td>
+</tr>
+<tr>
+    <td><strong>B: Optimize Spend</strong> (cut FB, scale PMax, more emails)</td>
+    <td class="text-right">$5,434.94</td>
+    <td class="text-right">$104,928.38</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 10.3%</span></td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 22.0%</span></td>
+</tr>
+<tr>
+    <td><strong>C: Optimize + Flash Sale</strong></td>
+    <td class="text-right">$5,934.94</td>
+    <td class="text-right">$116,928.38</td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 0.1%</span></td>
+    <td class="text-right"><span style="color:red;font-weight:bold">▼ 13.1%</span></td>
+</tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>10. Immediate Action Items</h2>
+
+<div class="card">
+<table>
+<tr><th>#</th><th>Action</th><th>Timeline</th><th>Expected Impact</th></tr>
+<tr><td>1</td><td>Cut Facebook daily budget to $100–150 (retargeting only)</td><td>Today</td><td>Save ~$150–200/day; redirect to higher-ROI channels</td></tr>
+<tr><td>2</td><td>Increase PMax budget from $190 → $250–300/day</td><td>Today</td><td>Capture more high-intent Shopping traffic at 4.88x ROAS</td></tr>
+<tr><td>3</td><td>Plan and launch a flash sale (20–25% off, 48–72hr)</td><td>March 19–22</td><td>+$8,000–15,000 in sales (based on 2025 promo precedent)</td></tr>
+<tr><td>4</td><td>Send 2–3 Klaviyo email blasts this week</td><td>This week</td><td>+$1,500–4,000 at zero ad cost</td></tr>
+<tr><td>5</td><td>Pause or significantly reduce NB Search experiments</td><td>Today</td><td>Avoid wasting budget on 0-conversion campaigns</td></tr>
+<tr><td>6</td><td>Monitor daily MER — target 7x+ for remaining days</td><td>Ongoing</td><td>Ensure spend efficiency improves vs. current 6.1x</td></tr>
+</table>
+</div>
+
+<div class="footer">
+Harmony House Foods — March YoY Performance Analysis &nbsp;|&nbsp; Generated March 18, 2026<br>
+Data sources: Shopify, Google Ads, Facebook Ads, UTM tracking
+</div>
+
+</div>
+</body>
+</html>

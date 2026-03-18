@@ -1,0 +1,5 @@
+Campaign status,Campaign,Budget,Budget name,Budget type,Currency code,Status,Status reasons,Optimisation score,Campaign type,Impr.,Interactions,Interaction rate,Avg. cost,Cost,Bid strategy type,Clicks,Conv. rate,Conv. value,Conv. value / cost,Conversions,Avg. CPC,Cost / conv.,Original conv. value
+Paused,new ads 5,25.00, --,Daily,USD,Paused,unknown; campaign paused, --,Search,"1,186",31,2.61%,3.19,98.80,Maximise Conversion Value (Target ROAS),31,0.00%,0.00,0.00,0.00,3.19,0.00,0.00
+Paused,Harmony House Foods,30.00, --,Daily,USD,Paused,unknown; campaign paused, --,Search,673,145,21.55%,6.29,912.02,Maximise Conversion Value,145,6.90%,"1,352.92",1.48,10.01,6.29,91.09,"1,352.92"
+Paused,Ad 4,121.00, --,Daily,USD,Paused,unknown; campaign paused, --,Search,"1,532",423,27.61%,7.29,3083.21,Maximise Conversion Value,423,13.94%,"11,611.15",3.77,58.95,7.29,52.30,"11,611.15"
+Paused,Sale merchant ad 1,140.00, --,Daily,USD,Paused,unknown; campaign paused; unknown, --,Shopping,"584,575","5,335",0.91%,0.69,3663.57,Target ROAS,"5,335",2.44%,"15,141.61",4.13,130.28,0.69,28.12,"15,141.61"
