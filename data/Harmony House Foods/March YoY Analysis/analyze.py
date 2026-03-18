@@ -516,8 +516,6 @@ h(f'''<div class="kpi-grid">
 <div class="kpi"><div class="lb">Daily Sales Needed (Remaining {remaining_days} Days)</div><div class="vl">{fmt(daily_needed)}</div>
 <div class="ch">Current avg: {fmt(avg_daily_2026)}/day &nbsp;|&nbsp; Need {daily_needed / avg_daily_2026:.1f}x current pace</div></div>
 
-<div class="kpi"><div class="lb">Returning Customer AOV</div><div class="vl">{fmt(ret_aov_26)}</div>
-<div class="ch">{chg(ret_aov_26, ret_aov_25)} vs. {fmt(ret_aov_25)} (2025)</div></div>
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -804,32 +802,9 @@ A realistic target: match or come within 5&ndash;10% of last year&rsquo;s {fmt(s
 </div>''')
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 7. PROJECTED SCENARIOS (was 10)
+# 7. IMMEDIATE ACTION ITEMS
 # ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>7. Projected Scenarios (Rest of March)</h2>')
-
-scenario_a = s26_projected  # status quo
-scenario_a_spend = s26_projected_spend
-
-scenario_b_daily = avg_daily_2026 * 1.15
-scenario_b = s26_total_sales + scenario_b_daily * remaining_days
-scenario_b_spend = min(14000, s26_total_spent + (s26_total_spent / 17 * 0.75) * remaining_days)
-
-scenario_c_daily = avg_daily_2026 * 1.25
-scenario_c = s26_total_sales + scenario_c_daily * remaining_days
-scenario_c_spend = min(14000, s26_total_spent + (s26_total_spent / 17 * 0.85) * remaining_days)
-
-h(f'''<div class="card"><table>
-<tr><th>Scenario</th><th class="r">Projected Month Total</th><th class="r">vs. 2025</th><th class="r">vs. Target</th><th class="r">Projected Spend</th><th class="r">Projected MER</th></tr>
-<tr><td><strong>A: Status Quo</strong> (no changes)</td><td class="r">{fmt(scenario_a)}</td><td class="r">{chg(scenario_a, s25_full["total_sales"])}</td><td class="r">{chg(scenario_a, target_total)}</td><td class="r">{fmt(scenario_a_spend)}</td><td class="r">{scenario_a / scenario_a_spend:.1f}x</td></tr>
-<tr><td><strong>B: Optimize</strong> (FB offer ads, more email, AOV focus)</td><td class="r">{fmt(scenario_b)}</td><td class="r">{chg(scenario_b, s25_full["total_sales"])}</td><td class="r">{chg(scenario_b, target_total)}</td><td class="r">{fmt(scenario_b_spend)}</td><td class="r">{scenario_b / scenario_b_spend:.1f}x</td></tr>
-<tr><td><strong>C: Best Case</strong> (all optimizations + strong email response)</td><td class="r">{fmt(scenario_c)}</td><td class="r">{chg(scenario_c, s25_full["total_sales"])}</td><td class="r">{chg(scenario_c, target_total)}</td><td class="r">{fmt(scenario_c_spend)}</td><td class="r">{scenario_c / scenario_c_spend:.1f}x</td></tr>
-</table></div>''')
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 8. IMMEDIATE ACTION ITEMS (was 11)
-# ═══════════════════════════════════════════════════════════════════════════════
-h('<h2>8. Immediate Action Items</h2>')
+h('<h2>7. Immediate Action Items</h2>')
 h(f'''<div class="card"><table>
 <tr><th>#</th><th>Action</th><th>Timeline</th><th>Expected Impact</th></tr>
 <tr><td>1</td><td>Launch sale/offer creative on Facebook Ads (bundle deals, seasonal promos)</td><td>This week</td><td>Increase FB conversion rate &amp; order volume by 20&ndash;30%</td></tr>
