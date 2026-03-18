@@ -274,32 +274,48 @@ week2_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(7, 14))
 week3p_26 = sum(days_2026_sorted[i][1]["total_sales"] for i in range(14, 17))
 
 # ── Daily Trend & End-of-Month Projection ──────────────────────────────────
-# Daily sales list for 2026
+# Daily sales lists
 daily_sales_2026 = [days_2026_sorted[i][1]["total_sales"] for i in range(17)]
+daily_sales_2025 = [shopify_2025[i]["total_sales"] for i in range(31)]
 
-# First 7 days vs last 5 days (Mar 13-17) to show decline
-first7_avg = sum(daily_sales_2026[:7]) / 7
-last5_sales = daily_sales_2026[12:]  # Mar 13-17
-last5_avg = sum(last5_sales) / 5
-last3_sales = daily_sales_2026[14:]  # Mar 15-17
-last3_avg = sum(last3_sales) / 3
-trend_drop_pct = (last5_avg - first7_avg) / first7_avg * 100
+# 2026 period averages
+first7_avg_26 = sum(daily_sales_2026[:7]) / 7
+week2_avg_26 = sum(daily_sales_2026[7:14]) / 7
+last5_avg_26 = sum(daily_sales_2026[12:]) / 5  # Mar 13-17
+last3_avg_26 = sum(daily_sales_2026[14:]) / 3  # Mar 15-17
+trend_drop_pct_26 = (last5_avg_26 - first7_avg_26) / first7_avg_26 * 100
+
+# 2025 same-period averages (for comparison)
+first7_avg_25 = sum(daily_sales_2025[:7]) / 7
+week2_avg_25 = sum(daily_sales_2025[7:14]) / 7
+last5_of17_avg_25 = sum(daily_sales_2025[12:17]) / 5  # Mar 13-17
+last3_of17_avg_25 = sum(daily_sales_2025[14:17]) / 3  # Mar 15-17
+trend_drop_pct_25 = (last5_of17_avg_25 - first7_avg_25) / first7_avg_25 * 100
 
 # 2025 remaining period (Mar 18-31)
 s25_remaining = s25_full["total_sales"] - s25_17["total_sales"]
-s25_remaining_daily_avg = s25_remaining / 14  # 14 days remaining
+s25_remaining_daily_avg = s25_remaining / 14
+# 2025 weekly averages for Mar 18-24, 25-31
+s25_week4 = sum(daily_sales_2025[17:24])  # Mar 18-24
+s25_week5 = sum(daily_sales_2025[24:31])  # Mar 25-31
+s25_week4_avg = s25_week4 / 7
+s25_week5_avg = s25_week5 / 7
+
+# Backward-compatible aliases
+first7_avg = first7_avg_26
+last5_avg = last5_avg_26
+last3_avg = last3_avg_26
+trend_drop_pct = trend_drop_pct_26
 
 # Projection scenarios for 2026 remaining days (Mar 18-31)
-# Scenario 1: If daily avg stays at last 5 days pace
-proj_last5_pace = s26_total_sales + last5_avg * remaining_days
-# Scenario 2: If daily avg stays at overall 17-day pace
+proj_last5_pace = s26_total_sales + last5_avg_26 * remaining_days
 proj_overall_pace = s26_total_sales + avg_daily_2026 * remaining_days
-# Scenario 3: If daily avg matches first 7 days pace
-proj_first7_pace = s26_total_sales + first7_avg * remaining_days
+proj_first7_pace = s26_total_sales + first7_avg_26 * remaining_days
+# New: project at 2025's Mar 18-31 actual daily avg
+proj_2025_remaining_pace = s26_total_sales + s25_remaining_daily_avg * remaining_days
 
 # Revenue needed per day to match 2025 full month
 daily_needed_match_2025 = (s25_full["total_sales"] - s26_total_sales) / remaining_days
-# Can we cover the gap?
 will_cover_at_current_pace = proj_overall_pace >= s25_full["total_sales"]
 shortfall_at_current = s25_full["total_sales"] - proj_overall_pace
 shortfall_at_last5 = s25_full["total_sales"] - proj_last5_pace
@@ -676,33 +692,38 @@ h('</table></div>')
 # ═══════════════════════════════════════════════════════════════════════════════
 h('<h2>6. Daily Sales Trend &amp; End-of-Month Projection</h2>')
 
-h(f'''<div class="card"><h3>Daily Average Sales Trend (March 2026)</h3><table>
-<tr><th>Period</th><th class="r">Daily Avg Sales</th><th class="r">vs. First 7 Days</th></tr>
-<tr><td>Mar 1&ndash;7 (first 7 days)</td><td class="r">{fmt(first7_avg)}</td><td class="r">&mdash;</td></tr>
-<tr><td>Mar 8&ndash;14 (week 2)</td><td class="r">{fmt(week2_26 / 7)}</td><td class="r">{chg(week2_26 / 7, first7_avg)}</td></tr>
-<tr><td>Mar 13&ndash;17 (last 5 days)</td><td class="r"><strong>{fmt(last5_avg)}</strong></td><td class="r"><strong>{chg(last5_avg, first7_avg)}</strong></td></tr>
-<tr><td>Mar 15&ndash;17 (last 3 days)</td><td class="r"><strong>{fmt(last3_avg)}</strong></td><td class="r"><strong>{chg(last3_avg, first7_avg)}</strong></td></tr>
+h(f'''<div class="card"><h3>Weekly Daily Average: 2025 vs. 2026</h3><table>
+<tr><th>Period</th><th class="r">2025 Daily Avg</th><th class="r">2026 Daily Avg</th><th class="r">YoY Change</th></tr>
+<tr><td>Mar 1&ndash;7 (week 1)</td><td class="r">{fmt(first7_avg_25)}</td><td class="r">{fmt(first7_avg_26)}</td><td class="r">{chg(first7_avg_26, first7_avg_25)}</td></tr>
+<tr><td>Mar 8&ndash;14 (week 2)</td><td class="r">{fmt(week2_avg_25)}</td><td class="r">{fmt(week2_avg_26)}</td><td class="r">{chg(week2_avg_26, week2_avg_25)}</td></tr>
+<tr><td>Mar 13&ndash;17 (last 5 days)</td><td class="r">{fmt(last5_of17_avg_25)}</td><td class="r"><strong>{fmt(last5_avg_26)}</strong></td><td class="r"><strong>{chg(last5_avg_26, last5_of17_avg_25)}</strong></td></tr>
+<tr><td>Mar 15&ndash;17 (last 3 days)</td><td class="r">{fmt(last3_of17_avg_25)}</td><td class="r"><strong>{fmt(last3_avg_26)}</strong></td><td class="r"><strong>{chg(last3_avg_26, last3_of17_avg_25)}</strong></td></tr>
+<tr style="border-top:2px solid #ccc"><td>Mar 18&ndash;24 (2025 actual)</td><td class="r">{fmt(s25_week4_avg)}</td><td class="r" colspan="2" style="color:#888">No 2026 data yet</td></tr>
+<tr><td>Mar 25&ndash;31 (2025 actual)</td><td class="r">{fmt(s25_week5_avg)}</td><td class="r" colspan="2" style="color:#888">No 2026 data yet</td></tr>
+<tr class="tot"><td>Mar 18&ndash;31 (2025 actual)</td><td class="r">{fmt(s25_remaining_daily_avg)}</td><td class="r" colspan="2">&mdash;</td></tr>
 </table>''')
 
-h(f'''<p style="margin-top:12px">Daily sales have <strong>{"declined" if last5_avg < first7_avg else "increased"} significantly</strong> &mdash;
-the last 5 days averaged <strong>{fmt(last5_avg)}/day</strong> compared to <strong>{fmt(first7_avg)}/day</strong> in the first week
-(<strong>{abs(trend_drop_pct):.0f}% {"drop" if trend_drop_pct < 0 else "increase"}</strong>).
-The most recent 3 days (Mar 15&ndash;17) averaged just <strong>{fmt(last3_avg)}/day</strong>.</p>
+h(f'''<p style="margin-top:12px">In 2026, daily sales have <strong>{"declined" if last5_avg_26 < first7_avg_26 else "increased"}</strong> from
+<strong>{fmt(first7_avg_26)}/day</strong> (week 1) to <strong>{fmt(last5_avg_26)}/day</strong> (last 5 days) &mdash;
+a <strong>{abs(trend_drop_pct_26):.0f}% {"drop" if trend_drop_pct_26 < 0 else "increase"}</strong>.
+In 2025, the same period {"also declined" if trend_drop_pct_25 < 0 else "actually grew"} by {abs(trend_drop_pct_25):.0f}%
+({fmt(first7_avg_25)} &rarr; {fmt(last5_of17_avg_25)}).
+In 2025, the final 14 days (Mar 18&ndash;31) averaged <strong>{fmt(s25_remaining_daily_avg)}/day</strong>
+({fmt(s25_week4_avg)}/day in week 4, {fmt(s25_week5_avg)}/day in week 5).</p>
 </div>''')
 
 h(f'''<div class="card"><h3>Can We Cover the Revenue Gap? (Mar 18&ndash;31 Projection)</h3><table>
 <tr><th>Scenario</th><th class="r">Remaining 14 Days Avg</th><th class="r">Projected Month Total</th><th class="r">vs. 2025 Full Month ({fmt(s25_full["total_sales"])})</th><th class="r">Verdict</th></tr>
-<tr><td>At recent pace (last 5 days avg)</td><td class="r">{fmt(last5_avg)}/day</td><td class="r">{fmt(proj_last5_pace)}</td><td class="r">{chg(proj_last5_pace, s25_full["total_sales"])}</td>
-<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_last5_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
-<tr><td>At overall 17-day avg pace</td><td class="r">{fmt(avg_daily_2026)}/day</td><td class="r">{fmt(proj_overall_pace)}</td><td class="r">{chg(proj_overall_pace, s25_full["total_sales"])}</td>
+<tr><td>At 2025&rsquo;s Mar 18&ndash;31 actual pace</td><td class="r">{fmt(s25_remaining_daily_avg)}/day</td><td class="r">{fmt(proj_2025_remaining_pace)}</td><td class="r">{chg(proj_2025_remaining_pace, s25_full["total_sales"])}</td>
+<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_2025_remaining_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
+<tr><td>At 2026 overall 17-day avg pace</td><td class="r">{fmt(avg_daily_2026)}/day</td><td class="r">{fmt(proj_overall_pace)}</td><td class="r">{chg(proj_overall_pace, s25_full["total_sales"])}</td>
 <td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_overall_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
-<tr><td>At first-week pace</td><td class="r">{fmt(first7_avg)}/day</td><td class="r">{fmt(proj_first7_pace)}</td><td class="r">{chg(proj_first7_pace, s25_full["total_sales"])}</td>
+<tr><td>At 2026 recent pace (last 5 days)</td><td class="r">{fmt(last5_avg_26)}/day</td><td class="r">{fmt(proj_last5_pace)}</td><td class="r">{chg(proj_last5_pace, s25_full["total_sales"])}</td>
+<td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_last5_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
+<tr><td>At 2026 first-week pace</td><td class="r">{fmt(first7_avg_26)}/day</td><td class="r">{fmt(proj_first7_pace)}</td><td class="r">{chg(proj_first7_pace, s25_full["total_sales"])}</td>
 <td class="r">{"<span style='color:#c53030'>Will NOT cover gap</span>" if proj_first7_pace < s25_full["total_sales"] else "<span style='color:#276749'>Will cover</span>"}</td></tr>
 <tr class="tot"><td>Needed to match 2025</td><td class="r"><strong>{fmt(daily_needed_match_2025)}/day</strong></td><td class="r"><strong>{fmt(s25_full["total_sales"])}</strong></td><td class="r">0.0%</td><td class="r">&mdash;</td></tr>
 </table>''')
-
-h(f'''<p style="margin-top:12px"><strong>2025 context:</strong> In March 2025, the remaining 14 days (Mar 18&ndash;31) generated
-<strong>{fmt(s25_remaining)}</strong> at <strong>{fmt(s25_remaining_daily_avg)}/day</strong>.</p>''')
 
 if proj_overall_pace < s25_full["total_sales"]:
     h(f'''<div class="alert alert-w">
